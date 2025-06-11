@@ -52,7 +52,7 @@ Oogabooga is made to be used in Unity builds. The idea is that you only include 
 This project was started to be used in a course detailing the full ride from starting out making a game to publishing it to Steam. If you're keen on going all-in on getting a small game published to steam within 2-3 months, then check it out for free in our [Skool Community](https://www.skool.com/game-dev).
 
 ## Quickstart
-Currently, we only support Windows x64 systems.
+Windows is fully supported and the example also builds natively on Linux.
 1. Make sure Windows SDK is installed
 2. Install clang, add to path
 2. Clone repo to <project_dir>
@@ -86,8 +86,8 @@ int entry(int argc, char **argv) {
 7. profit
 
 ### Linux Quickstart
-1. Run `./install_deps.sh` to install the required packages (SDL2, GL and GLU development libs plus Wine and MinGW).
-2. Run `make` to compile for your OS. On Linux this builds a native SDL2/GL binary. Use `make windows` to cross-compile a Windows exe if the MinGW toolchain is available.
+1. Run `./install_deps.sh` to install the required SDL2, GL and GLU development libraries.
+2. Run `./build.sh` to build the native SDL/OpenGL version.
 
 In general, we try to leave a nice chunk of documentation in a comment at the top of the source code files when needed.
 An example would be: If you want to understand how to draw things, go to drawing.c and read the comment at the top of the file.
