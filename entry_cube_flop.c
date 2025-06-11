@@ -1,3 +1,4 @@
+#ifdef _WIN32
 // Simple 3D cube flop game example
 
 #define CELL_SIZE 1.0f
@@ -172,3 +173,10 @@ int entry(int argc, char **argv) {
     }
     return 0;
 }
+#else
+int entry(int argc, char **argv) {
+    (void)argc;
+    (void)argv;
+    return 0;
+}
+#endif

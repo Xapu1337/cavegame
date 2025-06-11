@@ -86,12 +86,8 @@ int entry(int argc, char **argv) {
 7. profit
 
 ### Linux Quickstart
-1. Run `./install_deps.sh` to install the required cross compiler and Wine
-   - Works on Ubuntu (apt) and Arch (yay/pacman)
-2. Build and run the example with `./run.sh`
-
-
-## Examples & Documentation
+1. Run `./install_deps.sh` to install the required packages.
+2. Run `./build.sh` to compile. If the MinGW cross compiler is installed, it builds a Windows exe and uses Wine. Otherwise it builds a native SDL2/GL binary.
 
 In general, we try to leave a nice chunk of documentation in a comment at the top of the source code files when needed.
 An example would be: If you want to understand how to draw things, go to drawing.c and read the comment at the top of the file.
