@@ -1,5 +1,10 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_opengl.h>
+#ifdef __APPLE__
+#include <OpenGL/glu.h>
+#else
+#include <GL/glu.h>
+#endif
 #include <math.h>
 #include <stdbool.h>
 
