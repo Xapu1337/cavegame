@@ -85,6 +85,11 @@ int entry(int argc, char **argv) {
 6. Run build/cgame.exe
 7. profit
 
+### Linux Quickstart
+1. Run `./install_deps.sh` to install the required cross compiler and Wine
+2. Build and run the example with `./run.sh`
+
+
 ## Examples & Documentation
 
 In general, we try to leave a nice chunk of documentation in a comment at the top of the source code files when needed.

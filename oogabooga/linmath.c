@@ -676,6 +676,14 @@ inline Matrix4 m4_rotate_z(Matrix4 m, float32 radians) {
     Matrix4 rotation_matrix = m4_make_rotation(v3f32(0, 0, 1), radians);
     return m4_mul(m, rotation_matrix);
 }
+inline Matrix4 m4_rotate_x(Matrix4 m, float32 radians) {
+    Matrix4 rotation_matrix = m4_make_rotation(v3f32(1, 0, 0), radians);
+    return m4_mul(m, rotation_matrix);
+}
+inline Matrix4 m4_rotate_y(Matrix4 m, float32 radians) {
+    Matrix4 rotation_matrix = m4_make_rotation(v3f32(0, 1, 0), radians);
+    return m4_mul(m, rotation_matrix);
+}
 
 inline Matrix4 m4_scale(Matrix4 m, Vector3f32 scale) {
     Matrix4 scale_matrix = m4_make_scale(scale);
@@ -692,6 +700,30 @@ Matrix4 m4_make_orthographic_projection(float32 left, float32 right, float32 bot
     m.m[0][3] = -(right + left) / (right - left);
     m.m[1][3] = -(top + bottom) / (top - bottom);
     m.m[2][3] = -(_far + _near) / (_far - _near);
+    m.m[3][3] = 1.0f;
+    return m;
+}
+
+Matrix4 m4_make_perspective_projection(float32 fov_y, float32 aspect, float32 _near, float32 _far) {
+    Matrix4 m = ZERO(Matrix4);
+    float32 f = 1.0f / tanf(fov_y * 0.5f);
+    m.m[0][0] = f / aspect;
+    m.m[1][1] = f;
+    m.m[2][2] = (_far + _near) / (_near - _far);
+    m.m[2][3] = (2.0f * _far * _near) / (_near - _far);
+    m.m[3][2] = -1.0f;
+    return m;
+}
+
+Matrix4 m4_make_look_at(Vector3f32 eye, Vector3f32 target, Vector3f32 up) {
+    Vector3f32 f = v3_normalize(v3_sub(target, eye));
+    Vector3f32 s = v3_normalize(v3_cross(f, up));
+    Vector3f32 u = v3_cross(s, f);
+
+    Matrix4 m = m4_scalar(1.0f);
+    m.m[0][0] = s.x; m.m[0][1] = s.y; m.m[0][2] = s.z; m.m[0][3] = -v3_dot(s, eye);
+    m.m[1][0] = u.x; m.m[1][1] = u.y; m.m[1][2] = u.z; m.m[1][3] = -v3_dot(u, eye);
+    m.m[2][0] = -f.x; m.m[2][1] = -f.y; m.m[2][2] = -f.z; m.m[2][3] = v3_dot(f, eye);
     m.m[3][3] = 1.0f;
     return m;
 }
