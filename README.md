@@ -85,7 +85,9 @@ int entry(int argc, char **argv) {
 6. Run build/cgame.exe
 7. profit
 
-## Examples & Documentation
+### Linux Quickstart
+1. Run `./install_deps.sh` to install the required packages (SDL2, GL and GLU development libs plus Wine and MinGW).
+2. Run `make` to compile for your OS. On Linux this builds a native SDL2/GL binary. Use `make windows` to cross-compile a Windows exe if the MinGW toolchain is available.
 
 In general, we try to leave a nice chunk of documentation in a comment at the top of the source code files when needed.
 An example would be: If you want to understand how to draw things, go to drawing.c and read the comment at the top of the file.

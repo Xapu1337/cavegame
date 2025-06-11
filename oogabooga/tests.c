@@ -1041,14 +1041,34 @@ void test_linmath() {
 	    assert(result_matrix.m[0][3] == 2.0f && result_matrix.m[1][3] == 4.0f && result_matrix.m[2][3] == 6.0f, "m4_mul incorrect");
 	
 	    // Test matrix inverse
-	    Matrix4 identity = m4_scalar(1.0f);
-	    Matrix4 inverse_matrix = m4_inverse(identity);
-	    for (int i = 0; i < 4; ++i) {
-	        for (int j = 0; j < 4; ++j) {
-	            assert(inverse_matrix.m[i][j] == identity.m[i][j], "m4_inverse incorrect for identity matrix");
-	        }
-	    }
-    }
+            Matrix4 identity = m4_scalar(1.0f);
+            Matrix4 inverse_matrix = m4_inverse(identity);
+            for (int i = 0; i < 4; ++i) {
+                for (int j = 0; j < 4; ++j) {
+                    assert(inverse_matrix.m[i][j] == identity.m[i][j], "m4_inverse incorrect for identity matrix");
+                }
+            }
+
+            // Test new rotation helpers
+            Matrix4 rot_x = m4_rotate_x(identity, PI32 * 0.5f);
+            assert(floats_roughly_match(rot_x.m[1][2], -1.0f) &&
+                   floats_roughly_match(rot_x.m[2][1], 1.0f),
+                   "m4_rotate_x incorrect");
+
+            Matrix4 rot_y = m4_rotate_y(identity, PI32 * 0.5f);
+            assert(floats_roughly_match(rot_y.m[0][2], 1.0f) &&
+                   floats_roughly_match(rot_y.m[2][0], -1.0f),
+                   "m4_rotate_y incorrect");
+
+            // Test perspective projection helper
+            Matrix4 persp = m4_make_perspective_projection(PI32/2.0f, 1.0f, 1.0f, 10.0f);
+            assert(floats_roughly_match(persp.m[0][0], persp.m[1][1]), "m4_make_perspective_projection aspect");
+            assert(floats_roughly_match(persp.m[3][2], -1.0f), "m4_make_perspective_projection w row");
+
+            // Test look-at helper
+            Matrix4 look = m4_make_look_at(v3f32(0,0,1), v3f32(0,0,0), v3f32(0,1,0));
+            assert(floats_roughly_match(look.m[2][3], -1.0f), "m4_make_look_at translation incorrect");
+        }
     
     // Test Vector2 creation
     Vector2 v2_test1 = v2(1.0f, 2.0f);
