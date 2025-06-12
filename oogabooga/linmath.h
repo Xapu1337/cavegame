@@ -127,6 +127,9 @@ typedef union Quaternion {
 typedef Vector2f32 Vector2;
 typedef Vector3f32 Vector3;
 typedef Vector4f32 Vector4;
+// Modern names
+typedef Vector3f32 Vec3;
+#define Vec3(...) V3(__VA_ARGS__)
 typedef Vector2s32 Vector2i;
 typedef Vector3s32 Vector3i;
 typedef Vector4s32 Vector4i;

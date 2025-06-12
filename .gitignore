@@ -56,6 +56,6 @@ test_doc.vkn
 
 google_trace.json
 
-build/*
-
 *google_trace*
+build/*
+build_tool

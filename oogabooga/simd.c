@@ -27,9 +27,6 @@ inline void basic_mul_int32_128(s32 *a, s32 *b, s32* result);
 inline void basic_mul_int32_256(s32 *a, s32 *b, s32* result);
 inline void basic_mul_int32_512(s32 *a, s32 *b, s32* result);
 
-inline float32 basic_dot_product_float32_64(float32 *a, float32 *b);
-inline float32 basic_dot_product_float32_96(float32 *a, float32 *b);
-inline float32 basic_dot_product_float32_128(float32 *a, float32 *b);
 inline void basic_sqrt_float32_64(float32 *a, float32 *result);
 inline void basic_sqrt_float32_96(float32 *a, float32 *result);
 inline void basic_sqrt_float32_128(float32 *a, float32 *result);
@@ -746,13 +743,13 @@ inline void basic_mul_int32_512(s32 *a, s32 *b, s32* result) {
 	simd_mul_int32_256(a, b, result);
 	simd_mul_int32_256(a+8, b+8, result+8);
 }
-inline float32 basic_dot_product_float32_64(float32 *a, float32 *b) {
+static inline float32 basic_dot_product_float32_64(float32 *a, float32 *b) {
     return a[0] * b[0] + a[1] * b[1];
 }
-inline float32 basic_dot_product_float32_96(float32 *a, float32 *b) {
+static inline float32 basic_dot_product_float32_96(float32 *a, float32 *b) {
     return a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
 }
-inline float32 basic_dot_product_float32_128(float32 *a, float32 *b) {
+static inline float32 basic_dot_product_float32_128(float32 *a, float32 *b) {
     return a[0] * b[0] + a[1] * b[1] + a[2] * b[2] + a[3] * b[3];
 }
 inline void basic_sqrt_float32_64(float32 *a, float32 *result) {

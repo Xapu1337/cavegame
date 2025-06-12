@@ -1,5 +1,6 @@
 
 #include "oogabooga.h"
+#include <stdarg.h>
 
 #ifdef _WIN32
 	typedef HANDLE Mutex_Handle;
@@ -9,15 +10,11 @@
 	typedef HANDLE File;
 	
 #elif defined(__linux__)
-    #ifndef OOGABOOGA_HEADLESS
-#error "Linux is only supported for headless builds"
-    #endif
-	typedef void* Mutex_Handle;
-	typedef void* Thread_Handle;
-	typedef void* Dynamic_Library_Handle;
-	typedef void* Window_Handle;
-	typedef void* File;
-	#error "Linux is not supported yet";
+        typedef void* Mutex_Handle;
+        typedef void* Thread_Handle;
+        typedef void* Dynamic_Library_Handle;
+        typedef void* Window_Handle;
+        typedef void* File;
 #elif defined(__APPLE__) && defined(__MACH__)
 	typedef void* Mutex_Handle;
 	typedef void* Thread_Handle;
@@ -26,8 +23,10 @@
 	typedef void* File;
 	#error "Mac is not supported yet";
 #else
-	#error "Current OS not supported!";
+        #error "Current OS not supported!";
 #endif
+
+typedef File OggFile;
 
 #ifndef max
 	#define max(a, b) ((a) > (b) ? (a) : (b))
@@ -35,6 +34,10 @@
 #endif
 
 #define _INTSIZEOF(n)         ((sizeof(n) + sizeof(int) - 1) & ~(sizeof(int) - 1))
+
+#ifndef __cdecl
+#define __cdecl
+#endif
 
 typedef int   (__cdecl *Crt_Vsnprintf_Proc) (char*, size_t, const char*, va_list);
 
@@ -289,54 +292,54 @@ os_do_paths_match(string a, string b);
 
 // It's a little unfortunate that we need to do this but I can't think of a better solution
 
-inline File os_file_open_f(const char *path, Os_Io_Open_Flags flags) {return os_file_open_s(STR(path), flags);}
+static inline File os_file_open_f(const char *path, Os_Io_Open_Flags flags) {return os_file_open_s(STR(path), flags);}
 #define os_file_open(...) _Generic((FIRST_ARG(__VA_ARGS__)), \
                            string:  os_file_open_s, \
                            default: os_file_open_f \
                           )(__VA_ARGS__)
                           
-inline bool os_file_delete_f(const char *path) {return os_file_delete_s(STR(path));}
+static inline bool os_file_delete_f(const char *path) {return os_file_delete_s(STR(path));}
 #define os_file_delete(...) _Generic((FIRST_ARG(__VA_ARGS__)), \
                            string:  os_file_delete_s, \
                            default: os_file_delete_f \
                           )(__VA_ARGS__)
                           
-inline bool os_file_copy_f(const char *from, const char *to, bool replace_if_exists) {return os_file_copy_s(STR(from), STR(to), replace_if_exists);}
+static inline bool os_file_copy_f(const char *from, const char *to, bool replace_if_exists) {return os_file_copy_s(STR(from), STR(to), replace_if_exists);}
 #define os_file_copy(...) _Generic((FIRST_ARG(__VA_ARGS__)), \
                            string:  os_file_copy_s, \
                            default: os_file_copy_f \
                           )(__VA_ARGS__)
                           
-inline bool os_make_directory_f(const char *path, bool recursive) { return os_make_directory_s(STR(path), recursive); }
+static inline bool os_make_directory_f(const char *path, bool recursive) { return os_make_directory_s(STR(path), recursive); }
 #define os_make_directory(...) _Generic((FIRST_ARG(__VA_ARGS__)), \
                            string:  os_make_directory_s, \
                            default: os_make_directory_f \
                           )(__VA_ARGS__)
-inline bool os_delete_directory_f(const char *path, bool recursive) { return os_delete_directory_s(STR(path), recursive); }
+static inline bool os_delete_directory_f(const char *path, bool recursive) { return os_delete_directory_s(STR(path), recursive); }
 #define os_delete_directory(...) _Generic((FIRST_ARG(__VA_ARGS__)), \
                            string:  os_delete_directory_s, \
                            default: os_delete_directory_f \
                           )(__VA_ARGS__)
 
-inline bool os_write_entire_file_f(const char *path, string data) {return os_write_entire_file_s(STR(path), data);}
+static inline bool os_write_entire_file_f(const char *path, string data) {return os_write_entire_file_s(STR(path), data);}
 #define os_write_entire_file(...) _Generic((FIRST_ARG(__VA_ARGS__)), \
                            string:  os_write_entire_file_s, \
                            default: os_write_entire_file_f \
                           )(__VA_ARGS__)
                           
-inline bool os_read_entire_file_f(const char *path, string *result, Allocator allocator) {return os_read_entire_file_s(STR(path), result, allocator);}
+static inline bool os_read_entire_file_f(const char *path, string *result, Allocator allocator) {return os_read_entire_file_s(STR(path), result, allocator);}
 #define os_read_entire_file(...) _Generic((FIRST_ARG(__VA_ARGS__)), \
                            string:  os_read_entire_file_s, \
                            default: os_read_entire_file_f \
                           )(__VA_ARGS__)
                           
-inline bool os_is_file_f(const char *path) {return os_is_file_s(STR(path));}
+static inline bool os_is_file_f(const char *path) {return os_is_file_s(STR(path));}
 #define os_is_file(...) _Generic((FIRST_ARG(__VA_ARGS__)), \
                            string:  os_is_file_s, \
                            default: os_is_file_f \
                           )(__VA_ARGS__)
                           
-inline bool os_is_directory_f(const char *path) {return os_is_directory_s(STR(path));}
+static inline bool os_is_directory_f(const char *path) {return os_is_directory_s(STR(path));}
 #define os_is_directory(...) _Generic((FIRST_ARG(__VA_ARGS__)), \
                            string:  os_is_directory_s, \
                            default: os_is_directory_f \
@@ -344,10 +347,8 @@ inline bool os_is_directory_f(const char *path) {return os_is_directory_s(STR(pa
                           
                           
 
-void ogb_instance
-fprints(File f, string fmt, ...);
+void ogb_instance fprints(File f, string fmt, ...);
 
-void ogb_instance
 // fprintf uses File type, not standard FILE*
 
 #define fprint(...) _Generic((FIRST_ARG(__VA_ARGS__)), \
