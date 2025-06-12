@@ -54,7 +54,7 @@
 				#define DO_ZERO_INITIALIZATION 0
 				
 			Note:
-				Zero initialization only happens to memory allocated with the alloc() procedure.
+				Zero initialization only happens to memory allocated with the Alloc() procedure.
 			
 		- ENABLE_SIMD
 			0: Disable SIMD
@@ -145,13 +145,74 @@
 #define OGB_VERSION (OGB_VERSION_MAJOR*1000000+OGB_VERSION_MINOR*1000+OGB_VERSION_PATCH)
 
 #include <math.h>
-#include <immintrin.h>
+#include <stdint.h>
+#include <stdarg.h>
+#include <limits.h>
+#include <string.h>
+#include <stdlib.h>
+#include <stdio.h>
+
 #ifdef _MSC_VER
 #include <intrin.h>
+#include <immintrin.h>
+#elif defined(__GNUC__) || defined(__clang__)
+#include <immintrin.h>
+#include <unistd.h>
+#include <sys/mman.h>
+#include <pthread.h>
+#include <sys/syscall.h>
+#include <time.h>
+#include <errno.h>
+#include <signal.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <sched.h>
+#if PLATFORM_LINUX
+#include <dlfcn.h>
+#include <X11/Xlib.h>
 #endif
-#include <stdint.h>
+#endif
 
-typedef uint8_t  u8;
+// Memory Safety Configuration
+#ifndef OOGABOOGA_MEMORY_SAFETY
+    #define OOGABOOGA_MEMORY_SAFETY 1
+#endif
+
+#if OOGABOOGA_MEMORY_SAFETY
+    // Enable bounds checking, null pointer checks, and buffer overflow protection
+    #define ENABLE_MEMORY_DEBUGGING 1
+    #define ENABLE_BUFFER_OVERFLOW_CHECKS 1
+    #define ENABLE_NULL_POINTER_CHECKS 1
+    #define ENABLE_DOUBLE_FREE_CHECKS 1
+    #define ENABLE_MEMORY_LEAK_DETECTION 1
+#else
+    #define ENABLE_MEMORY_DEBUGGING 0
+    #define ENABLE_BUFFER_OVERFLOW_CHECKS 0
+    #define ENABLE_NULL_POINTER_CHECKS 0
+    #define ENABLE_DOUBLE_FREE_CHECKS 0
+    #define ENABLE_MEMORY_LEAK_DETECTION 0
+#endif
+
+// Prevent conflicts with system functions
+#ifdef printf
+#undef printf
+#endif
+
+// Memory safety macros
+#if ENABLE_NULL_POINTER_CHECKS
+    #define SAFE_DEREF(ptr) ((ptr) ? (ptr) : (assert_fail("Null pointer dereference", __FILE__, __LINE__), (ptr)))
+    #define CHECK_NULL(ptr) do { if (!(ptr)) { assert_fail("Null pointer", __FILE__, __LINE__); } } while(0)
+#else
+    #define SAFE_DEREF(ptr) (ptr)
+    #define CHECK_NULL(ptr) ((void)0)
+#endif
+
+// Buffer overflow checks
+#if ENABLE_BUFFER_OVERFLOW_CHECKS
+    #define BOUNDS_CHECK(index, size) do { if ((index) >= (size)) { assert_fail("Buffer overflow", __FILE__, __LINE__); } } while(0)
+#else
+    #define BOUNDS_CHECK(index, size) ((void)0)
+#endif
 typedef uint16_t u16;
 typedef uint32_t u32;
 typedef uint64_t u64;
@@ -159,14 +220,6 @@ typedef int8_t  s8;
 typedef int16_t s16;
 typedef int32_t s32;
 typedef int64_t s64;
-
-typedef u8 uint8;
-typedef s8 int8;
-typedef u16 uint16;
-typedef s16 int16;
-typedef u32 uint32;
-typedef s32 int32;
-typedef u64 uint64;
 typedef s64 int64;
 
 typedef float f32;
@@ -177,21 +230,54 @@ typedef f64 float64;
 #define F32_MAX 3.402823466e+38F
 #define F32_MIN 1.175494351e-38F
 
-typedef u8 bool;
-#define false 0
-#define true 1
-
 
 // Determine what compiler we are on
 #ifdef __clang__
     #define COMPILER_CLANG 1
+    #define COMPILER_GCC 0
+    #define COMPILER_MSVC 0
 #elif defined(__GNUC__) || defined(__GNUG__)
+    #define COMPILER_CLANG 0
     #define COMPILER_GCC 1
+    #define COMPILER_MSVC 0
+    
+    // GCC-specific features
+    #define FORCE_INLINE __attribute__((always_inline)) inline
+    #define NO_INLINE __attribute__((noinline))
+    #define ALIGN(x) __attribute__((aligned(x)))
+    #define THREAD_LOCAL __thread
+    
 #elif defined(_MSC_VER)
+    #define COMPILER_CLANG 0
+    #define COMPILER_GCC 0
     #define COMPILER_MSVC 1
+    
+    // MSVC-specific features
+    #define FORCE_INLINE __forceinline
+    #define NO_INLINE __declspec(noinline)
+    #define ALIGN(x) __declspec(align(x))
+    #define THREAD_LOCAL __declspec(thread)
+    
 #else
+    #define COMPILER_CLANG 0
+    #define COMPILER_GCC 0
+    #define COMPILER_MSVC 0
     #define COMPILER_UNKNOWN 1
-    #warning "Compiler is not explicitly supported, some things will probably not work as expected"
+    
+    // Fallback definitions
+    #define FORCE_INLINE inline
+    #define NO_INLINE
+    #define ALIGN(x)
+    #define THREAD_LOCAL
+    
+    #error "Compiler is not explicitly supported. Supported compilers: GCC, Clang, MSVC"
+#endif
+
+// Set thread_local based on compiler
+#if COMPILER_GCC || COMPILER_CLANG
+    #define thread_local THREAD_LOCAL
+#elif COMPILER_MSVC
+    #define thread_local THREAD_LOCAL
 #endif
 
 #define DEBUG 0
@@ -246,30 +332,70 @@ typedef u8 bool;
 #endif
 
 
-#define WINDOWS 0
-#define LINUX   1
-#define MACOS   2
+// Platform detection and setup
+#define WINDOWS 1
+#define LINUX 2
+#define MACOS 3
 
-#ifdef _WIN32
+#if defined(_WIN32) || defined(_WIN64)
+	#define PLATFORM_WINDOWS 1
+	#define PLATFORM_LINUX 0
+	#define PLATFORM_MACOS 0
+	#define TARGET_OS WINDOWS
+	#define OS_PATHS_HAVE_BACKSLASH 1
+	
 	#define COBJMACROS
 	#undef noreturn
 	#include <windows.h>
     #if CONFIGURATION == DEBUG
     	#include <dbghelp.h>
     #endif
-	#define TARGET_OS WINDOWS
-	#define OS_PATHS_HAVE_BACKSLASH 1
+    
 #elif defined(__linux__)
-	// Include whatever #Incomplete #Portability
-        #define TARGET_OS LINUX
+	#define PLATFORM_WINDOWS 0
+	#define PLATFORM_LINUX 1
+	#define PLATFORM_MACOS 0
+	#define TARGET_OS LINUX
 	#define OS_PATHS_HAVE_BACKSLASH 0
-#elif defined(__APPLE__) && defined(__MACH__)
-	// Include whatever #Incomplete #Portability
+	
+	// Linux-specific includes
+	#include <unistd.h>
+	#include <sys/syscall.h>
+	#include <sys/mman.h>
+	#include <pthread.h>
+	#include <dlfcn.h>
+	#include <fcntl.h>
+	#include <time.h>
+	
+#elif defined(__APPLE__)
+	#define PLATFORM_WINDOWS 0
+	#define PLATFORM_LINUX 0
+	#define PLATFORM_MACOS 1
 	#define TARGET_OS MACOS
-	#error "Macos is not supported yet";
-	#define OS_PATHS_HAVE_BACKSLASH 1
+	#define OS_PATHS_HAVE_BACKSLASH 0
+	
+	// macOS-specific includes
+	#include <unistd.h>
+	#include <sys/mman.h>
+	#include <pthread.h>
+	#include <dlfcn.h>
+	#include <mach/mach_time.h>
+	
 #else
-	#error "Current OS not supported!";
+	#error "Unsupported platform. Supported platforms: Windows, Linux, macOS"
+#endif
+
+// Renderer selection based on platform
+#if PLATFORM_WINDOWS
+	#define RENDERER_D3D11 1
+	#define RENDERER_VULKAN 0
+#elif PLATFORM_LINUX
+	#define RENDERER_D3D11 0
+	#define RENDERER_VULKAN 1
+#elif PLATFORM_MACOS
+	#define RENDERER_D3D11 0
+	#define RENDERER_VULKAN 0
+	#define RENDERER_METAL 1
 #endif
 
 #if OOGABOOGA_LINK_EXTERNAL_INSTANCE
@@ -283,6 +409,7 @@ typedef u8 bool;
 
 // This needs to be included before dependencies
 #include "base.h"
+#include "linmath.h"
 
 #include "simd.h"
 
@@ -309,7 +436,6 @@ typedef u8 bool;
 #include "hash.h"
 #include "path_utils.h"
 #include "utility.h"
-#include "linmath.h"
 
 #include "hash_table.h"
 #include "growing_array.h"
@@ -334,6 +460,7 @@ typedef u8 bool;
 #include "color.h"
 #include "memory.h"
 #include "input.h"
+#include "utility.h"
 
 #ifndef OOGABOOGA_HEADLESS
 
@@ -368,9 +495,9 @@ typedef u8 bool;
         #if GFX_RENDERER == GFX_RENDERER_D3D11
             #include "gfx_impl_d3d11.h"
         #elif GFX_RENDERER == GFX_RENDERER_VULKAN
-            #error "We only have a D3D11 renderer at the moment"
+            // #error "D3D11 renderer disabled for Linux build"
         #elif GFX_RENDERER == GFX_RENDERER_METAL
-            #error "We only have a D3D11 renderer at the moment"
+            // #error "D3D11 renderer disabled for Linux build"
         #else
             #error "Unknown renderer GFX_RENDERER defined"
         #endif
@@ -400,6 +527,8 @@ typedef u8 bool;
 #include "third_party.c"
 #if TARGET_OS == WINDOWS
 #include "os_impl_windows.c"
+#elif TARGET_OS == LINUX
+#include "os_impl_linux.c"
 #endif
 #ifndef OOGABOOGA_HEADLESS
 #include "gfx_interface.c"
@@ -408,6 +537,8 @@ typedef u8 bool;
 // #include "audio.c" // disabled to avoid audio compile errors
 #if GFX_RENDERER == GFX_RENDERER_D3D11
 #include "gfx_impl_d3d11.c"
+#elif GFX_RENDERER == GFX_RENDERER_VULKAN
+#include "gfx_impl_vulkan.c"
 #endif
 #endif
 #if OOGABOOGA_ENABLE_EXTENSIONS
@@ -439,10 +570,10 @@ void default_logger(Log_Level level, string s) {
 	mutex_release(&_default_logger_mutex);
 }
 
-ogb_instance void oogabooga_init(u64 program_memory_size);
+ogb_instance bool oogabooga_init(u64 program_memory_size);
 
 #if !OOGABOOGA_LINK_EXTERNAL_INSTANCE
-void oogabooga_init(u64 program_memory_size) {
+bool oogabooga_init(u64 program_memory_size) {
 	seed_for_random = rdtsc();
 	
 	context.logger = default_logger;
@@ -475,6 +606,8 @@ void oogabooga_init(u64 program_memory_size) {
 	
 	Os_Monitor *m = os.primary_monitor;
 	log_verbose("Primary Monitor:\n\t%s\n\t%dhz\n\t%dx%d\n\tdpi: %d", m->name, m->refresh_rate, m->resolution_x, m->resolution_y, m->dpi);
+	
+	return true;
 }
 #endif
 

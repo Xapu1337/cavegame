@@ -1,52 +1,5 @@
 
-/*
-	These are the 4 different vector types that exist:
-*/
-typedef union Vector2f32 Vector2f32;
-typedef union Vector3f32 Vector3f32;
-typedef union Vector4f32 Vector4f32;
-typedef union Vector2f64 Vector2f64;
-typedef union Vector3f64 Vector3f64;
-typedef union Vector4f64 Vector4f64;
-typedef union Vector2s32 Vector2s32;
-typedef union Vector3s32 Vector3s32;
-typedef union Vector4s32 Vector4s32;
-typedef union Vector2s64 Vector2s64;
-typedef union Vector3s64 Vector3s64;
-typedef union Vector4s64 Vector4s64;
-typedef union Quaternion Quaternion;
-
-/*
-	There are abbreviated versions for f32 and s32
-*/
-typedef Vector2f32 Vector2;
-typedef Vector3f32 Vector3;
-typedef Vector4f32 Vector4;
-typedef Vector2s32 Vector2i;
-typedef Vector3s32 Vector3i;
-typedef Vector4s32 Vector4i;
-
-/*
-	Functions for Vector2 and Vector2i also has abbreviated macros:
-*/
-
-#define v2_expand(v) (v).x, (v).y
-#define v3_expand(v) (v).x, (v).y, (v).z
-#define v4_expand(v) (v).x, (v).y, (v).z, (v).w
-
-#define v2 v2f32
-#define v3 v3f32
-#define v4 v4f32
-#define v2i v2s32
-#define v3i v3s32
-#define v4i v4s32
-
-#define v2_scalar v2f32_scalar
-#define v3_scalar v3f32_scalar
-#define v4_scalar v4f32_scalar
-#define v2i_scalar v2s32_scalar
-#define v3i_scalar v3s32_scalar
-#define v4i_scalar v4s32_scalar
+// linmath.c implementation
 
 #define v2_one  v2f32_one
 #define v3_one  v3f32_one
@@ -62,51 +15,51 @@ typedef Vector4s32 Vector4i;
 #define v3i_zero v3s32_zero
 #define v4i_zero v4s32_zero
 
-#define v2_add  v2f32_add
-#define v3_add  v3f32_add
-#define v4_add  v4f32_add
+#define V2Add  V2Add
+#define V3Add  V3Add
+#define V4Add  V4Add
 #define v2i_add v2s32_add
 #define v3i_add v3s32_add
 #define v4i_add v4s32_add
 
-#define v2_sub  v2f32_sub
-#define v3_sub  v3f32_sub
-#define v4_sub  v4f32_sub
+#define V2Sub  V2Sub
+#define V3Sub  V3Sub
+#define V4Sub  V4Sub
 #define v2i_sub v2s32_sub
 #define v3i_sub v3s32_sub
 #define v4i_sub v4s32_sub
 
-#define v2_mul  v2f32_mul
-#define v3_mul  v3f32_mul
-#define v4_mul  v4f32_mul
+#define V2Mul  V2Mul
+#define V3Mul  V3Mul
+#define V4Mul  V4Mul
 #define v2i_mul v2s32_mul
 #define v3i_mul v3s32_mul
 #define v4i_mul v4s32_mul
 
-#define v2_mulf  v2f32_mulf32
-#define v3_mulf  v3f32_mulf32
-#define v4_mulf  v4f32_mulf32
+#define V2Mulf  V2Mulf
+#define V3Mulf  V3Mulf
+#define V4Mulf  V4Mulf
 #define v2i_muli v2s32_muls32
 #define v3i_muli v3s32_muls32
 #define v4i_muli v4s32_muls32
 
-#define v2_div  v2f32_div
-#define v3_div  v3f32_div
-#define v4_div  v4f32_div
+#define V2Div  V2Div
+#define V3Div  V3Div
+#define V4Div  V4Div
 #define v2i_div v2s32_div
 #define v3i_div v3s32_div
 #define v4i_div v4s32_div
 
-#define v2_divf  v2f32_divf32
-#define v3_divf  v3f32_divf32
-#define v4_divf  v4f32_divf32
+#define V2Divf  V2Divf
+#define V3Divf  V3Divf
+#define V4Divf  V4Divf
 #define v2i_divi v2s32_divs32
 #define v3i_divi v3s32_divs32
 #define v4i_divi v4s32_divs32
 
-#define v2_length  v2f32_length
-#define v3_length  v3f32_length
-#define v4_length  v4f32_length
+#define V2Length  v2f32_length
+#define V3Length  v3f32_length
+#define V4Length  v4f32_length
 #define v2i_length v2s32_length
 #define v3i_length v3s32_length
 #define v4i_length v4s32_length
@@ -139,22 +92,22 @@ typedef Vector4s32 Vector4i;
 #define v3i_smerp v3s32_smerp
 #define v4i_smerp v4s32_smerp
 
-#define v2_normalize  v2f32_normalize
-#define v3_normalize  v3f32_normalize
-#define v4_normalize  v4f32_normalize
+#define V2Normalize  V2Normalize
+#define V3Normalize  v3f32_normalize
+#define V4Normalize  v4f32_normalize
 #define v2i_normalize s2f32_normalize
 #define v3i_normalize s3f32_normalize
 #define v4i_normalize s4f32_normalize
 
-#define v2_dot  v2f32_dot
-#define v3_dot  v3f32_dot
-#define v4_dot  v4f32_dot
+#define V2Dot  v2f32_dot
+#define V3Dot  v3f32_dot
+#define V4Dot  v4f32_dot
 #define v2i_dot v2s32_dot
 #define v3i_dot v3s32_dot
 #define v4i_dot v4s32_dot
 
 #define v2_cross  v2f32_cross
-#define v3_cross  v3f32_cross
+#define V3Cross  v3f32_cross
 #define v2i_cross v2s32_cross
 #define v3i_cross v3s32_cross
 
@@ -168,106 +121,12 @@ typedef Vector4s32 Vector4i;
 
 ///
 ///
-// Vectors
+// Vectors - Function implementations
 ///
 
-typedef union Vector2f32 {
-	float32 data[2];
-	struct {float32  x, y;};
-} Vector2f32;
-typedef union Vector3f32 {
-	float32 data[3];
-	struct  {float32  x, y, z;};
-	struct  {float32  r, g, b;};
-	struct  {Vector2f32  xy;};
-	struct  {float32  _x; Vector2f32 yz;};
-} Vector3f32;
-typedef union Vector4f32 {
-	float32 data[4];
-	struct {float32  x, y, z, w;};
-	struct {Vector2f32  xy; Vector2f32 zw;};
-	struct {float32  x1, y1, x2, y2;};
-	struct {float32  r, g, b, a;};
-	struct {float32  left, bottom, right, top;};
-	struct {Vector3f32  xyz;};
-	struct {float32  _x; Vector3f32 yzw;};
-} Vector4f32;
-
-typedef union Vector2f64 {
-	float64 data[2];
-	struct {float64  x, y;};
-} Vector2f64;
-typedef union Vector3f64 {
-	float64 data[3];
-	struct  {float64  x, y, z;};
-	struct  {float64  r, g, b;};
-	struct  {Vector2f64  xy;};
-	struct  {float64  _x; Vector2f64 yz;};
-} Vector3f64;
-typedef union Vector4f64 {
-        float64 data[4];
-        struct {float64  x, y, z, w;};
-        struct {Vector2f64  xy; Vector2f64 zw;};
-        struct {float64  x1, y1, x2, y2;};
-        struct {float64  r, g, b, a;};
-        struct {float64  left, bottom, right, top;};
-        struct {Vector3f64  xyz;};
-        struct {float64  _x; Vector3f64 yzw;};
-} Vector4f64;
-
-typedef union Quaternion {
-        float32 data[4];
-        struct {float32 x, y, z, w;};
-        struct {Vector3f32 xyz; float32 w_;};
-} Quaternion;
-
-typedef union Vector2s32 {
-	s32 data[2];
-	struct {s32  x, y;};
-} Vector2s32;
-typedef union Vector3s32 {
-	s32 data[3];
-	struct  {s32  x, y, z;};
-	struct  {s32  r, g, b;};
-	struct  {Vector2s32  xy;};
-	struct  {s32  _x; Vector2s32 yz;};
-} Vector3s32;
-typedef union Vector4s32 {
-	s32 data[4];
-	struct {s32  x, y, z, w;};
-	struct {Vector2s32  xy; Vector2s32 zw;};
-	struct {s32  x1, y1, x2, y2;};
-	struct {s32  r, g, b, a;};
-	struct {s32  left, bottom, right, top;};
-	struct {Vector3s32  xyz;};
-	struct {s32  _x; Vector3s32 yzw;};
-} Vector4s32;
-
-typedef union Vector2s64 {
-	s64 data[2];
-	struct {s64  x, y;};
-} Vector2s64;
-typedef union Vector3s64 {
-	s64 data[3];
-	struct  {s64  x, y, z;};
-	struct  {s64  r, g, b;};
-	struct  {Vector2s64  xy;};
-	struct  {s64  _x; Vector2s64 yz;};
-} Vector3s64;
-typedef union Vector4s64 {
-	s64 data[4];
-	struct {s64  x, y, z, w;};
-	struct {Vector2s64  xy; Vector2s64 zw;};
-	struct {s64  x1, y1, x2, y2;};
-	struct {s64  r, g, b, a;};
-	struct {s64  left, bottom, right, top;};
-	struct {Vector3s64  xyz;};
-	struct {s64  _x; Vector3s64 yzw;};
-} Vector4s64;
-
-inline Vector2f32 v2f32(float32 x, float32 y)                       { return (Vector2f32){x, y}; }
-inline Vector3f32 v3f32(float32 x, float32 y, float32 z)            { return (Vector3f32){x, y, z}; }
-inline Vector4f32 v4f32(float32 x, float32 y, float32 z, float32 w) { return (Vector4f32){x, y, z, w}; }
+inline Vector2f32 V2(float32 x, float32 y)                       { return (Vector2f32){x, y}; }
+inline Vector3f32 V3(float32 x, float32 y, float32 z)            { return (Vector3f32){x, y, z}; }
+inline Vector4f32 V4(float32 x, float32 y, float32 z, float32 w) { return (Vector4f32){x, y, z, w}; }
 inline Vector2f64 v2f64(float64 x, float64 y)                       { return (Vector2f64){x, y}; }
 inline Vector3f64 v3f64(float64 x, float64 y, float64 z)            { return (Vector3f64){x, y, z}; }
 inline Vector4f64 v4f64(float64 x, float64 y, float64 z, float64 w) { return (Vector4f64){x, y, z, w}; }
@@ -317,9 +176,9 @@ const Vector2s64 v2s64_zero = {0, 0};
 const Vector3s64 v3s64_zero = {0, 0, 0};
 const Vector4s64 v4s64_zero = {0, 0, 0, 0};
 
-inline Vector2f32 v2f32_add(Vector2f32 a, Vector2f32 b)  { return v2f32(a.x+b.x, a.y+b.y); }
-inline Vector3f32 v3f32_add(Vector3f32 a, Vector3f32 b)  { return v3f32(a.x+b.x, a.y+b.y, a.z+b.z); }
-inline Vector4f32 v4f32_add(Vector4f32 a, Vector4f32 b)  { return v4f32(a.x+b.x, a.y+b.y, a.z+b.z, a.w+b.w); }
+inline Vector2f32 V2Add(Vector2f32 a, Vector2f32 b)  { return V2(a.x+b.x, a.y+b.y); }
+inline Vector3f32 V3Add(Vector3f32 a, Vector3f32 b)  { return V3(a.x+b.x, a.y+b.y, a.z+b.z); }
+inline Vector4f32 V4Add(Vector4f32 a, Vector4f32 b)  { return V4(a.x+b.x, a.y+b.y, a.z+b.z, a.w+b.w); }
 inline Vector2f64 v2f64_add(Vector2f64 a, Vector2f64 b)  { return v2f64(a.x+b.x, a.y+b.y); }
 inline Vector3f64 v3f64_add(Vector3f64 a, Vector3f64 b)  { return v3f64(a.x+b.x, a.y+b.y, a.z+b.z); }
 inline Vector4f64 v4f64_add(Vector4f64 a, Vector4f64 b)  { return v4f64(a.x+b.x, a.y+b.y, a.z+b.z, a.w+b.w); }
@@ -330,9 +189,9 @@ inline Vector2s64 v2s64_add(Vector2s64 a, Vector2s64 b)  { return v2s64(a.x+b.x,
 inline Vector3s64 v3s64_add(Vector3s64 a, Vector3s64 b)  { return v3s64(a.x+b.x, a.y+b.y, a.z+b.z); }
 inline Vector4s64 v4s64_add(Vector4s64 a, Vector4s64 b)  { return v4s64(a.x+b.x, a.y+b.y, a.z+b.z, a.w+b.w); }
 
-inline Vector2f32 v2f32_sub(Vector2f32 a, Vector2f32 b)  { return v2f32(a.x-b.x, a.y-b.y); }
-inline Vector3f32 v3f32_sub(Vector3f32 a, Vector3f32 b)  { return v3f32(a.x-b.x, a.y-b.y, a.z-b.z); }
-inline Vector4f32 v4f32_sub(Vector4f32 a, Vector4f32 b)  { return v4f32(a.x-b.x, a.y-b.y, a.z-b.z, a.w-b.w); }
+inline Vector2f32 V2Sub(Vector2f32 a, Vector2f32 b)  { return V2(a.x-b.x, a.y-b.y); }
+inline Vector3f32 V3Sub(Vector3f32 a, Vector3f32 b)  { return V3(a.x-b.x, a.y-b.y, a.z-b.z); }
+inline Vector4f32 V4Sub(Vector4f32 a, Vector4f32 b)  { return V4(a.x-b.x, a.y-b.y, a.z-b.z, a.w-b.w); }
 inline Vector2f64 v2f64_sub(Vector2f64 a, Vector2f64 b)  { return v2f64(a.x-b.x, a.y-b.y); }
 inline Vector3f64 v3f64_sub(Vector3f64 a, Vector3f64 b)  { return v3f64(a.x-b.x, a.y-b.y, a.z-b.z); }
 inline Vector4f64 v4f64_sub(Vector4f64 a, Vector4f64 b)  { return v4f64(a.x-b.x, a.y-b.y, a.z-b.z, a.w-b.w); }
@@ -343,9 +202,9 @@ inline Vector2s64 v2s64_sub(Vector2s64 a, Vector2s64 b)  { return v2s64(a.x-b.x,
 inline Vector3s64 v3s64_sub(Vector3s64 a, Vector3s64 b)  { return v3s64(a.x-b.x, a.y-b.y, a.z-b.z); }
 inline Vector4s64 v4s64_sub(Vector4s64 a, Vector4s64 b)  { return v4s64(a.x-b.x, a.y-b.y, a.z-b.z, a.w-b.w); }
 
-inline Vector2f32 v2f32_mul(Vector2f32 a, Vector2f32 b)  { return v2f32(a.x*b.x, a.y*b.y); }
-inline Vector3f32 v3f32_mul(Vector3f32 a, Vector3f32 b)  { return v3f32(a.x*b.x, a.y*b.y, a.z*b.z); }
-inline Vector4f32 v4f32_mul(Vector4f32 a, Vector4f32 b)  { return v4f32(a.x*b.x, a.y*b.y, a.z*b.z, a.w*b.w); }
+inline Vector2f32 V2Mul(Vector2f32 a, Vector2f32 b)  { return V2(a.x*b.x, a.y*b.y); }
+inline Vector3f32 V3Mul(Vector3f32 a, Vector3f32 b)  { return V3(a.x*b.x, a.y*b.y, a.z*b.z); }
+inline Vector4f32 V4Mul(Vector4f32 a, Vector4f32 b)  { return V4(a.x*b.x, a.y*b.y, a.z*b.z, a.w*b.w); }
 inline Vector2f64 v2f64_mul(Vector2f64 a, Vector2f64 b)  { return v2f64(a.x*b.x, a.y*b.y); }
 inline Vector3f64 v3f64_mul(Vector3f64 a, Vector3f64 b)  { return v3f64(a.x*b.x, a.y*b.y, a.z*b.z); }
 inline Vector4f64 v4f64_mul(Vector4f64 a, Vector4f64 b)  { return v4f64(a.x*b.x, a.y*b.y, a.z*b.z, a.w*b.w); }
@@ -356,9 +215,9 @@ inline Vector2s64 v2s64_mul(Vector2s64 a, Vector2s64 b)  { return v2s64(a.x*b.x,
 inline Vector3s64 v3s64_mul(Vector3s64 a, Vector3s64 b)  { return v3s64(a.x*b.x, a.y*b.y, a.z*b.z); }
 inline Vector4s64 v4s64_mul(Vector4s64 a, Vector4s64 b)  { return v4s64(a.x*b.x, a.y*b.y, a.z*b.z, a.w*b.w); }
 
-inline Vector2f32 v2f32_mulf32(Vector2f32 a, float32 s) { return v2f32_mul(a, v2f32(s, s)); }
-inline Vector3f32 v3f32_mulf32(Vector3f32 a, float32 s) { return v3f32_mul(a, v3f32(s, s, s)); }
-inline Vector4f32 v4f32_mulf32(Vector4f32 a, float32 s) { return v4f32_mul(a, v4f32(s, s, s, s)); }
+inline Vector2f32 V2Mulf(Vector2f32 a, float32 s) { return V2Mul(a, V2(s, s)); }
+inline Vector3f32 V3Mulf(Vector3f32 a, float32 s) { return V3Mul(a, V3(s, s, s)); }
+inline Vector4f32 V4Mulf(Vector4f32 a, float32 s) { return V4Mul(a, V4(s, s, s, s)); }
 inline Vector2f64 v2f64_mulf64(Vector2f64 a, float64 s) { return v2f64_mul(a, v2f64(s, s)); }
 inline Vector3f64 v3f64_mulf64(Vector3f64 a, float64 s) { return v3f64_mul(a, v3f64(s, s, s)); }
 inline Vector4f64 v4f64_mulf64(Vector4f64 a, float64 s) { return v4f64_mul(a, v4f64(s, s, s, s)); }
@@ -369,9 +228,9 @@ inline Vector2s64 v2s64_muls64(Vector2s64 a, s64     s) { return v2s64_mul(a, v2
 inline Vector3s64 v3s64_muls64(Vector3s64 a, s64     s) { return v3s64_mul(a, v3s64(s, s, s)); }
 inline Vector4s64 v4s64_muls64(Vector4s64 a, s64     s) { return v4s64_mul(a, v4s64(s, s, s, s)); }
 
-inline Vector2f32 v2f32_div(Vector2f32 a, Vector2f32 b)  { return v2f32(a.x/b.x, a.y/b.y); }
-inline Vector3f32 v3f32_div(Vector3f32 a, Vector3f32 b)  { return v3f32(a.x/b.x, a.y/b.y, a.z/b.z); }
-inline Vector4f32 v4f32_div(Vector4f32 a, Vector4f32 b)  { return v4f32(a.x/b.x, a.y/b.y, a.z/b.z, a.w/b.w); }
+inline Vector2f32 V2Div(Vector2f32 a, Vector2f32 b)  { return V2(a.x/b.x, a.y/b.y); }
+inline Vector3f32 V3Div(Vector3f32 a, Vector3f32 b)  { return V3(a.x/b.x, a.y/b.y, a.z/b.z); }
+inline Vector4f32 V4Div(Vector4f32 a, Vector4f32 b)  { return V4(a.x/b.x, a.y/b.y, a.z/b.z, a.w/b.w); }
 inline Vector2f64 v2f64_div(Vector2f64 a, Vector2f64 b)  { return v2f64(a.x/b.x, a.y/b.y); }
 inline Vector3f64 v3f64_div(Vector3f64 a, Vector3f64 b)  { return v3f64(a.x/b.x, a.y/b.y, a.z/b.z); }
 inline Vector4f64 v4f64_div(Vector4f64 a, Vector4f64 b)  { return v4f64(a.x/b.x, a.y/b.y, a.z/b.z, a.w/b.w); }
@@ -382,9 +241,9 @@ inline Vector2s64 v2s64_div(Vector2s64 a, Vector2s64 b)  { return v2s64(a.x/b.x,
 inline Vector3s64 v3s64_div(Vector3s64 a, Vector3s64 b)  { return v3s64(a.x/b.x, a.y/b.y, a.z/b.z); }
 inline Vector4s64 v4s64_div(Vector4s64 a, Vector4s64 b)  { return v4s64(a.x/b.x, a.y/b.y, a.z/b.z, a.w/b.w); }
 
-inline Vector2f32 v2f32_divf32(Vector2f32 a, float32 s) { return v2f32_div(a, v2f32(s, s)); }
-inline Vector3f32 v3f32_divf32(Vector3f32 a, float32 s) { return v3f32_div(a, v3f32(s, s, s)); }
-inline Vector4f32 v4f32_divf32(Vector4f32 a, float32 s) { return v4f32_div(a, v4f32(s, s, s, s)); }
+inline Vector2f32 V2Divf(Vector2f32 a, float32 s) { return V2Div(a, V2(s, s)); }
+inline Vector3f32 V3Divf(Vector3f32 a, float32 s) { return V3Div(a, V3(s, s, s)); }
+inline Vector4f32 V4Divf(Vector4f32 a, float32 s) { return V4Div(a, V4(s, s, s, s)); }
 inline Vector2f64 v2f64_divf64(Vector2f64 a, float64 s) { return v2f64_div(a, v2f64(s, s)); }
 inline Vector3f64 v3f64_divf64(Vector3f64 a, float64 s) { return v3f64_div(a, v3f64(s, s, s)); }
 inline Vector4f64 v4f64_divf64(Vector4f64 a, float64 s) { return v4f64_div(a, v4f64(s, s, s, s)); }
@@ -421,9 +280,9 @@ inline float64 v2s64_average(Vector2s64 a) { return (a.x+a.y)/2.0; }
 inline float64 v3s64_average(Vector3s64 a) { return (a.x + a.y + a.z) / 3.0; }
 inline float64 v4s64_average(Vector4s64 a) { return (a.x + a.y + a.z + a.w) / 4.0; }
 
-inline Vector2f32 v2f32_abs(Vector2f32 a) { return v2f32(fabsf(a.x), fabsf(a.y)); }
-inline Vector3f32 v3f32_abs(Vector3f32 a) { return v3f32(fabsf(a.x), fabsf(a.y), fabsf(a.z)); }
-inline Vector4f32 v4f32_abs(Vector4f32 a) { return v4f32(fabsf(a.x), fabsf(a.y), fabsf(a.z), fabsf(a.w)); }
+inline Vector2f32 v2f32_abs(Vector2f32 a) { return V2(fabsf(a.x), fabsf(a.y)); }
+inline Vector3f32 v3f32_abs(Vector3f32 a) { return V3(fabsf(a.x), fabsf(a.y), fabsf(a.z)); }
+inline Vector4f32 v4f32_abs(Vector4f32 a) { return V4(fabsf(a.x), fabsf(a.y), fabsf(a.z), fabsf(a.w)); }
 inline Vector2f64 v2f64_abs(Vector2f64 a) { return v2f64(fabs(a.x), fabs(a.y)); }
 inline Vector3f64 v3f64_abs(Vector3f64 a) { return v3f64(fabs(a.x), fabs(a.y), fabs(a.z)); }
 inline Vector4f64 v4f64_abs(Vector4f64 a) { return v4f64(fabs(a.x), fabs(a.y), fabs(a.z), fabs(a.w)); }
@@ -434,9 +293,9 @@ inline Vector2s64 v2s64_abs(Vector2s64 a) { return v2s64(llabs(a.x), llabs(a.y))
 inline Vector3s64 v3s64_abs(Vector3s64 a) { return v3s64(llabs(a.x), llabs(a.y), llabs(a.z)); }
 inline Vector4s64 v4s64_abs(Vector4s64 a) { return v4s64(llabs(a.x), llabs(a.y), llabs(a.z), llabs(a.w)); }
 
-inline Vector2f32 v2f32_lerp(Vector2f32 a, Vector2f32 b, float32 t)  { return v2f32(lerpf32(a.x, b.x, t), lerpf32(a.y, b.y, t)); }
-inline Vector3f32 v3f32_lerp(Vector3f32 a, Vector3f32 b, float32 t)  { return v3f32(lerpf32(a.x, b.x, t), lerpf32(a.y, b.y, t), lerpf32(a.z, b.z, t)); }
-inline Vector4f32 v4f32_lerp(Vector4f32 a, Vector4f32 b, float32 t)  { return v4f32(lerpf32(a.x, b.x, t), lerpf32(a.y, b.y, t), lerpf32(a.z, b.z, t), lerpf32(a.w, b.w, t)); }
+inline Vector2f32 v2f32_lerp(Vector2f32 a, Vector2f32 b, float32 t)  { return V2(lerpf32(a.x, b.x, t), lerpf32(a.y, b.y, t)); }
+inline Vector3f32 v3f32_lerp(Vector3f32 a, Vector3f32 b, float32 t)  { return V3(lerpf32(a.x, b.x, t), lerpf32(a.y, b.y, t), lerpf32(a.z, b.z, t)); }
+inline Vector4f32 v4f32_lerp(Vector4f32 a, Vector4f32 b, float32 t)  { return V4(lerpf32(a.x, b.x, t), lerpf32(a.y, b.y, t), lerpf32(a.z, b.z, t), lerpf32(a.w, b.w, t)); }
 inline Vector2f64 v2f64_lerp(Vector2f64 a, Vector2f64 b, float64 t)  { return v2f64(lerpf64(a.x, b.x, t), lerpf64(a.y, b.y, t)); }
 inline Vector3f64 v3f64_lerp(Vector3f64 a, Vector3f64 b, float64 t)  { return v3f64(lerpf64(a.x, b.x, t), lerpf64(a.y, b.y, t), lerpf64(a.z, b.z, t)); }
 inline Vector4f64 v4f64_lerp(Vector4f64 a, Vector4f64 b, float64 t)  { return v4f64(lerpf64(a.x, b.x, t), lerpf64(a.y, b.y, t), lerpf64(a.z, b.z, t), lerpf64(a.w, b.w, t)); }
@@ -447,9 +306,9 @@ inline Vector2s64 v2s64_lerp(Vector2s64 a, Vector2s64 b, float64 t)  { return v2
 inline Vector3s64 v3s64_lerp(Vector3s64 a, Vector3s64 b, float64 t)  { return v3s64(lerpi(a.x, b.x, t), lerpi(a.y, b.y, t), lerpi(a.z, b.z, t)); }
 inline Vector4s64 v4s64_lerp(Vector4s64 a, Vector4s64 b, float64 t)  { return v4s64(lerpi(a.x, b.x, t), lerpi(a.y, b.y, t), lerpi(a.z, b.z, t), lerpi(a.w, b.w, t)); }
 
-inline Vector2f32 v2f32_smerp(Vector2f32 a, Vector2f32 b, float32 t)  { return v2f32(smerpf32(a.x, b.x, t), smerpf32(a.y, b.y, t)); }
-inline Vector3f32 v3f32_smerp(Vector3f32 a, Vector3f32 b, float32 t)  { return v3f32(smerpf32(a.x, b.x, t), smerpf32(a.y, b.y, t), smerpf32(a.z, b.z, t)); }
-inline Vector4f32 v4f32_smerp(Vector4f32 a, Vector4f32 b, float32 t)  { return v4f32(smerpf32(a.x, b.x, t), smerpf32(a.y, b.y, t), smerpf32(a.z, b.z, t), smerpf32(a.w, b.w, t)); }
+inline Vector2f32 v2f32_smerp(Vector2f32 a, Vector2f32 b, float32 t)  { return V2(smerpf32(a.x, b.x, t), smerpf32(a.y, b.y, t)); }
+inline Vector3f32 v3f32_smerp(Vector3f32 a, Vector3f32 b, float32 t)  { return V3(smerpf32(a.x, b.x, t), smerpf32(a.y, b.y, t), smerpf32(a.z, b.z, t)); }
+inline Vector4f32 v4f32_smerp(Vector4f32 a, Vector4f32 b, float32 t)  { return V4(smerpf32(a.x, b.x, t), smerpf32(a.y, b.y, t), smerpf32(a.z, b.z, t), smerpf32(a.w, b.w, t)); }
 inline Vector2f64 v2f64_smerp(Vector2f64 a, Vector2f64 b, float64 t)  { return v2f64(smerpf64(a.x, b.x, t), smerpf64(a.y, b.y, t)); }
 inline Vector3f64 v3f64_smerp(Vector3f64 a, Vector3f64 b, float64 t)  { return v3f64(smerpf64(a.x, b.x, t), smerpf64(a.y, b.y, t), smerpf64(a.z, b.z, t)); }
 inline Vector4f64 v4f64_smerp(Vector4f64 a, Vector4f64 b, float64 t)  { return v4f64(smerpf64(a.x, b.x, t), smerpf64(a.y, b.y, t), smerpf64(a.z, b.z, t), smerpf64(a.w, b.w, t)); }
@@ -460,9 +319,9 @@ inline Vector2s64 v2s64_smerp(Vector2s64 a, Vector2s64 b, float64 t)  { return v
 inline Vector3s64 v3s64_smerp(Vector3s64 a, Vector3s64 b, float64 t)  { return v3s64(smerpi(a.x, b.x, t),   smerpi(a.y, b.y, t), smerpi(a.z, b.z, t)); }
 inline Vector4s64 v4s64_smerp(Vector4s64 a, Vector4s64 b, float64 t)  { return v4s64(smerpi(a.x, b.x, t),   smerpi(a.y, b.y, t), smerpi(a.z, b.z, t), smerpi(a.w, b.w, t)); }
 
-inline Vector2f32 v2f32_normalize(Vector2f32 a) { return v2f32_length(a) == 0 ? v2f32_scalar(0) : v2f32_divf32(a, v2f32_length(a)); }
-inline Vector3f32 v3f32_normalize(Vector3f32 a) { return v3f32_length(a) == 0 ? v3f32_scalar(0) : v3f32_divf32(a, v3f32_length(a)); }
-inline Vector4f32 v4f32_normalize(Vector4f32 a) { return v4f32_length(a) == 0 ? v4f32_scalar(0) : v4f32_divf32(a, v4f32_length(a)); }
+inline Vector2f32 V2Normalize(Vector2f32 a) { return v2f32_length(a) == 0 ? v2f32_scalar(0) : V2Divf(a, v2f32_length(a)); }
+inline Vector3f32 v3f32_normalize(Vector3f32 a) { return v3f32_length(a) == 0 ? v3f32_scalar(0) : V3Divf(a, v3f32_length(a)); }
+inline Vector4f32 v4f32_normalize(Vector4f32 a) { return v4f32_length(a) == 0 ? v4f32_scalar(0) : V4Divf(a, v4f32_length(a)); }
 inline Vector2f64 v2f64_normalize(Vector2f64 a) { return v2f64_length(a) == 0 ? v2f64_scalar(0) : v2f64_divf64(a, v2f64_length(a)); }
 inline Vector3f64 v3f64_normalize(Vector3f64 a) { return v3f64_length(a) == 0 ? v3f64_scalar(0) : v3f64_divf64(a, v3f64_length(a)); }
 inline Vector4f64 v4f64_normalize(Vector4f64 a) { return v4f64_length(a) == 0 ? v4f64_scalar(0) : v4f64_divf64(a, v4f64_length(a)); }
@@ -487,7 +346,7 @@ inline float64 v4f64_dot(Vector4f64 a, Vector4f64 b) { return a.x * b.x + a.y * 
 // v4s64_dot is not reasonable
 
 inline float32 v2f32_cross(Vector2f32 a, Vector2f32 b) { return (a.x * b.y) - (a.y * b.x); }
-inline Vector3f32 v3f32_cross(Vector3f32 a, Vector3f32 b) { return v3f32((a.y*b.z)-(a.z*b.y), (a.z*b.x)-(a.x*b.z), (a.x*b.y)-(a.y*b.x)); }
+inline Vector3f32 v3f32_cross(Vector3f32 a, Vector3f32 b) { return V3((a.y*b.z)-(a.z*b.y), (a.z*b.x)-(a.x*b.z), (a.x*b.y)-(a.y*b.x)); }
 // v4f32_cross is not reasonable
 inline float64 v2f64_cross(Vector2f64 a, Vector2f64 b) { return (a.x * b.y) - (a.y * b.x); }
 inline Vector3f64 v3f64_cross(Vector3f64 a, Vector3f64 b) { return v3f64((a.y*b.z)-(a.z*b.y), (a.z*b.x)-(a.x*b.z), (a.x*b.y)-(a.y*b.x)); }
@@ -504,15 +363,15 @@ inline Vector3f64 v3f64_cross(Vector3f64 a, Vector3f64 b) { return v3f64((a.y*b.
 // Conversions
 //
 
-Vector2f32 v2f64_to_v2f32(Vector2f64 v) { return v2f32(v.x, v.y); }
-Vector2f32 v2s64_to_v2f32(Vector2s64 v) { return v2f32(v.x, v.y); }
-Vector2f32 v2s32_to_v2f32(Vector2s32 v) { return v2f32(v.x, v.y); }
-Vector3f32 v3f64_to_v3f32(Vector3f64 v) { return v3f32(v.x, v.y, v.z); }
-Vector3f32 v3s64_to_v3f32(Vector3s64 v) { return v3f32(v.x, v.y, v.z); }
-Vector3f32 v3s32_to_v3f32(Vector3s32 v) { return v3f32(v.x, v.y, v.z); }
-Vector4f32 v4f64_to_v4f32(Vector4f64 v) { return v4f32(v.x, v.y, v.z, v.w); }
-Vector4f32 v4s64_to_v4f32(Vector4s64 v) { return v4f32(v.x, v.y, v.z, v.w); }
-Vector4f32 v4s32_to_v4f32(Vector4s32 v) { return v4f32(v.x, v.y, v.z, v.w); }
+Vector2f32 v2f64_to_v2f32(Vector2f64 v) { return V2(v.x, v.y); }
+Vector2f32 v2s64_to_v2f32(Vector2s64 v) { return V2(v.x, v.y); }
+Vector2f32 v2s32_to_v2f32(Vector2s32 v) { return V2(v.x, v.y); }
+Vector3f32 v3f64_to_v3f32(Vector3f64 v) { return V3(v.x, v.y, v.z); }
+Vector3f32 v3s64_to_v3f32(Vector3s64 v) { return V3(v.x, v.y, v.z); }
+Vector3f32 v3s32_to_v3f32(Vector3s32 v) { return V3(v.x, v.y, v.z); }
+Vector4f32 v4f64_to_v4f32(Vector4f64 v) { return V4(v.x, v.y, v.z, v.w); }
+Vector4f32 v4s64_to_v4f32(Vector4s64 v) { return V4(v.x, v.y, v.z, v.w); }
+Vector4f32 v4s32_to_v4f32(Vector4s32 v) { return V4(v.x, v.y, v.z, v.w); }
 
 Vector2f64 v2f32_to_v2f64(Vector2f32 v) { return v2f64(v.x, v.y); }
 Vector2f64 v2s64_to_v2f64(Vector2s64 v) { return v2f64(v.x, v.y); }
@@ -550,12 +409,12 @@ Vector2f32 v2_rotate_point_around_pivot(Vector2f32 point, Vector2f32 pivot, floa
     float32 s = sin(rotation_radians);
     float32 c = cos(rotation_radians);
 
-    point = v2f32_sub(point, pivot);
+    point = V2Sub(point, pivot);
 
     float32 x_new = point.x * c - point.y * s;
     float32 y_new = point.x * s + point.y * c;
 
-    point = v2f32_add(v2f32(x_new, y_new), pivot);
+    point = V2Add(V2(x_new, y_new), pivot);
 
     return point;
 }
@@ -575,15 +434,15 @@ inline Quaternion quat(float32 x, float32 y, float32 z, float32 w) {
     return q;
 }
 
-inline Quaternion quat_identity() { return quat(0,0,0,1); }
+inline Quaternion QuatIdentity() { return quat(0,0,0,1); }
 
-Quaternion quat_from_axis_angle(Vector3f32 axis, float32 radians) {
+Quaternion QuatFromAxisAngle(Vector3f32 axis, float32 radians) {
     float32 h = radians * 0.5f;
     float32 s = sinf(h);
     return quat(axis.x*s, axis.y*s, axis.z*s, cosf(h));
 }
 
-Quaternion quat_mul(Quaternion a, Quaternion b) {
+Quaternion QuatMul(Quaternion a, Quaternion b) {
     Quaternion q;
     q.w = a.w*b.w - a.x*b.x - a.y*b.y - a.z*b.z;
     q.x = a.w*b.x + a.x*b.w + a.y*b.z - a.z*b.y;
@@ -592,8 +451,8 @@ Quaternion quat_mul(Quaternion a, Quaternion b) {
     return q;
 }
 
-Matrix4 m4_from_quat_pos(Quaternion q, Vector3f32 pos) {
-    Matrix4 m = m4_scalar(1.0f);
+Matrix4 M4FromQuatPos(Quaternion q, Vector3f32 pos) {
+    Matrix4 m = M4Scalar(1.0f);
     float32 x = q.x, y = q.y, z = q.z, w = q.w;
     m.m[0][0] = 1 - 2*y*y - 2*z*z;
     m.m[0][1] = 2*x*y + 2*w*z;
@@ -614,11 +473,8 @@ Matrix4 m4_from_quat_pos(Quaternion q, Vector3f32 pos) {
 // Matrix4
 //
 
-typedef struct Matrix4 {
-    union {float32 m[4][4]; float32 data[16]; };
-} Matrix4;
 
-Matrix4 m4_scalar(float32 scalar) {
+Matrix4 M4Scalar(float32 scalar) {
     Matrix4 m;
     for (int i = 0; i < 16; i++) {
         m.data[i] = 0.0f;
@@ -630,7 +486,7 @@ Matrix4 m4_scalar(float32 scalar) {
     return m;
 }
 
-inline Matrix4 m4_identity() { return m4_scalar(1.0); }
+inline Matrix4 M4Identity() { return M4Scalar(1.0); }
 
 Matrix4 m4_transpose(Matrix4 m) {
     Matrix4 transpose;
@@ -658,7 +514,7 @@ Matrix4 m4_transpose(Matrix4 m) {
 }
 
 Matrix4 m4_make_translation(Vector3f32 translation) {
-    Matrix4 m = m4_scalar(1.0);
+    Matrix4 m = M4Scalar(1.0);
     m.m[0][0] = 1.0f; m.m[1][1] = 1.0f; m.m[2][2] = 1.0f; m.m[3][3] = 1.0f;
     m.m[0][3] = translation.x;
     m.m[1][3] = translation.y;
@@ -667,7 +523,7 @@ Matrix4 m4_make_translation(Vector3f32 translation) {
 }
 
 Matrix4 m4_make_rotation(Vector3f32 axis, float32 radians) {
-    Matrix4 m = m4_scalar(1.0);
+    Matrix4 m = M4Scalar(1.0);
     float32 c = cosf(radians);
     float32 s = sinf(radians);
     float32 t = 1.0f - c;
@@ -688,10 +544,10 @@ Matrix4 m4_make_rotation(Vector3f32 axis, float32 radians) {
     return m;
 }
 
-inline Matrix4 m4_make_rotation_z(float32 radians) { return m4_make_rotation(v3f32(0, 0, 1), radians); }
+inline Matrix4 m4_make_rotation_z(float32 radians) { return m4_make_rotation(V3(0, 0, 1), radians); }
 
 Matrix4 m4_make_scale(Vector3f32 scale) {
-    Matrix4 m = m4_scalar(1.0);
+    Matrix4 m = M4Scalar(1.0);
     m.m[0][0] = scale.x;
     m.m[1][1] = scale.y;
     m.m[2][2] = scale.z;
@@ -714,29 +570,29 @@ Matrix4 m4_mul(Matrix4 a, Matrix4 b) {
     return result;
 }
 
-inline Matrix4 m4_translate(Matrix4 m, Vector3f32 translation) {
+inline Matrix4 M4Translate(Matrix4 m, Vector3f32 translation) {
     Matrix4 translation_matrix = m4_make_translation(translation);
     return m4_mul(m, translation_matrix);
 }
 
-inline Matrix4 m4_rotate(Matrix4 m, Vector3f32 axis, float32 radians) {
+inline Matrix4 M4Rotate(Matrix4 m, Vector3f32 axis, float32 radians) {
     Matrix4 rotation_matrix = m4_make_rotation(axis, radians);
     return m4_mul(m, rotation_matrix);
 }
-inline Matrix4 m4_rotate_z(Matrix4 m, float32 radians) {
-    Matrix4 rotation_matrix = m4_make_rotation(v3f32(0, 0, 1), radians);
+inline Matrix4 M4RotateZ(Matrix4 m, float32 radians) {
+    Matrix4 rotation_matrix = m4_make_rotation(V3(0, 0, 1), radians);
     return m4_mul(m, rotation_matrix);
 }
-inline Matrix4 m4_rotate_x(Matrix4 m, float32 radians) {
-    Matrix4 rotation_matrix = m4_make_rotation(v3f32(1, 0, 0), radians);
+inline Matrix4 M4RotateX(Matrix4 m, float32 radians) {
+    Matrix4 rotation_matrix = m4_make_rotation(V3(1, 0, 0), radians);
     return m4_mul(m, rotation_matrix);
 }
-inline Matrix4 m4_rotate_y(Matrix4 m, float32 radians) {
-    Matrix4 rotation_matrix = m4_make_rotation(v3f32(0, 1, 0), radians);
+inline Matrix4 M4RotateY(Matrix4 m, float32 radians) {
+    Matrix4 rotation_matrix = m4_make_rotation(V3(0, 1, 0), radians);
     return m4_mul(m, rotation_matrix);
 }
 
-inline Matrix4 m4_scale(Matrix4 m, Vector3f32 scale) {
+inline Matrix4 M4Scale(Matrix4 m, Vector3f32 scale) {
     Matrix4 scale_matrix = m4_make_scale(scale);
     return m4_mul(m, scale_matrix);
 }
@@ -744,7 +600,7 @@ inline Matrix4 m4_scale(Matrix4 m, Vector3f32 scale) {
 
 // _near & _far because microsoft...
 Matrix4 m4_make_orthographic_projection(float32 left, float32 right, float32 bottom, float32 top, float32 _near, float32 _far) {
-    Matrix4 m = m4_scalar(1.0f);
+    Matrix4 m = M4Scalar(1.0f);
     m.m[0][0] = 2.0f / (right - left);
     m.m[1][1] = 2.0f / (top - bottom);
     m.m[2][2] = -2.0f / (_far - _near);
@@ -755,7 +611,7 @@ Matrix4 m4_make_orthographic_projection(float32 left, float32 right, float32 bot
     return m;
 }
 
-Matrix4 m4_make_perspective_projection(float32 fov_y, float32 aspect, float32 _near, float32 _far) {
+Matrix4 M4MakePerspectiveProjection(float32 fov_y, float32 aspect, float32 _near, float32 _far) {
     Matrix4 m = ZERO(Matrix4);
     float32 f = 1.0f / tanf(fov_y * 0.5f);
     m.m[0][0] = f / aspect;
@@ -766,15 +622,15 @@ Matrix4 m4_make_perspective_projection(float32 fov_y, float32 aspect, float32 _n
     return m;
 }
 
-Matrix4 m4_make_look_at(Vector3f32 eye, Vector3f32 target, Vector3f32 up) {
-    Vector3f32 f = v3_normalize(v3_sub(target, eye));
-    Vector3f32 s = v3_normalize(v3_cross(f, up));
-    Vector3f32 u = v3_cross(s, f);
+Matrix4 M4MakeLookAt(Vector3f32 eye, Vector3f32 target, Vector3f32 up) {
+    Vector3f32 f = V3Normalize(V3Sub(target, eye));
+    Vector3f32 s = V3Normalize(V3Cross(f, up));
+    Vector3f32 u = V3Cross(s, f);
 
-    Matrix4 m = m4_scalar(1.0f);
-    m.m[0][0] = s.x; m.m[0][1] = s.y; m.m[0][2] = s.z; m.m[0][3] = -v3_dot(s, eye);
-    m.m[1][0] = u.x; m.m[1][1] = u.y; m.m[1][2] = u.z; m.m[1][3] = -v3_dot(u, eye);
-    m.m[2][0] = -f.x; m.m[2][1] = -f.y; m.m[2][2] = -f.z; m.m[2][3] = v3_dot(f, eye);
+    Matrix4 m = M4Scalar(1.0f);
+    m.m[0][0] = s.x; m.m[0][1] = s.y; m.m[0][2] = s.z; m.m[0][3] = -V3Dot(s, eye);
+    m.m[1][0] = u.x; m.m[1][1] = u.y; m.m[1][2] = u.z; m.m[1][3] = -V3Dot(u, eye);
+    m.m[2][0] = -f.x; m.m[2][1] = -f.y; m.m[2][2] = -f.z; m.m[2][3] = V3Dot(f, eye);
     m.m[3][3] = 1.0f;
     return m;
 }
@@ -906,7 +762,7 @@ Matrix4 m4_inverse(Matrix4 m) {
     det = m.m[0][0] * inv.m[0][0] + m.m[0][1] * inv.m[1][0] + m.m[0][2] * inv.m[2][0] + m.m[0][3] * inv.m[3][0];
 
     if (det == 0)
-        return m4_scalar(0); 
+        return M4Scalar(0); 
 
     det = 1.0f / det;
 
@@ -935,7 +791,7 @@ typedef struct Matrix3 {
 
 // Sets m3 part of an identity m4
 Matrix4 m3_to_m4(Matrix3 mat3) {
-    Matrix4 mat4 = m4_identity();
+    Matrix4 mat4 = M4Identity();
 
 	// Row 0    
     mat4.m[0][0] = mat3.m[0][0];

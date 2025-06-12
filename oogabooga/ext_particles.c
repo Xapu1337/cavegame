@@ -273,7 +273,7 @@ Emission_Handle emit_particles(Emission_Config config, Vector2 pos) {
 			emissions[i] = ZERO(Emission_Instance);
 			emissions[i].config = config;
 			emissions[i].pos = pos;
-			emissions[i].start_time = os_get_elapsed_seconds();
+			emissions[i].start_time = OsGetElapsedSeconds();
 			emissions[i].allocated = true;
 			emissions[i].generation += 1;
 			
@@ -284,7 +284,7 @@ Emission_Handle emit_particles(Emission_Config config, Vector2 pos) {
 	Emission_Instance inst = ZERO(Emission_Instance);
 	inst.config = config;
 	inst.pos = pos;
-	inst.start_time = os_get_elapsed_seconds();
+	inst.start_time = OsGetElapsedSeconds();
 	inst.allocated = true;	
 	inst.generation = 0;	
 	growing_array_add((void**)&emissions, &inst);
@@ -297,7 +297,7 @@ void emission_reset(Emission_Handle h) {
 	assert(h.generation == emissions[h.index].generation, "Invalid Emission_Handle; emission has been released");
 	
 	Emission_Instance *e = &emissions[h.index];
-	e->start_time = os_get_elapsed_seconds();
+	e->start_time = OsGetElapsedSeconds();
 }
 
 void emission_set_config(Emission_Handle h, Emission_Config config) {
@@ -325,7 +325,7 @@ void emission_release(Emission_Handle h) {
 }
 
 void particles_init() {
-	growing_array_init_reserve((void**)&emissions, sizeof(Emission_Instance), 16, get_heap_allocator());
+	growing_array_init_reserve((void**)&emissions, sizeof(Emission_Instance), 16, GetHeapAllocator());
 }
 
 void particles_update() {
@@ -336,7 +336,7 @@ void particles_update() {
 void particles_draw() {
 	// We compute each particle each frame depending on now vs then
 	
-	float32 now = os_get_elapsed_seconds();
+	float32 now = OsGetElapsedSeconds();
 
 	u64 backup_seed = seed_for_random;
 	
@@ -389,15 +389,15 @@ void particles_draw() {
 			float32 t = age/life_time;
 			
 			Vector2 origin = e->pos;
-			origin = v2_add(origin, sample_emission_property_v2(e->config.start_position, e->config.seed, t));
+			origin = V2Add(origin, sample_emission_property_v2(e->config.start_position, e->config.seed, t));
 			
 			p.pivot = sample_emission_property_v2(e->config.pivot, e->config.seed, t);
 			
 			Vector2 velocity = sample_emission_property_v2(e->config.velocity, e->config.seed, t);
 			Vector2 acceleration = sample_emission_property_v2(e->config.acceleration, e->config.seed, t);
 			
-			velocity = v2_add(velocity, v2_mulf(acceleration, age));
-			p.position = v2_add(origin, v2_mulf(velocity, age));
+			velocity = V2Add(velocity, V2Mulf(acceleration, age));
+			p.position = V2Add(origin, V2Mulf(velocity, age));
 			
 			
 			p.rotation = sample_emission_property_f32(e->config.rotation, e->config.seed, t);
@@ -420,10 +420,10 @@ void particles_draw() {
 			Matrix3 xform = m3_identity();
 			xform = m3_translate(xform, p.position);
 			xform = m3_rotate(xform, p.rotation);
-			xform = m3_translate(xform, v2_mulf(p.pivot, -1));
+			xform = m3_translate(xform, V2Mulf(p.pivot, -1));
 			switch (p.kind) {
 				case PARTICLE_KIND_RECTANGLE: {
-					draw_rect_xform(m3_to_m4(xform), p.size, p.color);
+					DrawRectXform(m3_to_m4(xform), p.size, p.color);
 					break;
 				}
 				case PARTICLE_KIND_CIRCLE: {

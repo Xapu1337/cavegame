@@ -1,31 +1,13 @@
-// #Portability rip ARM
-typedef struct Cpu_Info_X86 {
-    u32 eax;
-    u32 ebx;
-    u32 ecx;
-    u32 edx;
-} Cpu_Info_X86;
+#include "cpu.h"
 
-typedef struct Cpu_Capabilities {
-	bool sse1;
-	bool sse2;
-	bool sse3;
-	bool ssse3;
-	bool sse41;
-	bool sse42;
-	bool any_sse;
-	bool avx;
-	bool avx2;
-	bool avx512;
-	
-} Cpu_Capabilities;
+// #Portability rip ARM
 
 // I think this is the standard? (sse1)
 #define COMPILER_CAN_DO_SSE 1
 
 ///
 // Compiler specific stuff
-#if COMPILER_MVSC
+#if COMPILER_MSVC
 	#define inline __forceinline
 	#define alignat(x) __declspec(align(x))
 	#define noreturn __declspec(noreturn)

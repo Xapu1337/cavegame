@@ -53,7 +53,7 @@ void my_logger(Log_Level level, string s) {
 	// "tprint" because it tprint uses the temp allocator which gets reset each frame.
 	// In a real world scenario we would probably have a dedicated allocator for these
 	// strings rather than heap allocating all of them.
-	string message = sprint(get_heap_allocator(), "%s %s\n", prefix, s);
+	string message = sprint(GetHeapAllocator(), "%s %s\n", prefix, s);
 	
 	// Output the final string to stdout
 	print(message);
@@ -85,23 +85,23 @@ int entry(int argc, char **argv) {
 	window.point_height = 720;
 	window.x = 200;
 	window.y = 200;
-	window.clear_color = hex_to_rgba(0x6495EDff);
+	window.clearColor = hex_to_rgba(0x6495EDff);
 	
 	// Load a font to draw the logs with
-	font = load_font_from_disk(STR("C:/windows/fonts/arial.ttf"), get_heap_allocator());
+	font = load_font_from_disk(STR("C:/windows/fonts/arial.ttf"), GetHeapAllocator());
 	assert(font, "Failed loading arial.ttf, %d", GetLastError());
 	
 	// This is where we set the logger we want all logs to go through
 	context.logger = my_logger;
 
 	while (!window.should_close) {
-		reset_temporary_storage();
+		ResetTemporaryStorage();
 		
-		os_update(); 
-		gfx_update();
+		OsUpdate(); 
+		GfxUpdate();
 		
 		// pixel-aligned projection
-		draw_frame.projection = m4_make_orthographic_projection(window.pixel_width * -0.5, window.pixel_width * 0.5, window.pixel_height * -0.5, window.pixel_height * 0.5, -1, 10);
+		drawFrame.projection = m4_make_orthographic_projection(window.pixel_width * -0.5, window.pixel_width * 0.5, window.pixel_height * -0.5, window.pixel_height * 0.5, -1, 10);
 		
 		float x = -window.width/2+60;
 		float y = window.height/2-FONT_HEIGHT/2-30;
@@ -119,19 +119,19 @@ int entry(int argc, char **argv) {
 			
 			Vector4 color = COLOR_WHITE;
 			
-			Vector2 bottom_left = v2_sub(v2(x, y), m.functional_pos_min);
+			Vector2 bottom_left = V2Sub(v2(x, y), m.functional_pos_min);
 			
 			float L = bottom_left.x;
 			float R = L + m.visual_size.x;
 			float B = bottom_left.y;
 			float T = B + m.visual_size.y;
 			
-			float mx = input_frame.mouse_x - window.width/2;
-			float my = input_frame.mouse_y - window.height/2;
+			float mx = inputFrame.mouse_x - window.width/2;
+			float my = inputFrame.mouse_y - window.height/2;
 			
 			bool hovered = mx >= L && mx < R && my >= B && my < T;
 			if (hovered) color = v4(.8, .8, .8, 1.0);
-			if (hovered && (is_key_down(MOUSE_BUTTON_LEFT) || is_key_down(MOUSE_BUTTON_RIGHT))) 
+			if (hovered && (IsKeyDown(MOUSE_BUTTON_LEFT) || IsKeyDown(MOUSE_BUTTON_RIGHT))) 
 				color = v4(.6, .6, .6, 1.0);
 			
 			if (hovered && is_key_just_released(MOUSE_BUTTON_LEFT))
@@ -143,7 +143,7 @@ int entry(int argc, char **argv) {
 				if (level == LOG_ERROR)   log_error("This is a log message");
 			}
 			
-			draw_rect(v2_sub(bottom_left, v2(8, 8)), v2_add(m.functional_size, v2(16, 16)), v4_mul(v4(.3, .3, .3, 1), color));
+			draw_rect(V2Sub(bottom_left, v2(8, 8)), V2Add(m.functional_size, v2(16, 16)), V4Mul(v4(.3, .3, .3, 1), color));
 			draw_text(font, s, FONT_HEIGHT, v2(x-1, y+1), v2(1, 1), COLOR_BLACK);
 			draw_text(font, s, FONT_HEIGHT, v2(x, y), v2(1, 1), color);
 			

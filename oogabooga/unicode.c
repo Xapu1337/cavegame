@@ -52,7 +52,7 @@ typedef struct {
 	bool error;
 } Utf8_To_Utf32_Result;
 
-const u8 trailing_bytes_for_utf8[] = {
+const uint8_t trailing_bytes_for_utf8[] = {
 	0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 	0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 	0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -62,9 +62,9 @@ const u8 trailing_bytes_for_utf8[] = {
 	1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
 	2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2, 3,3,3,3,3,3,3,3,4,4,4,4,5,5,5,5
 };
-const u8 utf8_inital_byte_mask[] = { 0x7F, 0x1F, 0x0F, 0x07, 0x03, 0x01 };
+const uint8_t utf8_inital_byte_mask[] = { 0x7F, 0x1F, 0x0F, 0x07, 0x03, 0x01 };
 
-Utf8_To_Utf32_Result utf8_to_utf32(u8 *s, s64 source_length, bool strict) {
+Utf8_To_Utf32_Result utf8_to_utf32(uint8_t *s, s64 source_length, bool strict) {
     s64 continuation_bytes = trailing_bytes_for_utf8[s[0]];
 
     if (continuation_bytes + 1 > source_length) {
@@ -118,7 +118,7 @@ u64 utf8_index_to_byte_index(string str, u64 index) {
 		u32 codepoint = next_utf8(&str);
 		if (!codepoint) break;
 
-		u64 byte_diff = ((u8*)str.data)-((u8*)last_str.data);
+		u64 byte_diff = ((uint8_t*)str.data)-((uint8_t*)last_str.data);
 		assert(byte_diff != 0);
 		byte_index += byte_diff;
 		utf8_index += 1;

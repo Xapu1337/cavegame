@@ -51,7 +51,7 @@ int entry(int argc, char **argv) {
 	
 	window.title = STR("Bloom example");
 	
-	font = load_font_from_disk(STR("C:/windows/fonts/arial.ttf"), get_heap_allocator());
+	font = load_font_from_disk(STR("C:/windows/fonts/arial.ttf"), GetHeapAllocator());
 	assert(font != 0, "Failed loading arial.ttf");
 	
 	// regular shader + point light which makes things extra bright
@@ -73,12 +73,12 @@ int entry(int argc, char **argv) {
 	
 	Scene_Cbuffer scene_cbuffer;
 	
-	// Window width and height may be 0 before first call to os_update(), and we base render target sizes of window size.
+	// Window width and height may be 0 before first call to OsUpdate(), and we base render target sizes of window size.
 	// This is an Oogabooga quirk which might get fixed at some point.
-	os_update();
+	OsUpdate();
 	
 	while (!window.should_close) {
-		reset_temporary_storage();
+		ResetTemporaryStorage();
 		
 		
 		///
@@ -89,21 +89,21 @@ int entry(int argc, char **argv) {
 			if (game_image)  delete_image(game_image);
 			if (final_image) delete_image(final_image);
 			
-			bloom_map  = make_image_render_target(window.width, window.height, 4, 0, get_heap_allocator());
-			game_image = make_image_render_target(window.width, window.height, 4, 0, get_heap_allocator());
-			final_image = make_image_render_target(window.width, window.height, 4, 0, get_heap_allocator());
+			bloom_map  = make_image_render_target(window.width, window.height, 4, 0, GetHeapAllocator());
+			game_image = make_image_render_target(window.width, window.height, 4, 0, GetHeapAllocator());
+			final_image = make_image_render_target(window.width, window.height, 4, 0, GetHeapAllocator());
 		}
 		last_window = window;
 		
 		// Set stuff in cbuffer which we need to pass to shaders
-		scene_cbuffer.mouse_pos_screen = v2(input_frame.mouse_x, window.height-input_frame.mouse_y);
+		scene_cbuffer.mousePos_screen = v2(inputFrame.mouse_x, window.height-inputFrame.mouse_y);
 		scene_cbuffer.window_size = v2(window.width, window.height);
 		
 		///
 		// Draw game with light shader to game_image
 		
 		// Reset draw frame & clear the image with a clear color
-		draw_frame_reset(&offscreen_draw_frame);
+		DrawFrameReset(&offscreen_draw_frame);
 		gfx_clear_render_target(game_image, v4(.7, .7, .7, 1.0));
 		
 		// Draw game things to offscreen Draw_Frame
@@ -124,7 +124,7 @@ int entry(int argc, char **argv) {
 		// Draw game with bloom map shader to the bloom map
 		
 		// Reset draw frame & clear the image
-		draw_frame_reset(&offscreen_draw_frame);
+		DrawFrameReset(&offscreen_draw_frame);
 		gfx_clear_render_target(bloom_map, COLOR_BLACK);
 
 		
@@ -143,7 +143,7 @@ int entry(int argc, char **argv) {
 		///
 		// Draw game image into final image, using the bloom shader which samples from the bloom_map
 		
-		draw_frame_reset(&offscreen_draw_frame);
+		DrawFrameReset(&offscreen_draw_frame);
 		gfx_clear_render_target(final_image, COLOR_BLACK);
 		
 		// To sample from another image in the shader, we must bind it to a specific slot.
@@ -179,18 +179,18 @@ int entry(int argc, char **argv) {
 			}
 		}
 		
-		os_update(); 
-		gfx_update();
+		OsUpdate(); 
+		GfxUpdate();
 	}
 
 	return 0;
 }
 
-Gfx_Shader_Extension load_shader(string file_path, int cbuffer_size) {
+Gfx_Shader_Extension load_shader(string filePath, int cbuffer_size) {
 	string source;
 	
-	bool ok = os_read_entire_file(file_path, &source, get_heap_allocator());
-	assert(ok, "Could not read %s", file_path);
+	bool ok = os_read_entire_file(filePath, &source, GetHeapAllocator());
+	assert(ok, "Could not read %s", filePath);
 	
 	Gfx_Shader_Extension shader;
 	ok = gfx_compile_shader_extension(source, cbuffer_size, &shader);
@@ -201,7 +201,7 @@ Gfx_Shader_Extension load_shader(string file_path, int cbuffer_size) {
 
 void draw_game(Draw_Frame *frame) {
 	// Draw a background
-	draw_rect_in_frame(v2(-window.width/2, -window.height/2), v2(window.width, window.height), v4(.2, .2, .2, 1), frame);
+	DrawRectInFrame(v2(-window.width/2, -window.height/2), v2(window.width, window.height), v4(.2, .2, .2, 1), frame);
 
 	// Draw some random things, with same seed each time so it looks like persistent things
 	seed_for_random = 69;
@@ -218,7 +218,7 @@ void draw_game(Draw_Frame *frame) {
 			if (get_random_int_in_range(0, 2))  bright_channels |= (1 << 3);
 		}
 	
-		draw_rect_in_frame(v2( // Random pos
+		DrawRectInFrame(v2( // Random pos
 			get_random_float32_in_range(-window.width/2, window.width/2),
 			get_random_float32_in_range(-window.height/2, window.height/2)
 		), v2( // Random size
@@ -243,14 +243,14 @@ bool button(string label, Vector2 pos, Vector2 size, bool enabled) {
 	float B = pos.y;
 	float T = B + size.y;
 	
-	float mx = input_frame.mouse_x - window.width/2;
-	float my = input_frame.mouse_y - window.height/2;
+	float mx = inputFrame.mouse_x - window.width/2;
+	float my = inputFrame.mouse_y - window.height/2;
 
 	bool pressed = false;
 
 	if (mx >= L && mx < R && my >= B && my < T) {
 		color = v4(.15, .15, .15, 1);
-		if (is_key_down(MOUSE_BUTTON_LEFT)) {
+		if (IsKeyDown(MOUSE_BUTTON_LEFT)) {
 			color = v4(.05, .05, .05, 1);
 		}
 		
@@ -258,14 +258,14 @@ bool button(string label, Vector2 pos, Vector2 size, bool enabled) {
 	}
 	
 	if (enabled) {
-		color = v4_sub(color, v4(.2, .2, .2, 0));
+		color = V4Sub(color, v4(.2, .2, .2, 0));
 	}
 
 	draw_rect(pos, size, color);
 	
 	Gfx_Text_Metrics m = measure_text(font, label, font_height, v2(1, 1));
 	
-	Vector2 bottom_left = v2_sub(pos, m.functional_pos_min);
+	Vector2 bottom_left = V2Sub(pos, m.functional_pos_min);
 	bottom_left.x += size.x/2;
 	bottom_left.x -= m.functional_size.x/2;
 	

@@ -107,7 +107,7 @@ float natural_log(float x) {
 #define STB_TRUETYPE_IMPLEMENTATION
 #define STB_IMAGE_IMPLEMENTATION
 
-typedef unsigned char   u8;
+typedef unsigned char   uint8_t;
 typedef signed   char   s8;
 typedef unsigned short  u16;
 typedef signed   short  s16;
@@ -118,7 +118,7 @@ thread_local Allocator third_party_allocator = {0};
 void *third_party_malloc(size_t size) {
 	assert(third_party_allocator.proc, "No third party allocator was set, but it was used!");
 	if (!size) return 0;
-	return alloc(third_party_allocator, size);
+	return Alloc(third_party_allocator, size);
 }
 void *third_party_realloc(void *p, size_t size) {
 	assert(third_party_allocator.proc, "No third party allocator was set, but it was used!");
@@ -129,7 +129,7 @@ void *third_party_realloc(void *p, size_t size) {
 void third_party_free(void *p) {
 	assert(third_party_allocator.proc, "No third party allocator was set, but it was used!");
 	if (!p) return;
-	dealloc(third_party_allocator, p);
+	Dealloc(third_party_allocator, p);
 }
 
 #define STBTT_malloc(x,u) ((void)(u),third_party_malloc(x))

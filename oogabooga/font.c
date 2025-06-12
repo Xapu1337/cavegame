@@ -5,7 +5,7 @@
 
 	Example Usage:
 	
-	Gfx_Font *font = load_font_from_disk(STR("C:/windows/fonts/arial.ttf"), get_heap_allocator());
+	Gfx_Font *font = load_font_from_disk(STR("C:/windows/fonts/arial.ttf"), GetHeapAllocator());
 	assert(font, "Failed loading arial.ttf");
 
 	while (...) {
@@ -59,10 +59,10 @@ typedef struct Gfx_Text_Metrics {
 				Vector2 draw_pos = v2(...);
 				
 				// First justify for the bottom-left to be at the draw point
-				Vector2 justified = v2_sub(draw_pos, m.functional_pos_min);
+				Vector2 justified = V2Sub(draw_pos, m.functional_pos_min);
 				
 				// Then move text backwards by functional_size/2 to align its center to the draw point
-				justified = v2_sub(justified, v2_divf(m.functional_size, 2));
+				justified = V2Sub(justified, V2Divf(m.functional_size, 2));
 	
 	*/
 	Vector2 functional_pos_min;
@@ -129,7 +129,7 @@ Gfx_Font *load_font_from_disk(string path, Allocator allocator) {
 	
 	if (result == 0) return 0;
 	
-	Gfx_Font *font = alloc(allocator, sizeof(Gfx_Font));
+	Gfx_Font *font = Alloc(allocator, sizeof(Gfx_Font));
 	memset(font, 0, sizeof(Gfx_Font));
 	font->stbtt_handle = stbtt_handle;
 	font->raw_font_data = font_data;
@@ -150,15 +150,15 @@ void destroy_font(Gfx_Font *font) {
 		for (u64 j = 0; j < variation->atlases.count; j++) {
 			Gfx_Font_Atlas *atlas = (Gfx_Font_Atlas*)hash_table_get_nth_value(&variation->atlases, j);
 			delete_image(atlas->image);
-			dealloc(font->allocator, atlas->glyphs);
+			Dealloc(font->allocator, atlas->glyphs);
 		}
 		
 		hash_table_destroy(&variation->atlases);
 		
 	}
 
-	dealloc_string(font->allocator, font->raw_font_data);
-	dealloc(font->allocator, font);
+	DeallocString(font->allocator, font->raw_font_data);
+	Dealloc(font->allocator, font);
 	
 	third_party_allocator = ZERO(Allocator);
 }
@@ -218,14 +218,14 @@ void font_atlas_init(Gfx_Font_Atlas *atlas, Gfx_Font_Variation *variation, u32 f
 	atlas->first_codepoint = first_codepoint;
 	
 	atlas->image = make_image(FONT_ATLAS_WIDTH, FONT_ATLAS_HEIGHT, 1, 0, variation->font->allocator);
-	atlas->glyphs = alloc(variation->font->allocator, variation->codepoint_range_per_atlas*sizeof(Gfx_Glyph));
+	atlas->glyphs = Alloc(variation->font->allocator, variation->codepoint_range_per_atlas*sizeof(Gfx_Glyph));
 	
 	u32 cursor_x = 0;
 	u32 cursor_y = 0;
 	
 	third_party_allocator = variation->font->allocator;
 	// Used for flipping bitmaps
-	u8 *temp_row = (u8 *)talloc(variation->height);
+	uint8_t *temp_row = (uint8_t *)talloc(variation->height);
 	for (u32 c = first_codepoint; c < first_codepoint + variation->codepoint_range_per_atlas; c++) {
 		u32 i = c-first_codepoint;
 		Gfx_Glyph *glyph = &atlas->glyphs[i];
@@ -414,8 +414,8 @@ Gfx_Text_Metrics measure_text(Gfx_Font *font, string text, u32 raster_height, Ve
 	
 	walk_glyphs((Walk_Glyphs_Spec){font, text, raster_height, scale, true, &c}, measure_text_glyph_callback);
 	
-	c.m.functional_size = v2_sub(c.m.functional_pos_max, c.m.functional_pos_min);
-	c.m.visual_size = v2_sub(c.m.visual_pos_max, c.m.visual_pos_min);
+	c.m.functional_size = V2Sub(c.m.functional_pos_max, c.m.functional_pos_min);
+	c.m.visual_size = V2Sub(c.m.visual_pos_max, c.m.visual_pos_min);
 	
 	return c.m;
 }
@@ -425,7 +425,7 @@ typedef struct State_For_Glyph_Line_Break_Search {
 	u64 *glyph_count_per_line;
 	float32 width;
 	u64 line_num;
-	u64 start_index;
+	u64 startIndex;
 	u64 index;
 	u64 last_space_index;
 	float32 line_start_x;
@@ -450,15 +450,15 @@ bool text_line_wrapping_callback(Gfx_Glyph g, Gfx_Font_Atlas *atlas, float x, fl
 
 	if ((g.codepoint != 32 && (glyph_right-state->line_start_x) > state->width) || is_newline) {
 
-		bool do_break_at_last_space = state->last_space_index > state->start_index && !is_newline;
+		bool do_break_at_last_space = state->last_space_index > state->startIndex && !is_newline;
 
 		u64 break_index;
 		if (do_break_at_last_space) break_index = state->last_space_index;
 		else break_index = state->index;
 
-		growing_array_add((void**)&state->line_break_indices, &state->start_index);
+		growing_array_add((void**)&state->line_break_indices, &state->startIndex);
 
-		u64 count_from_start_to_space = break_index-state->start_index;
+		u64 count_from_start_to_space = break_index-state->startIndex;
 		growing_array_add((void**)&state->glyph_count_per_line, &count_from_start_to_space);
 
 		u64 count_from_space_to_now = state->index - break_index;
@@ -467,7 +467,7 @@ bool text_line_wrapping_callback(Gfx_Glyph g, Gfx_Font_Atlas *atlas, float x, fl
 		if (break_index == state->index && (is_newline || g.codepoint == ' ')) {
 			break_index += 1; // Skip \n and space if that's what we break on
 		}
-		state->start_index = break_index;
+		state->startIndex = break_index;
 		state->line_num += 1;
 
 		if (do_break_at_last_space) state->line_start_x = state->last_space_x;
@@ -493,13 +493,13 @@ string *split_text_to_lines_with_wrapping(string str, float32 width, Gfx_Font *f
 	State_For_Glyph_Line_Break_Search result = ZERO(State_For_Glyph_Line_Break_Search);
 	result.width = width;
 	result.scale = scale;
-	growing_array_init((void**)&result.line_break_indices, sizeof(u64), get_temporary_allocator());
-	growing_array_init((void**)&result.glyph_count_per_line, sizeof(u64), get_temporary_allocator());
+	growing_array_init((void**)&result.line_break_indices, sizeof(u64), GetTemporaryAllocator());
+	growing_array_init((void**)&result.glyph_count_per_line, sizeof(u64), GetTemporaryAllocator());
 	
 	walk_glyphs((Walk_Glyphs_Spec){font, text, raster_height, scale, false, &result}, text_line_wrapping_callback);
 
 	string *lines;
-	growing_array_init((void**)&lines, sizeof(string), get_temporary_allocator());
+	growing_array_init((void**)&lines, sizeof(string), GetTemporaryAllocator());
 
 	for (u64 i = 0; i < growing_array_get_valid_count(result.line_break_indices); i += 1) {
 		u64 utf8_index = result.line_break_indices[i];
@@ -511,7 +511,7 @@ string *split_text_to_lines_with_wrapping(string str, float32 width, Gfx_Font *f
 		growing_array_add((void**)&lines, &line_str);
 	}
 	if (result.count > 0) {
-		u64 utf8_index = result.start_index;
+		u64 utf8_index = result.startIndex;
 		u64 byte_index = utf8_index_to_byte_index(text, utf8_index);
 		u64 utf8_count = result.count;
 		u64 byte_count = utf8_index_to_byte_index(text, utf8_index + utf8_count) - byte_index;

@@ -76,7 +76,7 @@ void spinlock_acquire_or_wait(Spinlock* l) {
 }
 // Returns true on aquired, false if timeout seconds reached
 bool spinlock_acquire_or_wait_timeout(Spinlock* l, f64 timeout_seconds) {
-    f64 start = os_get_elapsed_seconds();
+    f64 start = OsGetElapsedSeconds();
 	while (true) {
         bool expected = false;
         if (compare_and_swap_bool(&l->locked, true, expected)) {
@@ -84,7 +84,7 @@ bool spinlock_acquire_or_wait_timeout(Spinlock* l, f64 timeout_seconds) {
         }
         while (l->locked) {
             // spinny boi
-            if ((os_get_elapsed_seconds()-start) >= timeout_seconds) return false;
+            if ((OsGetElapsedSeconds()-start) >= timeout_seconds) return false;
         }
     }
     return true;
@@ -102,7 +102,7 @@ void spinlock_release(Spinlock* l) {
 void mutex_init(Mutex *m) {
 	spinlock_init(&m->spinlock);
 	m->spin_time_microseconds = MUTEX_DEFAULT_SPIN_TIME_MICROSECONDS;
-	m->os_handle = os_make_mutex();
+	m->os_handle = OsMakeMutex();
 	m->spinlock_acquired = false;
 	m->acquiring_thread = 0;
 }
@@ -114,7 +114,7 @@ void mutex_acquire_or_wait(Mutex *m) {
         assert(!m->spinlock_acquired, "Internal sync error in Mutex");
     	m->spinlock_acquired = true;
     }
-    os_lock_mutex(m->os_handle);
+    OsLockMutex(m->os_handle);
     
     assert(!m->acquiring_thread, "Internal sync error in Mutex: Multiple threads acquired");
     m->acquiring_thread = context.thread_id;
@@ -125,7 +125,7 @@ void mutex_release(Mutex *m) {
 	m->acquiring_thread = 0;
 	bool was_spinlock_acquired = m->spinlock_acquired;
 	m->spinlock_acquired = false;
-	os_unlock_mutex(m->os_handle);
+	OsUnlockMutex(m->os_handle);
 	if (was_spinlock_acquired) {
 		spinlock_release(&m->spinlock);
 	}

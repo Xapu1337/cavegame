@@ -2,9 +2,9 @@
 
 	Main input juice:
 	
-		bool is_key_down(Input_Key_Code code)
+		bool IsKeyDown(Input_Key_Code code)
 		bool is_key_up(Input_Key_Code code)
-		bool is_key_just_pressed(Input_Key_Code code)
+		bool IsKeyJustPressed(Input_Key_Code code)
 		bool is_key_just_released(Input_Key_Code code)
 		
 		bool consume_key_down(Input_Key_Code code)
@@ -13,8 +13,8 @@
 
 	To loop through events this frame:
 	
-		for (u64 i = 0; i < input_frame.number_of_events; i++) {
-			Input_Event e = input_frame.events[i];
+		for (u64 i = 0; i < inputFrame.number_of_events; i++) {
+			Input_Event e = inputFrame.events[i];
 			
 			switch (e.kind) {
 				case INPUT_EVENT_KEY:    ...; break;
@@ -28,17 +28,17 @@
 	
 		(!! Only Xbox gamepads are natively supported. Steam will map playstation controllers to xbox, but you need third party software to map playstation controllers to xbox. See DS4Windows. !!)
 	
-		Vector2 input_frame.left_stick
-		Vector2 input_frame.right_stick
-		float32 input_frame.left_trigger
-		float32 input_frame.right_trigger
+		Vector2 inputFrame.left_stick
+		Vector2 inputFrame.right_stick
+		float32 inputFrame.left_trigger
+		float32 inputFrame.right_trigger
 	
 	Gamepad buttons are treated as regular keys.
 	
 	Example:
 	
-		is_key_just_pressed(GAMEPAD_A);
-		is_key_down(GAMEPAD_DPAD_LEFT);
+		IsKeyJustPressed(GAMEPAD_A);
+		IsKeyDown(GAMEPAD_DPAD_LEFT);
 	
 	To handle multiple gamepads, you need to poll input events and use the event.gamepad_index.
 	
@@ -62,14 +62,14 @@
 
 // #Global
 forward_global const u64 MAX_NUMBER_OF_GAMEPADS; // Defined in os layer
-ogb_instance Input_Frame input_frame;
+ogb_instance Input_Frame inputFrame;
 ogb_instance Vector2 deadzone_left_stick;
 ogb_instance Vector2 deadzone_right_stick;
 ogb_instance float32 deadzone_left_trigger;
 ogb_instance float32 deadzone_right_trigger;
 
 #if !OOGABOOGA_LINK_EXTERNAL_INSTANCE
-Input_Frame input_frame = ZERO(Input_Frame);
+Input_Frame inputFrame = ZERO(Input_Frame);
 Vector2 deadzone_left_stick = {0.2, 0.2};
 Vector2 deadzone_right_stick = {0.2, 0.2};
 float32 deadzone_left_trigger = {0.07};
@@ -82,7 +82,7 @@ void set_specific_gamepad_vibration(u64 gamepad_index, float32 left, float32 rig
 
 bool has_key_state(Input_Key_Code code, Input_State_Flags flags) {
 	assert(code > 0 && code < INPUT_KEY_CODE_COUNT, "Invalid key code %d!", code);
-	Input_State_Flags state = input_frame.key_states[code];
+	Input_State_Flags state = inputFrame.key_states[code];
 	
 #if CONFIGURATION == DEBUG
 	{
@@ -94,13 +94,13 @@ bool has_key_state(Input_Key_Code code, Input_State_Flags flags) {
 #endif
 	return (state & flags) == flags;
 }
-bool is_key_down(Input_Key_Code code) {
+bool IsKeyDown(Input_Key_Code code) {
 	return has_key_state(code, INPUT_STATE_DOWN);
 }
 bool is_key_up(Input_Key_Code code) {
-	return input_frame.key_states[code] == 0 || has_key_state(code, INPUT_STATE_JUST_RELEASED);
+	return inputFrame.key_states[code] == 0 || has_key_state(code, INPUT_STATE_JUST_RELEASED);
 }
-bool is_key_just_pressed(Input_Key_Code code) {
+bool IsKeyJustPressed(Input_Key_Code code) {
 	return has_key_state(code, INPUT_STATE_JUST_PRESSED);
 }
 bool is_key_just_released(Input_Key_Code code) {
@@ -108,17 +108,17 @@ bool is_key_just_released(Input_Key_Code code) {
 }
 
 bool consume_key_down(Input_Key_Code code) {
-	bool result = is_key_down(code);
-	input_frame.key_states[code] &= ~(INPUT_STATE_DOWN);
+	bool result = IsKeyDown(code);
+	inputFrame.key_states[code] &= ~(INPUT_STATE_DOWN);
 	return result;
 }
 bool consume_key_just_pressed(Input_Key_Code code) {
-	bool result = is_key_just_pressed(code);
-	input_frame.key_states[code] &= ~(INPUT_STATE_JUST_PRESSED);
+	bool result = IsKeyJustPressed(code);
+	inputFrame.key_states[code] &= ~(INPUT_STATE_JUST_PRESSED);
 	return result;
 }
 bool consume_key_just_released(Input_Key_Code code) {
 	bool result = is_key_just_released(code);
-	input_frame.key_states[code] &= ~(INPUT_STATE_JUST_RELEASED);
+	inputFrame.key_states[code] &= ~(INPUT_STATE_JUST_RELEASED);
 	return result;
 }

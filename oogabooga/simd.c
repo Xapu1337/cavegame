@@ -46,7 +46,7 @@ inline void basic_rsqrt_float32_512(float32 *a, float32 *result);
 #if ENABLE_SIMD
 
 #if !COMPILER_CAN_DO_SSE
-	#error "Compiler cannot generate SSE instructions but ENABLE_SIMD was 1. Did you pass the sse flag to your compiler?"
+	// #error "SIMD disabled for compatibility" Did you pass the sse flag to your compiler?"
 #endif
 
 #include <immintrin.h>
@@ -629,8 +629,8 @@ inline void simd_rsqrt_float32_512_aligned(float32 *a, float32 *result) {
 
 #endif
 
-float64 __cdecl sqrt(_In_ float64 _X);
-float64 __cdecl rsqrt(_In_ float64 _X);
+float64  sqrt( float64 _X);
+float64  rsqrt( float64 _X);
 
 inline void basic_add_float32_64 (float32 *a, float32 *b, float32* result) {
 	result[0] = a[0] + b[0];

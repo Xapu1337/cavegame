@@ -22,40 +22,40 @@ int entry(int argc, char **argv) {
 	
 	setup_emission_configs();
 	
-	Gfx_Font *font = load_font_from_disk(STR("C:/windows/fonts/arial.ttf"), get_heap_allocator());
+	Gfx_Font *font = load_font_from_disk(STR("C:/windows/fonts/arial.ttf"), GetHeapAllocator());
 	assert(font, "Failed loading arial.ttf");
 	
 	// Keep a stack of the looped emissions so we can pop them
 	Emission_Handle *emission_stack = 0;
-	growing_array_init((void**)&emission_stack, sizeof(Emission_Handle), get_heap_allocator());
+	growing_array_init((void**)&emission_stack, sizeof(Emission_Handle), GetHeapAllocator());
 	
 	// Particles spawn in contiguously meaning vbo will initially grow a little bit at a time
 	// as we start drawing more quads, so let's just reserve a lot of bytes now instead.
 	gfx_reserve_vbo_bytes(MB(16));
 	
-	float64 last_time = os_get_elapsed_seconds();
+	float64 last_time = OsGetElapsedSeconds();
 	while (!window.should_close) {
-		reset_temporary_storage();
+		ResetTemporaryStorage();
 		
-		float64 now = os_get_elapsed_seconds();
+		float64 now = OsGetElapsedSeconds();
 		float64 delta_time = now-last_time;
 		
 		last_time = now;
 		
-		draw_frame.projection = m4_make_orthographic_projection(window.pixel_width * -0.5, window.pixel_width * 0.5, window.pixel_height * -0.5, window.pixel_height * 0.5, -1, 10);
+		drawFrame.projection = m4_make_orthographic_projection(window.pixel_width * -0.5, window.pixel_width * 0.5, window.pixel_height * -0.5, window.pixel_height * 0.5, -1, 10);
 		
-		float mx = input_frame.mouse_x - window.width/2;
-        float my = input_frame.mouse_y - window.height/2;
+		float mx = inputFrame.mouse_x - window.width/2;
+        float my = inputFrame.mouse_y - window.height/2;
 		
 		// Left click: Emit a rain thingy and add to stack of rain emissions
-		if (is_key_just_pressed(MOUSE_BUTTON_LEFT)) {
+		if (IsKeyJustPressed(MOUSE_BUTTON_LEFT)) {
 			Emission_Handle h = emit_particles(emission_rain, v2(mx, my));
 			growing_array_add((void**)&emission_stack, &h);
 		}
 		
 		u64 num_emissions = growing_array_get_valid_count(emission_stack);
 		// Pop emissions on right click
-		if (is_key_just_pressed(MOUSE_BUTTON_RIGHT) && num_emissions > 0) {
+		if (IsKeyJustPressed(MOUSE_BUTTON_RIGHT) && num_emissions > 0) {
 			Emission_Handle h = emission_stack[num_emissions-1];
 			
 			emission_release(h);
@@ -65,7 +65,7 @@ int entry(int argc, char **argv) {
 		// Emit poof with spacebar, but just use one instance which is reset with a new seed.
 		// It's completely fine to just call emit_particles() and do nothing else each time,
 		// this is just to prove that you can have one resetting emission.
-		if (is_key_just_pressed(KEY_SPACEBAR)) {
+		if (IsKeyJustPressed(KEY_SPACEBAR)) {
 		
 			local_persist Emission_Handle inst = ZERO(Emission_Handle);
 			local_persist bool inst_set = false;
@@ -88,8 +88,8 @@ int entry(int argc, char **argv) {
 		
 		draw_text(font, tprint("FPS: %.2f", 1.0/delta_time), 32, v2(-window.width/2+30, window.height/2-60), v2(1, 1), COLOR_WHITE);
 		
-		os_update(); 
-		gfx_update();
+		OsUpdate(); 
+		GfxUpdate();
 	}
 
 	return 0;
@@ -98,7 +98,7 @@ int entry(int argc, char **argv) {
 
 void setup_emission_configs() {
 
-	Gfx_Image *img = load_image_from_disk(STR("oogabooga/examples/berry_bush.png"), get_heap_allocator());
+	Gfx_Image *img = load_image_from_disk(STR("oogabooga/examples/berry_bush.png"), GetHeapAllocator());
 	assert(img, "Failed loading berry_bush.png");
 
 	//

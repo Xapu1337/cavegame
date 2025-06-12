@@ -16,9 +16,9 @@ typedef struct alignat(16) D3D11_Vertex {
 	Vector2 uv;
 	Vector2 self_uv;
 	s8 texture_index;
-	u8 type;
-	u8 sampler;
-	u8 has_scissor;
+	uint8_t type;
+	uint8_t sampler;
+	uint8_t has_scissor;
 	
 	Vector4 userdata[VERTEX_USER_DATA_COUNT];
 	
@@ -399,8 +399,8 @@ void gfx_init() {
 
 	window.enable_vsync = false;
 	
-	draw_frame_init(&draw_frame);
-	draw_frame_reset(&draw_frame);
+	draw_frame_init(&drawFrame);
+	DrawFrameReset(&drawFrame);
 
 	log_verbose("d3d11 gfx_init");
 	
@@ -546,8 +546,8 @@ void gfx_init() {
 	}
 	
 	string source = STR(d3d11_image_shader_source);
-	source = string_replace_all(source, STR("$INJECT_PIXEL_POST_PROCESS"), STR("float4 pixel_shader_extension(PS_INPUT input, float4 color) { return color; }"), get_temporary_allocator());
-	source = string_replace_all(source, STR("$VERTEX_USER_DATA_COUNT"), tprint("%d", VERTEX_USER_DATA_COUNT), get_temporary_allocator());
+	source = string_replace_all(source, STR("$INJECT_PIXEL_POST_PROCESS"), STR("float4 pixel_shader_extension(PS_INPUT input, float4 color) { return color; }"), GetTemporaryAllocator());
+	source = string_replace_all(source, STR("$VERTEX_USER_DATA_COUNT"), tprint("%d", VERTEX_USER_DATA_COUNT), GetTemporaryAllocator());
 	
 	bool ok = d3d11_compile_vertex_shader(source, &d3d11_default_vertex_shader, &d3d11_image_vertex_layout);
 	assert(ok, "Failed compiling vertex shader");
@@ -641,10 +641,10 @@ void d3d11_draw_call(int number_of_rendered_quads, ID3D11ShaderResourceView **te
     }
 }
 
-void gfx_clear_render_target(Gfx_Image *render_target, Vector4 clear_color) {
+void gfx_clear_render_target(Gfx_Image *render_target, Vector4 clearColor) {
 	assert(context.thread_id == d3d11_thread_id, "gfx_ functions must be called on the main thread");
 	assert(render_target->gfx_render_target, "Image was not created as a render target");
-	ID3D11DeviceContext_ClearRenderTargetView(d3d11_context, render_target->gfx_render_target, (float*)&clear_color);
+	ID3D11DeviceContext_ClearRenderTargetView(d3d11_context, render_target->gfx_render_target, (float*)&clearColor);
 }
 
 // gfx_interface.c impl
@@ -666,15 +666,15 @@ void gfx_render_draw_frame(Draw_Frame *frame, Gfx_Image *render_target) {
 	if (required_size > d3d11_quad_vbo_size) {
 		if (d3d11_quad_vbo) {
 			D3D11Release(d3d11_quad_vbo);
-			dealloc(get_heap_allocator(), d3d11_staging_quad_buffer);
+			Dealloc(GetHeapAllocator(), d3d11_staging_quad_buffer);
 		}
 		u64 new_size = get_next_power_of_two(required_size);
 		u64 new_indices = ((new_size/sizeof(D3D11_Vertex))/4)*6;
 		
 		d3d11_quad_vbo_size = new_size;
 		
-		d3d11_staging_quad_buffer = alloc(get_heap_allocator(), d3d11_quad_vbo_size);
-		u32 *indices = (u32*)alloc(get_heap_allocator(), new_indices*sizeof(u32));
+		d3d11_staging_quad_buffer = Alloc(GetHeapAllocator(), d3d11_quad_vbo_size);
+		u32 *indices = (u32*)Alloc(GetHeapAllocator(), new_indices*sizeof(u32));
 		
 		for (u64 i = 0; i < new_indices; i += 6) {
 			indices[i + 0] = (i/6)*4 + 0;
@@ -738,8 +738,8 @@ void gfx_render_draw_frame(Draw_Frame *frame, Gfx_Image *render_target) {
 			if (frame->enable_z_sorting) {
 				if (!d3d11_sort_quad_buffer || (d3d11_sort_quad_buffer_size < number_of_quads*sizeof(Draw_Quad))) {
 					// #Memory #Heapalloc
-					if (d3d11_sort_quad_buffer) dealloc(get_heap_allocator(), d3d11_sort_quad_buffer);
-					d3d11_sort_quad_buffer = alloc(get_heap_allocator(), number_of_quads*sizeof(Draw_Quad));
+					if (d3d11_sort_quad_buffer) Dealloc(GetHeapAllocator(), d3d11_sort_quad_buffer);
+					d3d11_sort_quad_buffer = Alloc(GetHeapAllocator(), number_of_quads*sizeof(Draw_Quad));
 					d3d11_sort_quad_buffer_size = number_of_quads*sizeof(Draw_Quad);
 				}
 				radix_sort(frame->quad_buffer, d3d11_sort_quad_buffer, number_of_quads, sizeof(Draw_Quad), offsetof(Draw_Quad, z), MAX_Z_BITS);
@@ -835,7 +835,7 @@ void gfx_render_draw_frame(Draw_Frame *frame, Gfx_Image *render_target) {
 							BR->uv.y -= (2.0/(float)q->image->height)*0.25;
 						}
 
-						u8 sampler = -1;
+						uint8_t sampler = -1;
 						if (q->image_min_filter == GFX_FILTER_MODE_NEAREST
 									&& q->image_mag_filter == GFX_FILTER_MODE_NEAREST)
 								sampler = 0;
@@ -848,7 +848,7 @@ void gfx_render_draw_frame(Draw_Frame *frame, Gfx_Image *render_target) {
 						if (q->image_min_filter == GFX_FILTER_MODE_NEAREST
 									&& q->image_mag_filter == GFX_FILTER_MODE_LINEAR)
 								sampler = 3;
-						BL->sampler=TL->sampler=TR->sampler=BR->sampler = (u8)sampler;
+						BL->sampler=TL->sampler=TR->sampler=BR->sampler = (uint8_t)sampler;
 								
 					}
 					BL->texture_index=TL->texture_index=TR->texture_index=BR->texture_index = texture_index;
@@ -867,7 +867,7 @@ void gfx_render_draw_frame(Draw_Frame *frame, Gfx_Image *render_target) {
 					
 					BL->color = TL->color = TR->color = BR->color = q->color;
 					
-					BL->type=TL->type=TR->type=BR->type = (u8)q->type;
+					BL->type=TL->type=TR->type=BR->type = (uint8_t)q->type;
 					
 					float t = q->scissor.y1;
 					q->scissor.y1 = q->scissor.y2;
@@ -903,7 +903,7 @@ void gfx_render_draw_frame_to_window(Draw_Frame *frame) {
 	gfx_render_draw_frame(frame, 0);
 }
 
-void gfx_update() {
+void GfxUpdate() {
 	if (window.should_close) return;
 	
 	HRESULT hr;
@@ -914,14 +914,14 @@ void gfx_update() {
 	}
 
 	// Clear window & render global draw frame to window
-	gfx_render_draw_frame_to_window(&draw_frame);
-	draw_frame_reset(&draw_frame);
+	gfx_render_draw_frame_to_window(&drawFrame);
+	DrawFrameReset(&drawFrame);
 
         u32 flags = 0;
         if (!window.enable_vsync && !running_on_wine())
                 flags = DXGI_PRESENT_ALLOW_TEARING;
         IDXGISwapChain1_Present(d3d11_swap_chain, window.enable_vsync, flags);
-        ID3D11DeviceContext_ClearRenderTargetView(d3d11_context, d3d11_window_render_target_view, (float*)&window.clear_color);
+        ID3D11DeviceContext_ClearRenderTargetView(d3d11_context, d3d11_window_render_target_view, (float*)&window.clearColor);
 	
 #if CONFIGURATION == DEBUG
 	d3d11_output_debug_messages();
@@ -936,15 +936,15 @@ void gfx_reserve_vbo_bytes(u64 number_of_bytes) {
 	if (number_of_bytes > d3d11_quad_vbo_size) {
 		if (d3d11_quad_vbo) {
 			D3D11Release(d3d11_quad_vbo);
-			dealloc(get_heap_allocator(), d3d11_staging_quad_buffer);
+			Dealloc(GetHeapAllocator(), d3d11_staging_quad_buffer);
 		}
 		u64 new_size = get_next_power_of_two(number_of_bytes);
 		u64 new_indices = ((new_size/sizeof(D3D11_Vertex))/4)*6;
 		
 		d3d11_quad_vbo_size = new_size;
 		
-		d3d11_staging_quad_buffer = alloc(get_heap_allocator(), d3d11_quad_vbo_size);
-		u32 *indices = (u32*)alloc(get_heap_allocator(), new_indices*sizeof(u32));
+		d3d11_staging_quad_buffer = Alloc(GetHeapAllocator(), d3d11_quad_vbo_size);
+		u32 *indices = (u32*)Alloc(GetHeapAllocator(), new_indices*sizeof(u32));
 		
 		for (u64 i = 0; i < new_indices; i += 6) {
 			indices[i + 0] = (i/6)*4 + 0;
@@ -987,7 +987,7 @@ void gfx_init_image(Gfx_Image *image, void *initial_data, bool render_target) {
 	void *data = initial_data;
     if (!initial_data){
     	// #Incomplete 8 bit width assumed
-    	data = alloc(image->allocator, image->width*image->height*image->channels);
+    	data = Alloc(image->allocator, image->width*image->height*image->channels);
     	memset(data, 0, image->width*image->height*image->channels);
     }
     
@@ -1027,7 +1027,7 @@ void gfx_init_image(Gfx_Image *image, void *initial_data, bool render_target) {
 	d3d11_check_hr(hr);
 	
 	if (!initial_data) {
-		dealloc(image->allocator, data);
+		Dealloc(image->allocator, data);
 	}
 	
 	if (render_target) {
@@ -1156,8 +1156,8 @@ bool gfx_compile_shader_extension(string ext_source, u64 cbuffer_size, Gfx_Shade
 	*result = (Gfx_Shader_Extension){0};
 	assert(context.thread_id == d3d11_thread_id, "gfx_ functions must be called on the main thread");
 
-	string source = string_replace_all(STR(d3d11_image_shader_source), STR("$INJECT_PIXEL_POST_PROCESS"), ext_source, get_temporary_allocator());
-	source = string_replace_all(source, STR("$VERTEX_USER_DATA_COUNT"), tprint("%d", VERTEX_USER_DATA_COUNT), get_temporary_allocator());
+	string source = string_replace_all(STR(d3d11_image_shader_source), STR("$INJECT_PIXEL_POST_PROCESS"), ext_source, GetTemporaryAllocator());
+	source = string_replace_all(source, STR("$VERTEX_USER_DATA_COUNT"), tprint("%d", VERTEX_USER_DATA_COUNT), GetTemporaryAllocator());
 	
 	
 	if (!d3d11_compile_pixel_shader(source, &result->ps)) return false;

@@ -18,12 +18,12 @@
 
 // #Modified
 //////////////////////////////////////
-//// C stdio ports to oogabooga File API
+//// C stdio ports to oogabooga OggFile API
 
 #define EOF -1
 
-int fgetc(File f) {
-    u8 ch;
+int fgetc(OggFile f) {
+    uint8_t ch;
     u64 bytes_read;
     if (os_file_read(f, &ch, 1, &bytes_read) && bytes_read == 1) {
         return (int)ch;
@@ -32,7 +32,7 @@ int fgetc(File f) {
     }
 }
 
-size_t fread(void *buffer, size_t size, size_t count, File f) {
+size_t fread(void *buffer, size_t size, size_t count, OggFile f) {
     u64 bytes_to_read = size * count;
     u64 actual_read_bytes;
     if (os_file_read(f, buffer, bytes_to_read, &actual_read_bytes)) {
@@ -42,7 +42,7 @@ size_t fread(void *buffer, size_t size, size_t count, File f) {
     }
 }
 
-long ftell(File f) {
+long ftell(OggFile f) {
     s64 pos = os_file_get_pos(f);
     if (pos >= 0) {
         return (long)pos;
@@ -51,7 +51,7 @@ long ftell(File f) {
     }
 }
 
-int fseek(File f, s64 offset, s64 origin) {
+int fseek(OggFile f, s64 offset, s64 origin) {
     s64 new_pos;
     switch (origin) {
         case SEEK_SET:
@@ -69,7 +69,7 @@ int fseek(File f, s64 offset, s64 origin) {
     return os_file_set_pos(f, new_pos) ? 0 : -1;
 }
 
-File fopen(const char *filename, const char *mode) {
+OggFile fopen(const char *filename, const char *mode) {
     Os_Io_Open_Flags flags = 0;
 
     while (*mode) {
@@ -100,11 +100,11 @@ File fopen(const char *filename, const char *mode) {
       mode++;
     }
 
-    File f = os_file_open_s(STR(filename), flags);
+    OggFile f = os_file_open_s(STR(filename), flags);
     return f;
 }
 
-int fclose(File f) {
+int fclose(OggFile f) {
     os_file_close(f);
     return 0;
 }
@@ -366,8 +366,8 @@ extern void stb_vorbis_flush_pushdata(stb_vorbis *f);
 #ifndef STB_VORBIS_NO_PULLDATA_API
 // This API assumes stb_vorbis is allowed to pull data from a source--
 // either a block of memory containing the _entire_ vorbis stream, or a
-// File  that you or it create, or possibly some other reading mechanism
-// if you go modify the source to replace the File  case with some kind
+// OggFile  that you or it create, or possibly some other reading mechanism
+// if you go modify the source to replace the OggFile  case with some kind
 // of callback to your code. (But if you don't support seeking, you may
 // just want to go ahead and use pushdata.)
 
@@ -393,9 +393,9 @@ extern stb_vorbis * stb_vorbis_open_filename(const char *filename,
 // create an ogg vorbis decoder from a filename via fopen(). on failure,
 // returns NULL and sets *error (possibly to VORBIS_file_open_failure).
 
-extern stb_vorbis * stb_vorbis_open_file(File f, int close_handle_on_close,
+extern stb_vorbis * stb_vorbis_open_file(OggFile f, int close_handle_on_close,
                                   int *error, const stb_vorbis_alloc *alloc_buffer);
-// create an ogg vorbis decoder from an open File , looking for a stream at
+// create an ogg vorbis decoder from an open OggFile , looking for a stream at
 // the _current_ seek point (ftell). on failure, returns NULL and sets *error.
 // note that stb_vorbis must "own" this stream; if you seek it in between
 // calls to stb_vorbis, it will become confused. Moreover, if you attempt to
@@ -403,9 +403,9 @@ extern stb_vorbis * stb_vorbis_open_file(File f, int close_handle_on_close,
 // owns the _entire_ rest of the file after the start point. Use the next
 // function, stb_vorbis_open_file_section(), to limit it.
 
-extern stb_vorbis * stb_vorbis_open_file_section(File f, int close_handle_on_close,
+extern stb_vorbis * stb_vorbis_open_file_section(OggFile f, int close_handle_on_close,
                 int *error, const stb_vorbis_alloc *alloc_buffer, unsigned int len);
-// create an ogg vorbis decoder from an open File , looking for a stream at
+// create an ogg vorbis decoder from an open OggFile , looking for a stream at
 // the _current_ seek point (ftell); the stream will be of length 'len' bytes.
 // on failure, returns NULL and sets *error. note that stb_vorbis must "own"
 // this stream; if you seek it in between calls to stb_vorbis, it will become
@@ -551,7 +551,7 @@ enum STBVorbisError
 // #define STB_VORBIS_NO_PULLDATA_API
 
 // STB_VORBIS_NO_STDIO
-//     does not compile the code for the APIs that use File s internally
+//     does not compile the code for the APIs that use OggFile s internally
 //     or externally (implied by STB_VORBIS_NO_PULLDATA_API)
 // #define STB_VORBIS_NO_STDIO
 
@@ -919,7 +919,7 @@ struct stb_vorbis
 
   // input config
 #ifndef STB_VORBIS_NO_STDIO
-   File f;
+   OggFile f;
    uint32 f_start;
    int close_on_free;
 #endif
@@ -940,7 +940,7 @@ struct stb_vorbis
    ProbedPage p_first, p_last;
 
   // memory management
-   stb_vorbis_alloc alloc;
+   stb_vorbis_alloc Alloc;
    int setup_offset;
    int temp_offset;
 
@@ -1072,8 +1072,8 @@ static void *setup_malloc(vorb *f, int sz)
 {
    sz = (sz+7) & ~7; // round up to nearest 8 for alignment of future allocs.
    f->setup_memory_required += sz;
-   if (f->alloc.alloc_buffer) {
-      void *p = (char *) f->alloc.alloc_buffer + f->setup_offset;
+   if (f->Alloc.alloc_buffer) {
+      void *p = (char *) f->Alloc.alloc_buffer + f->setup_offset;
       if (f->setup_offset + sz > f->temp_offset) return NULL;
       f->setup_offset += sz;
       return p;
@@ -1083,24 +1083,24 @@ static void *setup_malloc(vorb *f, int sz)
 
 static void setup_free(vorb *f, void *p)
 {
-   if (f->alloc.alloc_buffer) return; // do nothing; setup mem is a stack
+   if (f->Alloc.alloc_buffer) return; // do nothing; setup mem is a stack
    third_party_free(p);  // #Modified  free -> third_party_free  Charlie Malmqvist 2024-07-08
 }
 
 static void *setup_temp_malloc(vorb *f, int sz)
 {
    sz = (sz+7) & ~7; // round up to nearest 8 for alignment of future allocs.
-   if (f->alloc.alloc_buffer) {
+   if (f->Alloc.alloc_buffer) {
       if (f->temp_offset - sz < f->setup_offset) return NULL;
       f->temp_offset -= sz;
-      return (char *) f->alloc.alloc_buffer + f->temp_offset;
+      return (char *) f->Alloc.alloc_buffer + f->temp_offset;
    }
    return third_party_malloc(sz); // #Modified  malloc -> third_party_malloc  Charlie Malmqvist 2024-07-08
 }
 
 static void setup_temp_free(vorb *f, void *p, int sz)
 {
-   if (f->alloc.alloc_buffer) {
+   if (f->Alloc.alloc_buffer) {
       f->temp_offset += (sz+7)&~7;
       return;
    }
@@ -3262,8 +3262,8 @@ static int vorbis_decode_initial(vorb *f, int *p_left_start, int *p_left_end, in
       goto retry;
    }
 
-   if (f->alloc.alloc_buffer)
-      assert(f->alloc.alloc_buffer_length_in_bytes == f->temp_offset);
+   if (f->Alloc.alloc_buffer)
+      assert(f->Alloc.alloc_buffer_length_in_bytes == f->temp_offset);
 
    i = get_bits(f, ilog(f->mode_count-1));
    if (i == EOP) return FALSE;
@@ -3412,8 +3412,8 @@ static int vorbis_decode_packet_rest(vorb *f, int *len, Mode *m, int left_start,
    CHECK(f);
    // at this point we've decoded all floors
 
-   if (f->alloc.alloc_buffer)
-      assert(f->alloc.alloc_buffer_length_in_bytes == f->temp_offset);
+   if (f->Alloc.alloc_buffer)
+      assert(f->Alloc.alloc_buffer_length_in_bytes == f->temp_offset);
 
    // re-enable coupled channels if necessary
    memcpy(really_zero_channel, zero_channel, sizeof(really_zero_channel[0]) * f->channels);
@@ -3445,8 +3445,8 @@ static int vorbis_decode_packet_rest(vorb *f, int *len, Mode *m, int left_start,
       decode_residue(f, residue_buffers, ch, n2, r, do_not_decode);
    }
 
-   if (f->alloc.alloc_buffer)
-      assert(f->alloc.alloc_buffer_length_in_bytes == f->temp_offset);
+   if (f->Alloc.alloc_buffer)
+      assert(f->Alloc.alloc_buffer_length_in_bytes == f->temp_offset);
    CHECK(f);
 
 // INVERSE COUPLING
@@ -3561,8 +3561,8 @@ static int vorbis_decode_packet_rest(vorb *f, int *len, Mode *m, int left_start,
    if (f->current_loc_valid)
       f->current_loc += (right_start - left_start);
 
-   if (f->alloc.alloc_buffer)
-      assert(f->alloc.alloc_buffer_length_in_bytes == f->temp_offset);
+   if (f->Alloc.alloc_buffer)
+      assert(f->Alloc.alloc_buffer_length_in_bytes == f->temp_offset);
    *len = right_end;  // ignore samples after the window goes to 0
    CHECK(f);
 
@@ -4306,8 +4306,8 @@ static int start_decoder(vorb *f)
    }
 
 
-   if (f->alloc.alloc_buffer) {
-      assert(f->temp_offset == f->alloc.alloc_buffer_length_in_bytes);
+   if (f->Alloc.alloc_buffer) {
+      assert(f->temp_offset == f->Alloc.alloc_buffer_length_in_bytes);
       // check if there's enough temp memory so we don't error later
       if (f->setup_offset + sizeof(*f) + f->temp_memory_required > (unsigned) f->temp_offset)
          return error(f, VORBIS_outofmem);
@@ -4402,9 +4402,9 @@ static void vorbis_init(stb_vorbis *p, const stb_vorbis_alloc *z)
 {
    memset(p, 0, sizeof(*p)); // NULL out all malloc'd pointers to start
    if (z) {
-      p->alloc = *z;
-      p->alloc.alloc_buffer_length_in_bytes &= ~7;
-      p->temp_offset = p->alloc.alloc_buffer_length_in_bytes;
+      p->Alloc = *z;
+      p->Alloc.alloc_buffer_length_in_bytes &= ~7;
+      p->temp_offset = p->Alloc.alloc_buffer_length_in_bytes;
    }
    p->eof = 0;
    p->error = VORBIS__no_error;
@@ -4637,10 +4637,10 @@ int stb_vorbis_decode_frame_pushdata(
 stb_vorbis *stb_vorbis_open_pushdata(
          const unsigned char *data, int data_len, // the memory available for decoding
          int *data_used,              // only defined if result is not NULL
-         int *error, const stb_vorbis_alloc *alloc)
+         int *error, const stb_vorbis_alloc *Alloc)
 {
    stb_vorbis *f, p;
-   vorbis_init(&p, alloc);
+   vorbis_init(&p, Alloc);
    p.stream     = (uint8 *) data;
    p.stream_end = (uint8 *) data + data_len;
    p.push_mode  = TRUE;
@@ -5172,10 +5172,10 @@ int stb_vorbis_get_frame_float(stb_vorbis *f, int *channels, float ***output)
 
 #ifndef STB_VORBIS_NO_STDIO
 
-stb_vorbis * stb_vorbis_open_file_section(File file, int close_on_free, int *error, const stb_vorbis_alloc *alloc, unsigned int length)
+stb_vorbis * stb_vorbis_open_file_section(OggFile file, int close_on_free, int *error, const stb_vorbis_alloc *Alloc, unsigned int length)
 {
    stb_vorbis *f, p;
-   vorbis_init(&p, alloc);
+   vorbis_init(&p, Alloc);
    p.f = file;
    p.f_start = (uint32) ftell(file);
    p.stream_len   = length;
@@ -5193,36 +5193,36 @@ stb_vorbis * stb_vorbis_open_file_section(File file, int close_on_free, int *err
    return NULL;
 }
 
-stb_vorbis * stb_vorbis_open_file(File file, int close_on_free, int *error, const stb_vorbis_alloc *alloc)
+stb_vorbis * stb_vorbis_open_file(OggFile file, int close_on_free, int *error, const stb_vorbis_alloc *Alloc)
 {
    unsigned int len, start;
    start = (unsigned int) ftell(file);
    fseek(file, 0, SEEK_END);
    len = (unsigned int) (ftell(file) - start);
    fseek(file, start, SEEK_SET);
-   return stb_vorbis_open_file_section(file, close_on_free, error, alloc, len);
+   return stb_vorbis_open_file_section(file, close_on_free, error, Alloc, len);
 }
 
-stb_vorbis * stb_vorbis_open_filename(const char *filename, int *error, const stb_vorbis_alloc *alloc)
+stb_vorbis * stb_vorbis_open_filename(const char *filename, int *error, const stb_vorbis_alloc *Alloc)
 {
-   File f;
+   OggFile f;
    // #Modified (no open_s) Charlie Malmqvist 2024-07-14
    f = fopen(filename, "rb");
    if (f)
-      return stb_vorbis_open_file(f, TRUE, error, alloc);
+      return stb_vorbis_open_file(f, TRUE, error, Alloc);
    if (error) *error = VORBIS_file_open_failure;
    return NULL;
 }
 #endif // STB_VORBIS_NO_STDIO
 
-stb_vorbis * stb_vorbis_open_memory(const unsigned char *data, int len, int *error, const stb_vorbis_alloc *alloc)
+stb_vorbis * stb_vorbis_open_memory(const unsigned char *data, int len, int *error, const stb_vorbis_alloc *Alloc)
 {
    stb_vorbis *f, p;
    if (!data) {
       if (error) *error = VORBIS_unexpected_eof;
       return NULL;
    }
-   vorbis_init(&p, alloc);
+   vorbis_init(&p, Alloc);
    p.stream = (uint8 *) data;
    p.stream_end = (uint8 *) data + len;
    p.stream_start = (uint8 *) p.stream;

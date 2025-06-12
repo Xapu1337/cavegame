@@ -11,9 +11,18 @@
 	typedef struct { ID3D11PixelShader *ps; ID3D11Buffer *cbuffer; u64 cbuffer_size; } Gfx_Shader_Extension;
 	
 #elif GFX_RENDERER == GFX_RENDERER_VULKAN
-	#error "We only have a D3D11 renderer at the moment"
+	// Vulkan renderer for Linux
+	#if PLATFORM_LINUX
+		// Forward declarations for Vulkan types (actual headers included in gfx_impl_vulkan.c)
+		typedef void* Gfx_Handle;
+		typedef void* Gfx_Render_Target_Handle;
+		typedef struct { void *ps; void *cbuffer; u64 cbuffer_size; } Gfx_Shader_Extension;
+	#else
+		#error "Vulkan renderer is only supported on Linux"
+	#endif
+	
 #elif GFX_RENDERER == GFX_RENDERER_METAL
-	#error "We only have a D3D11 renderer at the moment"
+	#error "Metal renderer not implemented yet"
 #else
 	#error "Unknown renderer GFX_RENDERER defined"
 #endif
@@ -70,7 +79,7 @@ ogb_instance void
 gfx_init();
 
 ogb_instance void 
-gfx_update();
+GfxUpdate();
 
 ogb_instance void 
 gfx_reserve_vbo_bytes(u64 number_of_bytes);
@@ -88,7 +97,7 @@ DEPRECATED(ogb_instance bool gfx_shader_recompile_with_extension(string ext_sour
 // initial_data can be null to leave image data uninitialized
 Gfx_Image *make_image(u32 width, u32 height, u32 channels, void *initial_data, Allocator allocator) {
 	// This is annoying but I did this long ago because stuff was a bit different and now I can't really change it :(
-	Gfx_Image *image = alloc(allocator, sizeof(Gfx_Image));
+	Gfx_Image *image = Alloc(allocator, sizeof(Gfx_Image));
 	
 	assert(channels > 0 && channels <= 4, "Only 1, 2, 3 or 4 channels allowed on images. Got %d", channels);
 	
@@ -104,7 +113,7 @@ Gfx_Image *make_image(u32 width, u32 height, u32 channels, void *initial_data, A
 
 Gfx_Image *make_image_render_target(u32 width, u32 height, u32 channels, void *initial_data, Allocator allocator) {
 	// This is annoying but I did this long ago because stuff was a bit different and now I can't really change it :(
-	Gfx_Image *image = alloc(allocator, sizeof(Gfx_Image));
+	Gfx_Image *image = Alloc(allocator, sizeof(Gfx_Image));
 	
 	assert(channels > 0 && channels <= 4, "Only 1, 2, 3 or 4 channels allowed on images. Got %d", channels);
 	
@@ -123,7 +132,7 @@ Gfx_Image *load_image_from_disk(string path, Allocator allocator) {
     bool ok = os_read_entire_file(path, &png, allocator);
     if (!ok) return 0;
 
-    Gfx_Image *image = alloc(allocator, sizeof(Gfx_Image));
+    Gfx_Image *image = Alloc(allocator, sizeof(Gfx_Image));
     
     int width, height, channels;
     stbi_set_flip_vertically_on_load(1);
@@ -132,8 +141,8 @@ Gfx_Image *load_image_from_disk(string path, Allocator allocator) {
     
     
     if (!stb_data) {
-        dealloc(allocator, image);
-        dealloc_string(allocator, png);
+        Dealloc(allocator, image);
+        DeallocString(allocator, png);
         return 0;
     }
     
@@ -143,7 +152,7 @@ Gfx_Image *load_image_from_disk(string path, Allocator allocator) {
     image->allocator = allocator;
     image->channels = 4;
 
-    dealloc_string(allocator, png);
+    DeallocString(allocator, png);
     
     gfx_init_image(image, stb_data, false);
     
@@ -160,5 +169,5 @@ delete_image(Gfx_Image *image) {
     image->width = 0;
     image->height = 0;
     gfx_deinit_image(image);
-    dealloc(image->allocator, image);
+    Dealloc(image->allocator, image);
 }

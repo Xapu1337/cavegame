@@ -27,10 +27,10 @@ int entry(int argc, char **argv) {
 	window.point_height = 720; 
 	window.x = 200;
 	window.y = 90;
-	window.clear_color = hex_to_rgba(0x6495EDff);
+	window.clearColor = hex_to_rgba(0x6495EDff);
 
 	string source;
-	bool ok = os_read_entire_file("oogabooga/examples/custom_shader.hlsl", &source, get_heap_allocator());
+	bool ok = os_read_entire_file("oogabooga/examples/custom_shader.hlsl", &source, GetHeapAllocator());
 	assert(ok, "Could not read oogabooga/examples/custom_shader.hlsl");
 	
 	Gfx_Shader_Extension shader;
@@ -39,41 +39,41 @@ int entry(int argc, char **argv) {
 	ok = gfx_compile_shader_extension(source, sizeof(My_Cbuffer), &shader);
 	assert(ok, "Failed compiling shader extension");
 	
-	dealloc_string(get_heap_allocator(), source);
+	DeallocString(GetHeapAllocator(), source);
 	
-	// This memory needs to stay alive throughout the frame because we pass the pointer to it in draw_frame.cbuffer.
-	// If this memory is invalidated before gfx_update after setting draw_frame.cbuffer, then gfx_update will copy
+	// This memory needs to stay alive throughout the frame because we pass the pointer to it in drawFrame.cbuffer.
+	// If this memory is invalidated before GfxUpdate after setting drawFrame.cbuffer, then GfxUpdate will copy
 	// memory from an invalid address.
 	My_Cbuffer cbuffer;
 
-	float64 last_time = os_get_elapsed_seconds();
+	float64 last_time = OsGetElapsedSeconds();
 	while (!window.should_close) {
 		
-		float64 now = os_get_elapsed_seconds();
+		float64 now = OsGetElapsedSeconds();
 		if ((int)now != (int)last_time) {
 			log("%.2f FPS\n%.2fms", 1.0/(now-last_time), (now-last_time)*1000);
 		}
 		last_time = now;
 	
-		reset_temporary_storage();
+		ResetTemporaryStorage();
 		
 		float32 aspect = (float32)window.width/(float32)window.height;
 	
-		draw_frame.projection = m4_make_orthographic_projection(-aspect, aspect, -1, 1, -1, 10);
+		drawFrame.projection = m4_make_orthographic_projection(-aspect, aspect, -1, 1, -1, 10);
 		
-		// The shader is used when rendering, which happens in gfx_update() for everything drawn to the Draw_Frame.
-		draw_frame.shader_extension = shader;
+		// The shader is used when rendering, which happens in GfxUpdate() for everything drawn to the Draw_Frame.
+		drawFrame.shader_extension = shader;
 		
-		cbuffer.mouse_pos_screen = v2(input_frame.mouse_x, input_frame.mouse_y);
+		cbuffer.mousePos_screen = v2(inputFrame.mouse_x, inputFrame.mouse_y);
 		cbuffer.window_size = v2(window.width, window.height);
-		draw_frame.cbuffer = &cbuffer;
+		drawFrame.cbuffer = &cbuffer;
 		
 		// Just draw a big rect to cover background, so our lighting shader will apply to background
 		draw_rect(v2(-5, -5), v2(10, 10), v4(.4, .4, .4, 1.0));
 		
-		Matrix4 rect_xform = m4_scalar(1.0);
-		rect_xform         = m4_rotate_z(rect_xform, (f32)now);
-		rect_xform         = m4_translate(rect_xform, v3(-.25f, -.25f, 0));
+		Matrix4 rect_xform = M4Scalar(1.0);
+		rect_xform         = M4RotateZ(rect_xform, (f32)now);
+		rect_xform         = M4Translate(rect_xform, v3(-.25f, -.25f, 0));
 		Draw_Quad *q = draw_rounded_rect_xform(rect_xform, v2(.5f, .5f), COLOR_GREEN, 0.1);
 		
 		draw_outlined_rect(v2(sin(now), -.8), v2(.5, .25), COLOR_RED, 2);
@@ -82,26 +82,26 @@ int entry(int argc, char **argv) {
 		
 	
 		// Shader hot reloading
-		if (is_key_just_pressed('R')) {
-			ok = os_read_entire_file("oogabooga/examples/custom_shader.hlsl", &source, get_heap_allocator());
+		if (IsKeyJustPressed('R')) {
+			ok = os_read_entire_file("oogabooga/examples/custom_shader.hlsl", &source, GetHeapAllocator());
 			assert(ok, "Could not read oogabooga/examples/custom_shader.hlsl");
 			Gfx_Shader_Extension old_shader = shader; // Store previous shader in case this one fails to compile
 			ok = gfx_compile_shader_extension(source, sizeof(My_Cbuffer), &shader);
 			if (!ok)  shader = old_shader;
 			else gfx_destroy_shader_extension(old_shader);
-			dealloc_string(get_heap_allocator(), source);
+			DeallocString(GetHeapAllocator(), source);
 		}
 		
-		os_update(); 
-		gfx_update();
+		OsUpdate(); 
+		GfxUpdate();
 	}
 
 	return 0;
 }
 
 Vector2 world_to_screen(Vector2 p) {
-    Vector4 in_cam_space  = m4_transform(draw_frame.camera_xform, v4(p.x, p.y, 0.0, 1.0));
-    Vector4 in_clip_space = m4_transform(draw_frame.projection, in_cam_space);
+    Vector4 in_cam_space  = m4_transform(drawFrame.cameraXform, v4(p.x, p.y, 0.0, 1.0));
+    Vector4 in_clip_space = m4_transform(drawFrame.projection, in_cam_space);
     
     Vector4 ndc = {
         .x = in_clip_space.x / in_clip_space.w,
@@ -136,7 +136,7 @@ Draw_Quad *draw_rounded_rect(Vector2 p, Vector2 size, Vector4 color, float radiu
 	return q;
 }
 Draw_Quad *draw_rounded_rect_xform(Matrix4 xform, Vector2 size, Vector4 color, float radius) {
-	Draw_Quad *q = draw_rect_xform(xform, size, color);
+	Draw_Quad *q = DrawRectXform(xform, size, color);
 	// detail_type
 	q->userdata[0].x = DETAIL_TYPE_ROUNDED_CORNERS;
 	// corner_radius
@@ -154,7 +154,7 @@ Draw_Quad *draw_outlined_rect(Vector2 p, Vector2 size, Vector4 color, float line
 	return q;
 }
 Draw_Quad *draw_outlined_rect_xform(Matrix4 xform, Vector2 size, Vector4 color, float line_width_pixels) {
-	Draw_Quad *q = draw_rect_xform(xform, size, color);
+	Draw_Quad *q = DrawRectXform(xform, size, color);
 	// detail_type
 	q->userdata[0].x = DETAIL_TYPE_OUTLINED;
 	// line_width_pixels
@@ -174,7 +174,7 @@ Draw_Quad *draw_outlined_circle(Vector2 p, Vector2 size, Vector4 color, float li
 	return q;
 }
 Draw_Quad *draw_outlined_circle_xform(Matrix4 xform, Vector2 size, Vector4 color, float line_width_pixels) {
-	Draw_Quad *q = draw_rect_xform(xform, size, color);
+	Draw_Quad *q = DrawRectXform(xform, size, color);
 	// detail_type
 	q->userdata[0].x = DETAIL_TYPE_OUTLINED_CIRCLE;
 	// line_width_pixels

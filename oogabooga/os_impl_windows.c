@@ -25,18 +25,18 @@ void heap_dealloc(void*);
 u16 *win32_fixed_utf8_to_null_terminated_wide(string utf8, Allocator allocator) {
 
 	if (utf8.count == 0) {
-		u16 *utf16_str = (u16 *)alloc(allocator, (1) * sizeof(u16));
+		u16 *utf16_str = (u16 *)Alloc(allocator, (1) * sizeof(u16));
 		*utf16_str = 0;
 		return utf16_str;
 	}
 
     u64 utf16_length = MultiByteToWideChar(CP_UTF8, 0, (LPCCH)utf8.data, (int)utf8.count, 0, 0);
 
-    u16 *utf16_str = (u16 *)alloc(allocator, (utf16_length + 1) * sizeof(u16));
+    u16 *utf16_str = (u16 *)Alloc(allocator, (utf16_length + 1) * sizeof(u16));
 
     int result = MultiByteToWideChar(CP_UTF8, 0, (LPCCH)utf8.data, (int)utf8.count, utf16_str, utf16_length);
     if (result == 0) {
-        dealloc(allocator, utf16_str);
+        Dealloc(allocator, utf16_str);
         return 0;
     }
 
@@ -45,7 +45,7 @@ u16 *win32_fixed_utf8_to_null_terminated_wide(string utf8, Allocator allocator) 
     return utf16_str;
 }
 u16 *temp_win32_fixed_utf8_to_null_terminated_wide(string utf8) {
-	return win32_fixed_utf8_to_null_terminated_wide(utf8, get_temporary_allocator());
+	return win32_fixed_utf8_to_null_terminated_wide(utf8, GetTemporaryAllocator());
 }
 string win32_null_terminated_wide_to_fixed_utf8(const u16 *utf16, Allocator allocator) {
     u64 utf8_length = WideCharToMultiByte(CP_UTF8, 0, (LPCWCH)utf16, -1, 0, 0, 0, 0);
@@ -57,11 +57,11 @@ string win32_null_terminated_wide_to_fixed_utf8(const u16 *utf16, Allocator allo
 		return utf8;
 	}
 
-    u8 *utf8_str = (u8 *)alloc(allocator, utf8_length * sizeof(u8));
+    uint8_t *utf8_str = (uint8_t *)Alloc(allocator, utf8_length * sizeof(uint8_t));
 
     int result = WideCharToMultiByte(CP_UTF8, 0, (LPCWCH)utf16, -1, (LPSTR)utf8_str, (int)utf8_length, 0, 0);
     if (result == 0) {
-        dealloc(allocator, utf8_str);
+        Dealloc(allocator, utf8_str);
         return (string){0, 0};
     }
 
@@ -73,7 +73,7 @@ string win32_null_terminated_wide_to_fixed_utf8(const u16 *utf16, Allocator allo
 }
 
 string temp_win32_null_terminated_wide_to_fixed_utf8(const u16 *utf16) {
-    return win32_null_terminated_wide_to_fixed_utf8(utf16, get_temporary_allocator());
+    return win32_null_terminated_wide_to_fixed_utf8(utf16, GetTemporaryAllocator());
 }
 #define win32_check_hr(hr) win32_check_hr_impl(hr, __LINE__, __FILE__);
 void win32_check_hr_impl(HRESULT hr, u32 line, const char* file_name) {
@@ -151,8 +151,8 @@ void win32_send_key_event(Input_Key_Code code, Input_State_Flags state, s64 game
 	e.key_code = code;
 	e.key_state = state;
 	e.gamepad_index = gamepad_index;
-	input_frame.events[input_frame.number_of_events] = e;
-	input_frame.number_of_events += 1;
+	inputFrame.events[inputFrame.number_of_events] = e;
+	inputFrame.number_of_events += 1;
 }
 
 void win32_handle_key_up(Input_Key_Code code, s64 gamepad_index) {
@@ -242,8 +242,8 @@ LRESULT CALLBACK win32_window_proc(HWND passed_window, UINT message, WPARAM wpar
 	        e.kind = INPUT_EVENT_SCROLL;
 	        e.yscroll = (float64)delta/(float64)WHEEL_DELTA;
 	        e.xscroll = 0;
-	        input_frame.events[input_frame.number_of_events] = e;
-			input_frame.number_of_events += 1;
+	        inputFrame.events[inputFrame.number_of_events] = e;
+			inputFrame.number_of_events += 1;
 	        goto DEFAULT_HANDLE;
 	    }
 	    case WM_MOUSEHWHEEL: {
@@ -252,8 +252,8 @@ LRESULT CALLBACK win32_window_proc(HWND passed_window, UINT message, WPARAM wpar
 	        e.kind = INPUT_EVENT_SCROLL;
 	        e.yscroll = 0;
 	        e.xscroll = (float64)delta/(float64)WHEEL_DELTA;
-	        input_frame.events[input_frame.number_of_events] = e;
-			input_frame.number_of_events += 1;
+	        inputFrame.events[inputFrame.number_of_events] = e;
+			inputFrame.number_of_events += 1;
 	        goto DEFAULT_HANDLE;
 	    }
 	    case WM_CHAR: {
@@ -263,8 +263,8 @@ LRESULT CALLBACK win32_window_proc(HWND passed_window, UINT message, WPARAM wpar
 	        e.kind = INPUT_EVENT_TEXT;
 	        utf16_to_utf32(&utf16, 1, &e.utf32);
 	        
-	        input_frame.events[input_frame.number_of_events] = e;
-			input_frame.number_of_events += 1;
+	        inputFrame.events[inputFrame.number_of_events] = e;
+			inputFrame.number_of_events += 1;
 	        
 	        goto DEFAULT_HANDLE;
 	    }
@@ -383,10 +383,10 @@ win32_init_window() {
 	window.should_close = false;
 	window.force_topmost = false;
 	window._initialized = false;
-	window.clear_color.r = 0.392f; 
-	window.clear_color.g = 0.584f;
-	window.clear_color.b = 0.929f;
-	window.clear_color.a = 1.0f;
+	window.clearColor.r = 0.392f; 
+	window.clearColor.g = 0.584f;
+	window.clearColor.b = 0.929f;
+	window.clearColor.a = 1.0f;
 	
 	
 	WNDCLASSEX wc = (WNDCLASSEX){0};
@@ -419,7 +419,7 @@ win32_init_window() {
     window._os_handle = CreateWindowEx(
         style_ex,
         "sigma balls",
-        temp_convert_to_null_terminated_string(window.title),
+        TempConvertToNullTerminatedString(window.title),
         style,
         CW_USEDEFAULT, CW_USEDEFAULT, actual_window_width, actual_window_height,
         0, 0, instance, 0);
@@ -499,7 +499,7 @@ void os_init(u64 program_memory_capacity) {
     }
 
 
-	program_memory_mutex = os_make_mutex();
+	program_memory_mutex = OsMakeMutex();
 	os_grow_program_memory(program_memory_capacity);
 	
 	heap_init();
@@ -540,7 +540,7 @@ BOOL win32_query_monitors_callback(HMONITOR monitor_handle, HDC dc, LPRECT rect,
     
     string monitor_id;
     monitor_id.count = strlen(info.szDevice);
-    monitor_id.data = (u8*)info.szDevice;
+    monitor_id.data = (uint8_t*)info.szDevice;
     
     u16 *monitor_id_wide = temp_win32_fixed_utf8_to_null_terminated_wide(monitor_id);
     
@@ -587,7 +587,7 @@ void win32_query_monitors() {
 	window.monitor = 0;
 
 	if (os.monitors) growing_array_clear((void**)&os.monitors);
-	else growing_array_init((void**)&os.monitors, sizeof(Os_Monitor), get_heap_allocator());
+	else growing_array_init((void**)&os.monitors, sizeof(Os_Monitor), GetHeapAllocator());
 	
 	EnumDisplayMonitors(0, 0, win32_query_monitors_callback, 0);
 	
@@ -679,7 +679,7 @@ DWORD WINAPI win32_thread_invoker(LPVOID param) {
 
 ////// DEPRECATED   vvvvvvvvvvvvvvvvv
 Thread* os_make_thread(Thread_Proc proc, Allocator allocator) {
-	Thread *t = (Thread*)alloc(allocator, sizeof(Thread));
+	Thread *t = (Thread*)Alloc(allocator, sizeof(Thread));
 	t->id = 0; // This is set when we start it
 	t->proc = proc;
 	t->initial_context = context;
@@ -690,7 +690,7 @@ Thread* os_make_thread(Thread_Proc proc, Allocator allocator) {
 void os_destroy_thread(Thread *t) {
 	os_join_thread(t);
 	CloseHandle(t->os_handle);
-	dealloc(t->allocator, t);
+	Dealloc(t->allocator, t);
 }
 void os_start_thread(Thread *t) {
 	t->os_handle = CreateThread(
@@ -741,7 +741,7 @@ void os_thread_join(Thread *t) {
 ///
 // Mutex primitive
 
-Mutex_Handle os_make_mutex() {
+Mutex_Handle OsMakeMutex() {
 	local_persist const int MAX_ATTEMPTS = 100;
 	 
 	HANDLE m = CreateMutexW(0, FALSE, 0);
@@ -758,7 +758,7 @@ Mutex_Handle os_make_mutex() {
 void os_destroy_mutex(Mutex_Handle m) {
 	CloseHandle(m);
 }
-void os_lock_mutex(Mutex_Handle m) {
+void OsLockMutex(Mutex_Handle m) {
 	DWORD wait_result = WaitForSingleObject(m, INFINITE);
 	
 	switch (wait_result) {
@@ -773,7 +773,7 @@ void os_lock_mutex(Mutex_Handle m) {
             break;
     }
 }
-void os_unlock_mutex(Mutex_Handle m) {
+void OsUnlockMutex(Mutex_Handle m) {
 	BOOL result = ReleaseMutex(m);
 	assert(result, "Unlock mutex 0x%x failed with error %d", m, GetLastError());
 }
@@ -808,7 +808,7 @@ void os_high_precision_sleep(f64 ms) {
 	
 	const f64 s = ms/1000.0;
 	
-	f64 start = os_get_elapsed_seconds();
+	f64 start = OsGetElapsedSeconds();
 	f64 end = start + (f64)s;
 	s32 sleep_time = (s32)((end-start)-1.0);
 	bool do_sleep = sleep_time >= 1;
@@ -817,7 +817,7 @@ void os_high_precision_sleep(f64 ms) {
 	
 	if (do_sleep)  os_sleep(sleep_time);
 	
-	while (os_get_elapsed_seconds() < end) {
+	while (OsGetElapsedSeconds() < end) {
 		os_yield_thread();
 	}
 	
@@ -842,7 +842,7 @@ os_get_current_time_in_seconds() {
 }
 
 float64
-os_get_elapsed_seconds() {
+OsGetElapsedSeconds() {
 	LARGE_INTEGER freq, counter = (LARGE_INTEGER){0};
 	QueryPerformanceFrequency(&freq);
 	QueryPerformanceCounter(&counter);
@@ -861,7 +861,7 @@ Dynamic_Library_Handle os_load_dynamic_library(string path) {
 	return LoadLibraryW(temp_win32_fixed_utf8_to_null_terminated_wide(path));
 }
 void *os_dynamic_library_load_symbol(Dynamic_Library_Handle l, string identifier) {
-	return GetProcAddress(l, temp_convert_to_null_terminated_string(identifier));
+	return GetProcAddress(l, TempConvertToNullTerminatedString(identifier));
 }
 void os_unload_dynamic_library(Dynamic_Library_Handle l) {
 	FreeLibrary(l);
@@ -1082,12 +1082,12 @@ bool os_read_entire_file_handle(File f, string *result, Allocator allocator) {
     }
     
     u64 actual_read = 0;
-    result->data = (u8*)alloc(allocator, file_size.QuadPart);
+    result->data = (uint8_t*)Alloc(allocator, file_size.QuadPart);
     result->count = file_size.QuadPart;
     
     bool ok = os_file_read(f, result->data, file_size.QuadPart, &actual_read);
     if (!ok) {
-		dealloc(allocator, result->data);
+		Dealloc(allocator, result->data);
 		result->data = 0;
 		return false;
 	}
@@ -1170,11 +1170,11 @@ bool os_get_absolute_path(string path, string *result, Allocator allocator) {
 bool os_get_relative_path(string from, string to, string *result, Allocator allocator) {
     
 	if (!os_is_path_absolute(from)) {
-		bool abs_ok = os_get_absolute_path(from, &from, get_temporary_allocator());
+		bool abs_ok = os_get_absolute_path(from, &from, GetTemporaryAllocator());
 		if (!abs_ok) return false;
 	}
 	if (!os_is_path_absolute(to)) {
-		bool abs_ok = os_get_absolute_path(to, &to, get_temporary_allocator());
+		bool abs_ok = os_get_absolute_path(to, &to, GetTemporaryAllocator());
 		if (!abs_ok) return false;
 	}
 	
@@ -1230,14 +1230,16 @@ bool os_do_paths_match(string a, string b) {
 void fprints(File f, string fmt, ...) {
 	va_list args;
 	va_start(args, fmt);
+    /* va_end will be called after use */
 	fprint_va_list_buffered(f, fmt, args);
 	va_end(args);
 }
 void fprintf(File f, const char* fmt, ...) {
 	va_list args;
 	va_start(args, fmt);
+    /* va_end will be called after use */
 	string s;
-	s.data = cast(u8*)fmt;
+	s.data = cast(uint8_t*)fmt;
 	s.count = strlen(fmt);
 	fprint_va_list_buffered(f, s, args);
 	va_end(args);
@@ -1250,9 +1252,9 @@ void os_wait_and_read_stdin(string *result, u64 max_count, Allocator allocator) 
 	BOOL ok = ReadConsole(GetStdHandle(STD_INPUT_HANDLE), buffer, max_count, &read, 0);
 	
 	if (!ok) {
-		*result = string_copy(STR("STDIN is not available"), allocator);
+		*result = StringCopy(STR("STDIN is not available"), allocator);
 	} else {		
-		*result = alloc_string(allocator, read);
+		*result = AllocString(allocator, read);
 		memcpy(result->data, buffer, read);
 		if (result->count >= 2 && result->data[result->count-1] == '\n') result->count -= 2;
 	}
@@ -1330,7 +1332,7 @@ os_get_stack_trace(u64 *trace_count, Allocator allocator) {
 #error "Platform not supported!"
 #endif
 
-    string *stack_strings = (string *)alloc(allocator, WIN32_MAX_STACK_FRAMES * sizeof(string));
+    string *stack_strings = (string *)Alloc(allocator, WIN32_MAX_STACK_FRAMES * sizeof(string));
     *trace_count = 0;
 
     for (int i = 0; i < WIN32_MAX_STACK_FRAMES; i++) {
@@ -1352,18 +1354,18 @@ os_get_stack_trace(u64 *trace_count, Allocator allocator) {
             char *result;
             if (SymGetLineFromAddr64(process, stack.AddrPC.Offset, &displacement_line, &line)) {
                 u64 length = (u64)(symbol->NameLen + strlen(line.FileName) + 50);
-                result = (char *)alloc(allocator, length);
+                result = (char *)Alloc(allocator, length);
                 format_string_to_buffer_va(result, length, "%cs:%d: %cs", line.FileName, line.LineNumber, symbol->Name);
             } else {
                 u64 length = (u64)(symbol->NameLen + 1);
-                result = (char *)alloc(allocator, length);
+                result = (char *)Alloc(allocator, length);
                 memcpy(result, symbol->Name, symbol->NameLen + 1);
             }
-            stack_strings[*trace_count].data = (u8 *)result;
+            stack_strings[*trace_count].data = (uint8_t *)result;
             stack_strings[*trace_count].count = strlen(result);
             (*trace_count)++;
         } else {
-            stack_strings[*trace_count].data = (u8 *)alloc(allocator, 32);
+            stack_strings[*trace_count].data = (uint8_t *)Alloc(allocator, 32);
             stack_strings[*trace_count].count = format_string_to_buffer_va((char *)stack_strings[*trace_count].data, 32, "0x%llx", stack.AddrPC.Offset);
             (*trace_count)++;
         }
@@ -1373,9 +1375,9 @@ os_get_stack_trace(u64 *trace_count, Allocator allocator) {
 #else // DEBUG
 	
 	*trace_count = 1;
-	string *result = alloc(allocator, 3+sizeof(string));
+	string *result = Alloc(allocator, 3+sizeof(string));
 	result->count = 3;
-	result->data = (u8*)result+sizeof(string);
+	result->data = (uint8_t*)result+sizeof(string);
 	string s = STR("<0>");
 	memcpy(result->data, s.data, 3);
 	return result;
@@ -1384,9 +1386,9 @@ os_get_stack_trace(u64 *trace_count, Allocator allocator) {
 }
 
 bool os_grow_program_memory(u64 new_size) {
-	os_lock_mutex(program_memory_mutex); // #Sync
+	OsLockMutex(program_memory_mutex); // #Sync
 	if (program_memory_capacity >= new_size) {
-		os_unlock_mutex(program_memory_mutex); // #Sync
+		OsUnlockMutex(program_memory_mutex); // #Sync
 		return true;
 	}
 
@@ -1404,7 +1406,7 @@ bool os_grow_program_memory(u64 new_size) {
 
 		program_memory = VirtualAlloc(aligned_base, aligned_size, MEM_RESERVE | MEM_COMMIT, PAGE_READWRITE);
 		if (program_memory == 0) { 
-			os_unlock_mutex(program_memory_mutex); // #Sync
+			OsUnlockMutex(program_memory_mutex); // #Sync
 			return false;
 		}
 		program_memory_next = program_memory;
@@ -1415,7 +1417,7 @@ bool os_grow_program_memory(u64 new_size) {
 		VirtualProtect(aligned_base, aligned_size, PAGE_NOACCESS, &_);
 #endif
 	} else {
-		void* tail = (u8*)program_memory + program_memory_capacity;
+		void* tail = (uint8_t*)program_memory + program_memory_capacity;
 		
 		assert((u64)program_memory_capacity % os.granularity == 0, "program_memory_capacity is not aligned to granularity!");
 		assert((u64)tail % os.granularity == 0, "Tail is not aligned to granularity!");
@@ -1430,7 +1432,7 @@ bool os_grow_program_memory(u64 new_size) {
 		VirtualProtect(tail, amount_to_allocate, PAGE_NOACCESS, &_);
 #endif
 		if (result == 0) { 
-			os_unlock_mutex(program_memory_mutex); // #Sync
+			OsUnlockMutex(program_memory_mutex); // #Sync
 			return false;
 		}
 		assert(tail == result, "It seems tail is not aligned properly. o nein");
@@ -1446,7 +1448,7 @@ bool os_grow_program_memory(u64 new_size) {
 	os_write_string_to_stdout(STR("Program memory grew to "));
 	os_write_string_to_stdout(STR(size_str));
 	os_write_string_to_stdout(STR(" kb\n"));
-	os_unlock_mutex(program_memory_mutex); // #Sync
+	OsUnlockMutex(program_memory_mutex); // #Sync
 	return true;
 }
 
@@ -1456,9 +1458,9 @@ os_reserve_next_memory_pages(u64 size) {
 
 	void *p = program_memory_next;
 	
-	program_memory_next = (u8*)program_memory_next + size;
+	program_memory_next = (uint8_t*)program_memory_next + size;
 	
-	void *program_tail = (u8*)program_memory + program_memory_capacity;
+	void *program_tail = (uint8_t*)program_memory + program_memory_capacity;
 	
 	if ((u64)program_memory_next > (u64)program_tail) {
 		u64 minimum_size = ((u64)program_memory_next) - (u64)program_memory + 1;
@@ -1484,7 +1486,7 @@ os_unlock_program_memory_pages(void *start, u64 size) {
 	// This memory may be across multiple allocated regions so we need to do this one page at a time.
 	// Probably super slow but this shouldn't happen often at all + it's only in debug.
 	// - Charlie M 28th July 2024
-	for (u8 *p = (u8*)start; p < (u8*)start+size; p += os.page_size) {
+	for (uint8_t *p = (uint8_t*)start; p < (uint8_t*)start+size; p += os.page_size) {
 		DWORD old_protect = PAGE_NOACCESS;
 		BOOL ok = VirtualProtect(p, os.page_size, PAGE_READWRITE, &old_protect);
 		assert(ok, "VirtualProtect Failed with error %d", GetLastError());
@@ -1500,7 +1502,7 @@ os_lock_program_memory_pages(void *start, u64 size) {
 	// This memory may be across multiple allocated regions so we need to do this one page at a time.
 	// Probably super slow but this shouldn't happen often at all + it's only in debug.
 	// - Charlie M 28th July 2024
-	for (u8 *p = (u8*)start; p < (u8*)start+size; p += os.page_size) {
+	for (uint8_t *p = (uint8_t*)start; p < (uint8_t*)start+size; p += os.page_size) {
 		DWORD old_protect = PAGE_READWRITE;
 		BOOL ok = VirtualProtect(p, os.page_size, PAGE_NOACCESS, &old_protect);
 		assert(ok, "VirtualProtect Failed with error %d", GetLastError());
@@ -1623,13 +1625,13 @@ os_make_custom_mouse_pointer_from_file(string path, int hotspot_x, int hotspot_y
     );
     
     if (!stb_data) {
-        dealloc_string(allocator, png);
+        DeallocString(allocator, png);
         return 0;
     }
     
     Custom_Mouse_Pointer p = os_make_custom_mouse_pointer(stb_data, width, height, hotspot_x, hotspot_y);
     
-    dealloc_string(allocator, png);
+    DeallocString(allocator, png);
     stbi_image_free(stb_data);
     third_party_allocator = ZERO(Allocator);
     
@@ -1971,9 +1973,9 @@ void set_specific_gamepad_vibration(u64 gamepad_index, float32 left, float32 rig
 
 
 
-void os_update() {
+void OsUpdate() {
 
-	// Only show window after first call to os_update
+	// Only show window after first call to OsUpdate
 	if (!has_os_update_been_called_at_all) {
 		ShowWindow(window._os_handle, SW_SHOW);
 	    //DWORD style = GetWindowLong(window._os_handle, GWL_EXSTYLE);
@@ -1994,8 +1996,8 @@ void os_update() {
 	
 	//
 	// Window title
-	if (!strings_match(last_window.title, window.title)) {
-		SetWindowText(window._os_handle, temp_convert_to_null_terminated_string(window.title));
+	if (!StringsMatch(last_window.title, window.title)) {
+		SetWindowText(window._os_handle, TempConvertToNullTerminatedString(window.title));
 	}
 
 	//
@@ -2156,8 +2158,8 @@ void os_update() {
 	
 	
 	// Reflect what the user layer did to input state before we query for OS inputs
-	memcpy(win32_key_states, input_frame.key_states, sizeof(input_frame.key_states));
-	input_frame.number_of_events = 0;
+	memcpy(win32_key_states, inputFrame.key_states, sizeof(inputFrame.key_states));
+	inputFrame.number_of_events = 0;
 	
 	for (u64 i = 0; i < INPUT_KEY_CODE_COUNT; i++) {
 		win32_key_states[i] &= ~(INPUT_STATE_REPEAT);
@@ -2221,16 +2223,16 @@ void os_update() {
 		    	SHORT right_stick_y = state.Gamepad.sThumbRY;
 		    	
 		    	if (!any_gamepad_processed) {
-		    		input_frame.left_stick = v2(
+		    		inputFrame.left_stick = v2(
 			    		(float32)left_stick_x / (left_stick_x >= 0 ? 32767.0 : 32768.0),
 			    		(float32)left_stick_y / (left_stick_y >= 0 ? 32767.0 : 32768.0)
 		    		);
-		    		input_frame.right_stick = v2(
+		    		inputFrame.right_stick = v2(
 			    		(float32)right_stick_x / (right_stick_x >= 0 ? 32767.0 : 32768.0),
 			    		(float32)right_stick_y / (right_stick_y >= 0 ? 32767.0 : 32768.0)
 		    		);
-		    		input_frame.left_trigger  = (float32)state.Gamepad.bLeftTrigger / 255.0;
-		    		input_frame.right_trigger = (float32)state.Gamepad.bRightTrigger / 255.0;
+		    		inputFrame.left_trigger  = (float32)state.Gamepad.bLeftTrigger / 255.0;
+		    		inputFrame.right_trigger = (float32)state.Gamepad.bRightTrigger / 255.0;
 		    		
 		    	}
 		    	
@@ -2239,20 +2241,20 @@ void os_update() {
 		    	if (state.Gamepad.bRightTrigger >= 230) win32_handle_key_down(GAMEPAD_RIGHT_TRIGGER, i);
 		    	else if (last_states[i].Gamepad.bRightTrigger >= 230) win32_handle_key_up(GAMEPAD_RIGHT_TRIGGER, i);
 		    	
-		    	if (fabsf(input_frame.left_stick.x)  < deadzone_left_stick.x)  input_frame.left_stick.x  = 0.0;
-		    	if (fabsf(input_frame.left_stick.y)  < deadzone_left_stick.y)  input_frame.left_stick.y  = 0.0;
-		    	if (fabsf(input_frame.right_stick.x) < deadzone_right_stick.x) input_frame.right_stick.x = 0.0;
-		    	if (fabsf(input_frame.right_stick.y) < deadzone_right_stick.y) input_frame.right_stick.y = 0.0;
-		    	if (fabsf(input_frame.left_trigger)  < deadzone_left_trigger)  input_frame.left_trigger  = 0.0;
-		    	if (fabsf(input_frame.right_trigger) < deadzone_right_trigger) input_frame.right_trigger = 0.0;
+		    	if (fabsf(inputFrame.left_stick.x)  < deadzone_left_stick.x)  inputFrame.left_stick.x  = 0.0;
+		    	if (fabsf(inputFrame.left_stick.y)  < deadzone_left_stick.y)  inputFrame.left_stick.y  = 0.0;
+		    	if (fabsf(inputFrame.right_stick.x) < deadzone_right_stick.x) inputFrame.right_stick.x = 0.0;
+		    	if (fabsf(inputFrame.right_stick.y) < deadzone_right_stick.y) inputFrame.right_stick.y = 0.0;
+		    	if (fabsf(inputFrame.left_trigger)  < deadzone_left_trigger)  inputFrame.left_trigger  = 0.0;
+		    	if (fabsf(inputFrame.right_trigger) < deadzone_right_trigger) inputFrame.right_trigger = 0.0;
 		    	
 		    	// Update state to account for deadzone
-		    	state.Gamepad.sThumbLX = (SHORT)(input_frame.left_stick.x*32768.0-1);
-		    	state.Gamepad.sThumbLY = (SHORT)(input_frame.left_stick.y*32768.0-1);
-		    	state.Gamepad.sThumbRX = (SHORT)(input_frame.right_stick.x*32768.0-1);
-		    	state.Gamepad.sThumbRY = (SHORT)(input_frame.right_stick.y*32768.0-1);
-		    	state.Gamepad.bLeftTrigger  = (SHORT)(input_frame.left_trigger*255);
-		    	state.Gamepad.bRightTrigger = (SHORT)(input_frame.right_trigger*255);
+		    	state.Gamepad.sThumbLX = (SHORT)(inputFrame.left_stick.x*32768.0-1);
+		    	state.Gamepad.sThumbLY = (SHORT)(inputFrame.left_stick.y*32768.0-1);
+		    	state.Gamepad.sThumbRX = (SHORT)(inputFrame.right_stick.x*32768.0-1);
+		    	state.Gamepad.sThumbRY = (SHORT)(inputFrame.right_stick.y*32768.0-1);
+		    	state.Gamepad.bLeftTrigger  = (SHORT)(inputFrame.left_trigger*255);
+		    	state.Gamepad.bRightTrigger = (SHORT)(inputFrame.right_trigger*255);
 		    	left_stick_x  = state.Gamepad.sThumbLX;
 		    	left_stick_y  = state.Gamepad.sThumbLY;
 		    	right_stick_x = state.Gamepad.sThumbRX;
@@ -2264,24 +2266,24 @@ void os_update() {
 		    	
 		    	if (left_stick_x != last_states[i].Gamepad.sThumbLX || left_stick_y != last_states[i].Gamepad.sThumbLY) {
 		    		e.axes_changed |= INPUT_AXIS_LEFT_STICK;
-		    		e.left_stick = input_frame.left_stick;
+		    		e.left_stick = inputFrame.left_stick;
 		    	}
 		    	if (right_stick_x != last_states[i].Gamepad.sThumbRX || right_stick_y != last_states[i].Gamepad.sThumbRY) {
 		    		e.axes_changed |= INPUT_AXIS_RIGHT_STICK;
-		    		e.right_stick = input_frame.right_stick;
+		    		e.right_stick = inputFrame.right_stick;
 		    	}
 		    	if (state.Gamepad.bLeftTrigger != last_states[i].Gamepad.bLeftTrigger) {
 		    		e.axes_changed |= INPUT_AXIS_LEFT_TRIGGER;
-		    		e.left_trigger = input_frame.left_trigger;
+		    		e.left_trigger = inputFrame.left_trigger;
 		    	}
 		    	if (state.Gamepad.bRightTrigger != last_states[i].Gamepad.bRightTrigger) {
 		    		e.axes_changed |= INPUT_AXIS_RIGHT_TRIGGER;
-		    		e.right_trigger = input_frame.right_trigger;
+		    		e.right_trigger = inputFrame.right_trigger;
 		    	}
 		    	
 		    	if (e.axes_changed != 0) {
-					input_frame.events[input_frame.number_of_events] = e;
-					input_frame.number_of_events += 1;
+					inputFrame.events[inputFrame.number_of_events] = e;
+					inputFrame.number_of_events += 1;
 		    	}
 		    	
 		    	last_states[i] = state;
@@ -2292,7 +2294,7 @@ void os_update() {
 	
 	// Poll window events
 	MSG msg;
-	while (input_frame.number_of_events < MAX_EVENTS_PER_FRAME 
+	while (inputFrame.number_of_events < MAX_EVENTS_PER_FRAME 
 			&& PeekMessage(&msg, 0, 0, 0, PM_REMOVE)) {
         if (msg.message == WM_QUIT) {
             window.should_close = true;
@@ -2302,13 +2304,13 @@ void os_update() {
         DispatchMessage(&msg);
     }
     
-	memcpy(input_frame.key_states, win32_key_states, sizeof(input_frame.key_states));
+	memcpy(inputFrame.key_states, win32_key_states, sizeof(inputFrame.key_states));
 	POINT p;
 	GetCursorPos(&p);
 	ScreenToClient(window._os_handle, &p);
 	p.y = window.height - p.y;
-	input_frame.mouse_x = p.x;
-	input_frame.mouse_y = p.y;
+	inputFrame.mouse_x = p.x;
+	inputFrame.mouse_y = p.y;
 	
 	if (window.should_close) {
 		win32_window_proc(window._os_handle, WM_CLOSE, 0, 0);

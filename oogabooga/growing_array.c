@@ -89,7 +89,7 @@ growing_array_init_reserve(void **array, u64 block_size_in_bytes, u64 count_to_r
     count_to_reserve = get_next_power_of_two(count_to_reserve);
     u64 bytes_to_allocate = count_to_reserve*block_size_in_bytes + sizeof(Growing_Array_Header);
     
-    Growing_Array_Header *header = (Growing_Array_Header*)alloc(allocator, bytes_to_allocate);
+    Growing_Array_Header *header = (Growing_Array_Header*)Alloc(allocator, bytes_to_allocate);
     
     header->allocator = allocator;
     header->block_size_in_bytes = block_size_in_bytes;
@@ -107,7 +107,7 @@ void
 growing_array_deinit(void **array) {
 	assert(check_growing_array_signature(array), "Not a valid growing array");
     Growing_Array_Header *header = ((Growing_Array_Header*)*array) - 1;
-    dealloc(header->allocator, header);
+    Dealloc(header->allocator, header);
 }
 
 void
@@ -120,7 +120,7 @@ growing_array_reserve(void **array, u64 count_to_reserve) {
     u64 old_allocated_bytes = header->allocated_count*header->block_size_in_bytes+sizeof(Growing_Array_Header);
     count_to_reserve = get_next_power_of_two(count_to_reserve);
     u64 bytes_to_allocate = count_to_reserve*header->block_size_in_bytes+sizeof(Growing_Array_Header);
-    Growing_Array_Header *new_header = (Growing_Array_Header*)alloc(header->allocator, bytes_to_allocate);
+    Growing_Array_Header *new_header = (Growing_Array_Header*)Alloc(header->allocator, bytes_to_allocate);
     
     memcpy(new_header, header, old_allocated_bytes);
     
@@ -129,7 +129,7 @@ growing_array_reserve(void **array, u64 count_to_reserve) {
     
     new_header->allocated_count = count_to_reserve;
     
-    dealloc(header->allocator, header);
+    Dealloc(header->allocator, header);
 }
 
 void*
@@ -141,7 +141,7 @@ growing_array_add_empty(void **array) {
     // Pointer might have been invalidated after reserve
     header = ((Growing_Array_Header*)*array) - 1; 
     
-    void *item = (u8*)*array + header->valid_count*header->block_size_in_bytes;
+    void *item = (uint8_t*)*array + header->valid_count*header->block_size_in_bytes;
     
     header->valid_count += 1;
     
@@ -156,7 +156,7 @@ growing_array_add_multiple_empty(void **array, u64 count) {
     // Pointer might have been invalidated after reserve
     header = ((Growing_Array_Header*)*array) - 1; 
     
-    void *start = (u8*)*array + header->valid_count*header->block_size_in_bytes;
+    void *start = (uint8_t*)*array + header->valid_count*header->block_size_in_bytes;
     
     header->valid_count += count;
     
@@ -214,8 +214,8 @@ growing_array_ordered_remove_by_index(void **array, u32 index) {
     u64 byte_index = header->block_size_in_bytes*index;
     
     memcpy(
-        (u8*)*array + byte_index, 
-        (u8*)*array + byte_index + header->block_size_in_bytes,
+        (uint8_t*)*array + byte_index, 
+        (uint8_t*)*array + byte_index + header->block_size_in_bytes,
         (header->valid_count-index-1)*header->block_size_in_bytes
     );
     header->valid_count -= 1;
@@ -235,8 +235,8 @@ growing_array_unordered_remove_by_index(void **array, u32 index) {
     u64 last_item_index = header->block_size_in_bytes*header->valid_count-header->block_size_in_bytes;
     
     memcpy(
-        (u8*)*array + byte_index, 
-        (u8*)*array + last_item_index,
+        (uint8_t*)*array + byte_index, 
+        (uint8_t*)*array + last_item_index,
         header->block_size_in_bytes
     );
     header->valid_count -= 1;
@@ -248,7 +248,7 @@ growing_array_find_index_from_left_by_pointer(void **array, void *p) {
     Growing_Array_Header *header = ((Growing_Array_Header*)*array) - 1;
     
     for (u32 i = 0; i < header->valid_count; i++) {
-        void *next = (u8*)*array + i*header->block_size_in_bytes;
+        void *next = (uint8_t*)*array + i*header->block_size_in_bytes;
         
         if (next == p) {
             return i;
@@ -262,7 +262,7 @@ growing_array_find_index_from_left_by_value(void **array, void *p) {
     Growing_Array_Header *header = ((Growing_Array_Header*)*array) - 1;
     
     for (u32 i = 0; i < header->valid_count; i++) {
-        void *next = (u8*)*array + i*header->block_size_in_bytes;
+        void *next = (uint8_t*)*array + i*header->block_size_in_bytes;
         
         if (bytes_match(next, p, header->block_size_in_bytes)) {
             return i;

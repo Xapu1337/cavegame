@@ -5,7 +5,7 @@ int entry(int argc, char **argv) {
 	
 	window.title = STR("Sprite animation example");
 	
-	Gfx_Image *anim_sheet = load_image_from_disk(STR("oogabooga/examples/male_animation.png"), get_heap_allocator());
+	Gfx_Image *anim_sheet = load_image_from_disk(STR("oogabooga/examples/male_animation.png"), GetHeapAllocator());
 	assert(anim_sheet, "Could not open oogabooga/examples/male_animation.png");
 	
 	// Configure information about the whole image as a sprite sheet
@@ -40,18 +40,18 @@ int entry(int argc, char **argv) {
 	float32 anim_time_per_frame = 1.0 / playback_fps;
 	float32 anim_duration = anim_time_per_frame * (float32)anim_number_of_frames;
 	
-	float32 anim_start_time = os_get_elapsed_seconds();
+	float32 anim_start_time = OsGetElapsedSeconds();
 	
-	float64 last_time = os_get_elapsed_seconds();
+	float64 last_time = OsGetElapsedSeconds();
 	while (!window.should_close) {
-		reset_temporary_storage();
+		ResetTemporaryStorage();
 		
 		
-		float64 now = os_get_elapsed_seconds();
+		float64 now = OsGetElapsedSeconds();
 		float64 delta = now-last_time;
 		last_time = now;
 		
-		draw_frame.projection = m4_make_orthographic_projection(window.pixel_width * -0.5, window.pixel_width * 0.5, window.pixel_height * -0.5, window.pixel_height * 0.5, -1, 10);
+		drawFrame.projection = m4_make_orthographic_projection(window.pixel_width * -0.5, window.pixel_width * 0.5, window.pixel_height * -0.5, window.pixel_height * 0.5, -1, 10);
 		
 		// Float modulus to "loop" around the timer over the anim duration
 		float32 anim_elapsed = fmodf(now - anim_start_time, anim_duration);
@@ -84,11 +84,11 @@ int entry(int argc, char **argv) {
 		Vector2 frame_pos_in_sheet = v2(anim_sheet_pos_x, anim_sheet_pos_y);
 		Vector2 frame_size = v2(anim_frame_width, anim_frame_height);
 		draw_rect(sheet_pos, sheet_size, COLOR_BLACK); // Draw black background
-		draw_rect(v2_add(sheet_pos, frame_pos_in_sheet), frame_size, COLOR_WHITE); // Draw white rect on current frame
+		draw_rect(V2Add(sheet_pos, frame_pos_in_sheet), frame_size, COLOR_WHITE); // Draw white rect on current frame
 		draw_image(anim_sheet, sheet_pos, sheet_size, COLOR_WHITE); // Draw the seet
 		
-		os_update(); 
-		gfx_update();
+		OsUpdate(); 
+		GfxUpdate();
 	}
 
 	return 0;

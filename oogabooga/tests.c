@@ -38,12 +38,12 @@ void test_allocator(bool do_log_heap) {
 
 	u64 h = get_hash((string*)69);
 
-	Allocator heap = get_heap_allocator();
+	Allocator heap = GetHeapAllocator();
 
 	// Basic allocation and free
-    int* a = (int*)alloc(heap, sizeof(int));
-    int* b = (int*)alloc(heap, sizeof(int));
-    int* c = (int*)alloc(heap, sizeof(int));
+    int* a = (int*)Alloc(heap, sizeof(int));
+    int* b = (int*)Alloc(heap, sizeof(int));
+    int* c = (int*)Alloc(heap, sizeof(int));
     
     *a = 69;
     *b = 420;
@@ -60,51 +60,51 @@ void test_allocator(bool do_log_heap) {
     assert(*b == 420, "Test failed: Memory corrupted");
     assert(*c == 1337, "Test failed: Memory corrupted");
     
-    u8 check_bytes[1024];
+    uint8_t check_bytes[1024];
     for (u64 i = 0; i < 1024; i += 4) {
     	*((int*)&check_bytes[i]) = (int)get_random();
     }
-    u8 *check_bytes_copy = (u8*)alloc(heap, 1024);
+    uint8_t *check_bytes_copy = (uint8_t*)Alloc(heap, 1024);
     memcpy(check_bytes_copy, check_bytes, 1024);
     
     
     // Allocate and free large block
-    //void* large_block = alloc(heap, 1024 * 1024 * 100);
-    //dealloc(heap, large_block);
+    //void* large_block = Alloc(heap, 1024 * 1024 * 100);
+    //Dealloc(heap, large_block);
 
     // Allocate multiple small blocks
     void* blocks[100];
     for (int i = 0; i < 100; ++i) {
-        blocks[i] = alloc(heap, 128);
+        blocks[i] = Alloc(heap, 128);
         assert(blocks[i] != NULL, "Failed to allocate small block");
     }
     
     for (int i = 0; i < 100; ++i) {
-        dealloc(heap, blocks[i]);
+        Dealloc(heap, blocks[i]);
     }
 
     // Stress test with various sizes
     for (int i = 1; i <= 1000; ++i) {
-        void* p = alloc(heap, i * 64);
+        void* p = Alloc(heap, i * 64);
         assert(p != NULL, "Failed to allocate varying size block");
-        dealloc(heap, p);
+        Dealloc(heap, p);
     }
 
     
     // Free in reverse order
     for (int i = 0; i < 100; ++i) {
-        blocks[i] = alloc(heap, 128);
+        blocks[i] = Alloc(heap, 128);
         assert(blocks[i] != NULL, "Failed to allocate small block");
     }
 
     for (int i = 99; i >= 0; --i) {
-        dealloc(heap, blocks[i]);
+        Dealloc(heap, blocks[i]);
     }
 
     // Test memory integrity with various allocation patterns
     int* nums[10];
     for (int i = 0; i < 10; ++i) {
-        nums[i] = (int*)alloc(heap, sizeof(int) * 10);
+        nums[i] = (int*)Alloc(heap, sizeof(int) * 10);
         for (int j = 0; j < 10; ++j) {
             nums[i][j] = i * 10 + j;
         }
@@ -114,82 +114,82 @@ void test_allocator(bool do_log_heap) {
         for (int j = 0; j < 10; ++j) {
             assert(nums[i][j] == i * 10 + j, "Memory corruption detected");
         }
-         dealloc(heap, nums[i]);
+         Dealloc(heap, nums[i]);
     }
     
     
     
-    reset_temporary_storage();
+    ResetTemporaryStorage();
     
     
-    int* foo = (int*)alloc(get_temporary_allocator(), 72);
+    int* foo = (int*)Alloc(GetTemporaryAllocator(), 72);
     *foo = 1337;
-    void* bar = alloc(get_temporary_allocator(), 69);
+    void* bar = Alloc(GetTemporaryAllocator(), 69);
     (void)bar;
-    void* baz = alloc(get_temporary_allocator(), 420);
+    void* baz = Alloc(GetTemporaryAllocator(), 420);
     (void)baz;
     
     assert(*foo == 1337, "Temp memory corruptada");
     
     int* old_foo = foo;
     
-    reset_temporary_storage();
+    ResetTemporaryStorage();
     
-    foo = (int*)alloc(get_temporary_allocator(), 72);
+    foo = (int*)Alloc(GetTemporaryAllocator(), 72);
     
     assert(old_foo == foo, "Temp allocator goof");
     
     // Repeated Allocation and Free
     for (int i = 0; i < 10000; ++i) {
-        void* temp = alloc(heap, 128);
+        void* temp = Alloc(heap, 128);
         assert(temp != NULL && "Repeated allocation failed");
-        dealloc(heap, temp);
+        Dealloc(heap, temp);
     }
 
     // Mixed Size Allocations
     void* mixed_blocks[200];
     for (int i = 0; i < 200; ++i) {
         if (i % 2 == 0) {
-            mixed_blocks[i] = alloc(heap, 128);
+            mixed_blocks[i] = Alloc(heap, 128);
         } else {
-            mixed_blocks[i] = alloc(heap, 1024 * 1024); // 1MB blocks
+            mixed_blocks[i] = Alloc(heap, 1024 * 1024); // 1MB blocks
         }
         assert(mixed_blocks[i] != NULL && "Mixed size allocation failed");
     }
 
     for (int i = 0; i < 200; ++i) {
         if (i % 2 == 0) {
-            dealloc(heap, mixed_blocks[i]);
+            Dealloc(heap, mixed_blocks[i]);
         }
     }
 
     for (int i = 0; i < 200; ++i) {
         if (i % 2 != 0) {
-            dealloc(heap, mixed_blocks[i]);
+            Dealloc(heap, mixed_blocks[i]);
         }
     }
 
     // Fragmentation Stress Test
     for (int i = 0; i < 50; ++i) {
-        blocks[i] = alloc(heap, 256);
+        blocks[i] = Alloc(heap, 256);
         assert(blocks[i] != NULL && "Failed to allocate small block for fragmentation test");
     }
 
     for (int i = 0; i < 50; i += 2) {
-        dealloc(heap, blocks[i]);
+        Dealloc(heap, blocks[i]);
     }
 
     for (int i = 50; i < 100; ++i) {
-        blocks[i] = alloc(heap, 128);
+        blocks[i] = Alloc(heap, 128);
         assert(blocks[i] != NULL && "Failed to allocate small block in fragmented heap");
     }
 
     for (int i = 50; i < 100; ++i) {
-        dealloc(heap, blocks[i]);
+        Dealloc(heap, blocks[i]);
     }
 
     for (int i = 1; i < 50; i += 2) {
-        dealloc(heap, blocks[i]);
+        Dealloc(heap, blocks[i]);
     }
     
     assert(bytes_match(check_bytes, check_bytes_copy, 1024), "Memory corrupt");
@@ -220,86 +220,86 @@ void test_threads() {
 	os_thread_join(&t);
 	print("Thread is joined\n");
 	
-	Mutex_Handle m = os_make_mutex();
-	os_lock_mutex(m);
-	os_unlock_mutex(m);
+	Mutex_Handle m = OsMakeMutex();
+	OsLockMutex(m);
+	OsUnlockMutex(m);
 }
 
 void test_allocator_threaded(Thread *t) {
 
-	Allocator heap = get_heap_allocator();
+	Allocator heap = GetHeapAllocator();
 
     for (int i = 0; i < 1000; ++i) {
-        void* temp = alloc(heap, 128);
+        void* temp = Alloc(heap, 128);
         assert(temp != NULL && "Repeated allocation failed");
-        dealloc(heap, temp);
+        Dealloc(heap, temp);
     }
 
     void* mixed_blocks[40];
     for (int i = 0; i < 40; ++i) {
         if (i % 2 == 0) {
-            mixed_blocks[i] = alloc(heap, 128);
+            mixed_blocks[i] = Alloc(heap, 128);
         } else {
-            mixed_blocks[i] = alloc(heap, 1024 * 1024); // 1MB blocks
+            mixed_blocks[i] = Alloc(heap, 1024 * 1024); // 1MB blocks
         }
         assert(mixed_blocks[i] != NULL && "Mixed size allocation failed");
     }
 
     for (int i = 0; i < 40; ++i) {
         if (i % 2 == 0) {
-            dealloc(heap, mixed_blocks[i]);
+            Dealloc(heap, mixed_blocks[i]);
         }
     }
 
     for (int i = 0; i < 40; ++i) {
         if (i % 2 != 0) {
-            dealloc(heap, mixed_blocks[i]);
+            Dealloc(heap, mixed_blocks[i]);
         }
     }
 }
 
 void test_strings() {
-	Allocator heap = get_heap_allocator();
+	Allocator heap = GetHeapAllocator();
 	{
-		// Test length_of_null_terminated_string
-	    assert(length_of_null_terminated_string("Test") == 4, "Failed: length_of_null_terminated_string");
-	    assert(length_of_null_terminated_string("") == 0, "Failed: length_of_null_terminated_string");
+		// Test LengthOfNullTerminatedString
+	    assert(LengthOfNullTerminatedString("Test") == 4, "Failed: LengthOfNullTerminatedString");
+	    assert(LengthOfNullTerminatedString("") == 0, "Failed: LengthOfNullTerminatedString");
 	
 	
-	    // Test alloc_string and dealloc_string
-	    string alloc_str = alloc_string(heap, 10);
-	    assert(alloc_str.data != NULL, "Failed: alloc_string");
-	    assert(alloc_str.count == 10, "Failed: alloc_string");
-	    dealloc_string(heap, alloc_str);
+	    // Test AllocString and DeallocString
+	    string alloc_str = AllocString(heap, 10);
+	    assert(alloc_str.data != NULL, "Failed: AllocString");
+	    assert(alloc_str.count == 10, "Failed: AllocString");
+	    DeallocString(heap, alloc_str);
 	
-	    // Test string_concat
+	    // Test StringConcat
 	    string str1 = STR("Hello, ");
 	    string str2 = STR("World!");
-	    string concat_str = string_concat(str1, str2, heap);
-	    assert(concat_str.count == str1.count + str2.count, "Failed: string_concat");
-	    assert(memcmp(concat_str.data, "Hello, World!", concat_str.count) == 0, "Failed: string_concat");
-	    dealloc_string(heap, concat_str);
+	    string concat_str = StringConcat(str1, str2, heap);
+	    assert(concat_str.count == str1.count + str2.count, "Failed: StringConcat");
+	    assert(memcmp(concat_str.data, "Hello, World!", concat_str.count) == 0, "Failed: StringConcat");
+	    DeallocString(heap, concat_str);
 	
-	    // Test convert_to_null_terminated_string
-	    char* cstr = convert_to_null_terminated_string(str1, heap);
-	    assert(strcmp(cstr, "Hello, ") == 0, "Failed: convert_to_null_terminated_string");
-	    dealloc(heap, cstr);
+	    // Test ConvertToNullTerminatedString
+	    char* cstr = ConvertToNullTerminatedString(str1, heap);
+	    assert(strcmp(cstr, "Hello, ") == 0, "Failed: ConvertToNullTerminatedString");
+	    Dealloc(heap, cstr);
 	
-	    // Test temp_convert_to_null_terminated_string
-	    cstr = temp_convert_to_null_terminated_string(str2);
-	    assert(strcmp(cstr, "World!") == 0, "Failed: temp_convert_to_null_terminated_string");
+	    // Test TempConvertToNullTerminatedString
+	    cstr = TempConvertToNullTerminatedString(str2);
+	    assert(strcmp(cstr, "World!") == 0, "Failed: TempConvertToNullTerminatedString");
 	
 	    // Test sprint
 	    string format_str = STR("Number: %d");
 	    string formatted_str = sprint(heap, format_str, 42);
-	    char* formatted_cstr = convert_to_null_terminated_string(formatted_str, heap);
+	    char* formatted_cstr = ConvertToNullTerminatedString(formatted_str, heap);
 	    assert(strcmp(formatted_cstr, "Number: 42") == 0, "Failed: sprint");
-	    dealloc(heap, formatted_str.data);
-	    dealloc(heap, formatted_cstr);
+	    Dealloc(heap, formatted_str.data);
+	    Dealloc(heap, formatted_cstr);
 	
 	    // Test tprint
 	    string temp_formatted_str = tprint(format_str, 100);
-	    formatted_cstr = temp_convert_to_null_terminated_string(temp_formatted_str);
+	    formatted_cstr = TempConvertToNullTerminatedString(temp_formatted_str);
 	    assert(strcmp(formatted_cstr, "Number: 100") == 0, "Failed: tprint");
 	
 	    // Test print and printf (visual inspection)
@@ -333,30 +333,30 @@ void test_strings() {
 	
 	    // Test handling of empty strings
 	    string empty_str = STR("");
-	    string concat_empty_str = string_concat(empty_str, empty_str, heap);
-	    assert(concat_empty_str.count == 0 && !concat_empty_str.data, "Failed: string_concat with empty strings");
+	    string concat_empty_str = StringConcat(empty_str, empty_str, heap);
+	    assert(concat_empty_str.count == 0 && !concat_empty_str.data, "Failed: StringConcat with empty strings");
 	
 	    // Test very large strings (performance test)
-	    string large_str1 = alloc_string(heap, 1024 * 1024);
-	    string large_str2 = alloc_string(heap, 1024 * 1024);
-	    string large_concat_str = string_concat(large_str1, large_str2, heap);
-	    assert(large_concat_str.count == 2 * 1024 * 1024, "Failed: large string_concat");
-	    dealloc_string(heap, large_str1);
-	    dealloc_string(heap, large_str2);
-	    dealloc_string(heap, large_concat_str);
+	    string large_str1 = AllocString(heap, 1024 * 1024);
+	    string large_str2 = AllocString(heap, 1024 * 1024);
+	    string large_concat_str = StringConcat(large_str1, large_str2, heap);
+	    assert(large_concat_str.count == 2 * 1024 * 1024, "Failed: large StringConcat");
+	    DeallocString(heap, large_str1);
+	    DeallocString(heap, large_str2);
+	    DeallocString(heap, large_concat_str);
 	
 	    // Test string with special characters
 	    string special_char_str = STR("Special chars: \n\t\r");
-	    cstr = convert_to_null_terminated_string(special_char_str, heap);
+	    cstr = ConvertToNullTerminatedString(special_char_str, heap);
 	    assert(strcmp(cstr, "Special chars: \n\t\r") == 0, "Failed: special character string");
-	    dealloc(heap, cstr);
+	    Dealloc(heap, cstr);
 	    
 	    string a = tprint("Hello, %cs!\n", "balls");
 	    string balls1 = string_view(a, 7, 5);
 	    string balls2 = STR("balls");
 	    
-	    assert(strings_match(balls1, balls2), "String match failed");
-	    assert(!strings_match(balls1, a), "String match failed");
+	    assert(StringsMatch(balls1, balls2), "String match failed");
+	    assert(!StringsMatch(balls1, a), "String match failed");
 	    
     }
     // Test string_builder_init
@@ -400,24 +400,24 @@ void test_strings() {
     assert(memcmp(result_str.data, builder.buffer, result_str.count) == 0, "Failed: string_builder_get_string");
     
     // Cleanup
-    dealloc(heap, builder.buffer);
+    Dealloc(heap, builder.buffer);
     
     // Test handling of empty builder
     String_Builder empty_builder;
     string_builder_init(&empty_builder, heap);
     result_str = string_builder_get_string(empty_builder);
     assert(result_str.count == 0, "Failed: empty builder handling");
-    dealloc(heap, empty_builder.buffer);
+    Dealloc(heap, empty_builder.buffer);
     
     // Test appending large strings (performance test)
     String_Builder large_builder;
     string_builder_init(&large_builder, heap);
-    string large_str = alloc_string(heap, 1024 * 1024);
+    string large_str = AllocString(heap, 1024 * 1024);
     memset(large_str.data, 'A', 1024 * 1024);
     string_builder_append(&large_builder, large_str);
     assert(large_builder.count == 1024 * 1024, "Failed: large string_builder_append");
-    dealloc_string(heap, large_str);
-    dealloc(heap, large_builder.buffer);
+    DeallocString(heap, large_str);
+    Dealloc(heap, large_builder.buffer);
     
     // Test appending special characters
     String_Builder special_char_builder;
@@ -426,7 +426,7 @@ void test_strings() {
     string_builder_append(&special_char_builder, special_char_str);
     assert(special_char_builder.count == special_char_str.count, "Failed: special character append");
     assert(memcmp(special_char_builder.buffer, special_char_str.data, special_char_str.count) == 0, "Failed: special character append");
-    dealloc(heap, special_char_builder.buffer);
+    Dealloc(heap, special_char_builder.buffer);
     
     // Test multiple appends
     String_Builder multi_append_builder;
@@ -440,14 +440,14 @@ void test_strings() {
     expected_result = "First part and second part and third part.";
     assert(multi_append_builder.count == strlen(expected_result), "Failed: multiple appends");
     assert(memcmp(multi_append_builder.buffer, expected_result, multi_append_builder.count) == 0, "Failed: multiple appends");
-    dealloc(heap, multi_append_builder.buffer);
+    Dealloc(heap, multi_append_builder.buffer);
     
     string cheese_hello = STR("HeCHEESElloCHEESE, WorCHEESEld!");
     string hello = string_replace_all(cheese_hello, STR("CHEESE"), STR(""), heap);
-    assert(strings_match(hello, STR("Hello, World!")), "Failed: string_replace");
+    assert(StringsMatch(hello, STR("Hello, World!")), "Failed: string_replace");
     string hello_balls = string_replace_all(hello, STR("Hello"), STR("Greetings"), heap);
     hello_balls        = string_replace_all(hello_balls, STR("World"), STR("Balls"), heap);
-    assert(strings_match(hello_balls, STR("Greetings, Balls!")), "Failed: string_replace");
+    assert(StringsMatch(hello_balls, STR("Greetings, Balls!")), "Failed: string_replace");
 }
 
 void test_file_io() {
@@ -455,10 +455,10 @@ void test_file_io() {
 #if TARGET_OS == WINDOWS && !OOGABOOGA_LINK_EXTERNAL_INSTANCE
     // Test win32_fixed_utf8_to_null_terminated_wide
     string utf8_str = STR("Test");
-    u16 *wide_str = win32_fixed_utf8_to_null_terminated_wide(utf8_str, get_heap_allocator());
+    u16 *wide_str = win32_fixed_utf8_to_null_terminated_wide(utf8_str, GetHeapAllocator());
     assert(wide_str != NULL, "Failed: win32_fixed_utf8_to_null_terminated_wide");
     assert(wide_str[4] == 0, "Failed: win32_fixed_utf8_to_null_terminated_wide");
-    dealloc(get_heap_allocator(), wide_str);
+    Dealloc(GetHeapAllocator(), wide_str);
 
     // Test temp_win32_fixed_utf8_to_null_terminated_wide
     wide_str = temp_win32_fixed_utf8_to_null_terminated_wide(utf8_str);
@@ -488,7 +488,7 @@ void test_file_io() {
     string hello_world_read = talloc_string(hello_world_write.count);
     bool read_result = os_file_read(file, hello_world_read.data, hello_world_read.count, &hello_world_read.count);
     assert(read_result, "Failed: os_file_read %d", GetLastError());
-    assert(strings_match(hello_world_read, hello_world_write), "Failed: os_file_read write/read mismatch");
+    assert(StringsMatch(hello_world_read, hello_world_write), "Failed: os_file_read write/read mismatch");
     os_file_close(file);
 
     // Test os_file_write_bytes
@@ -504,14 +504,14 @@ void test_file_io() {
     bool write_entire_result = os_write_entire_file("entire_test.txt", write_data);
     assert(write_entire_result, "Failed: os_write_entire_file");
 
-	Allocator heap = get_heap_allocator();
+	Allocator heap = GetHeapAllocator();
 
     string read_data;
     bool read_entire_result = os_read_entire_file("entire_test.txt", &read_data, heap);
     assert(read_entire_result, "Failed: os_read_entire_file");
-    assert(strings_match(read_data, write_data), "Failed: os_read_entire_file write/read mismatch");
+    assert(StringsMatch(read_data, write_data), "Failed: os_read_entire_file write/read mismatch");
     assert(memcmp(read_data.data, write_data.data, write_data.count) == 0, "Failed: os_read_entire_file (content mismatch)");
-    dealloc(heap, read_data.data);
+    Dealloc(heap, read_data.data);
     
     // Test fprint
     File balls = os_file_open("balls.txt", O_WRITE | O_CREATE);
@@ -521,14 +521,14 @@ void test_file_io() {
     string hello_balls;
     read_entire_result = os_read_entire_file("balls.txt", &hello_balls, heap);
     assert(read_entire_result, "Failed: could not read balls.txt");
-    assert(strings_match(hello_balls, STR("Hello, Balls!")), "Failed: balls read/write mismatch. Expected 'Hello, Balls!', got '%s'", hello_balls);
+    assert(StringsMatch(hello_balls, STR("Hello, Balls!")), "Failed: balls read/write mismatch. Expected 'Hello, Balls!', got '%s'", hello_balls);
     
     u64 integers[4096];
     for (u64 i = 0; i < 4096; i++) {
     	integers[i] = get_random();
     }
     string integers_data;
-    integers_data.data = (u8*)integers;
+    integers_data.data = (uint8_t*)integers;
     integers_data.count = 4096*sizeof(u64);
     bool ok = os_write_entire_file("integers", integers_data);
     assert(ok, "write integers fail");
@@ -538,7 +538,7 @@ void test_file_io() {
     assert(ok, "read integers fail");
     u64 *new_integers = (u64*)integers_data.data;
     assert(integers_read.count == integers_data.count, "Failed: big file read/write mismatch. Read was %d and written was %d", integers_read.count, integers_data.count);
-    assert(strings_match(integers_data, integers_read), "Failed: big file read/write mismatch");
+    assert(StringsMatch(integers_data, integers_read), "Failed: big file read/write mismatch");
 
 	assert(os_is_file("test.txt"), "Failed: test.txt not recognized as file");
 	assert(os_is_file("test_bytes.txt"), "Failed: test_bytes.txt not recognized as file");
@@ -598,12 +598,12 @@ void test_simd() {
 
 	
 
-    f32 *a_f32 = alloc(get_heap_allocator(), 128*sizeof(f32));
-    f32 *b_f32 = alloc(get_heap_allocator(), 128*sizeof(f32));
-    f32 *result_f32 = alloc(get_heap_allocator(), 128*sizeof(f32));
-    s32 *a_i32 = alloc(get_heap_allocator(), 128*sizeof(f32));
-    s32 *b_i32 = alloc(get_heap_allocator(), 128*sizeof(f32));
-    s32 *result_i32 = alloc(get_heap_allocator(), 128*sizeof(f32));
+    f32 *a_f32 = Alloc(GetHeapAllocator(), 128*sizeof(f32));
+    f32 *b_f32 = Alloc(GetHeapAllocator(), 128*sizeof(f32));
+    f32 *result_f32 = Alloc(GetHeapAllocator(), 128*sizeof(f32));
+    s32 *a_i32 = Alloc(GetHeapAllocator(), 128*sizeof(f32));
+    s32 *b_i32 = Alloc(GetHeapAllocator(), 128*sizeof(f32));
+    s32 *result_i32 = Alloc(GetHeapAllocator(), 128*sizeof(f32));
     
     (*(u64*)&a_f32) = ((*(u64*)&a_f32)+64) & ~(63);
     (*(u64*)&b_f32) = ((*(u64*)&b_f32)+64) & ~(63);
@@ -771,8 +771,8 @@ void test_simd() {
     #define _TEST_NUM_SAMPLES ((100000 + 64) & ~(63))
     assert(_TEST_NUM_SAMPLES % 16 == 0);
     
-    float *samples_a = alloc(get_heap_allocator(), _TEST_NUM_SAMPLES*sizeof(float)+512);
-    float *samples_b = alloc(get_heap_allocator(), _TEST_NUM_SAMPLES*sizeof(float)+512);
+    float *samples_a = Alloc(GetHeapAllocator(), _TEST_NUM_SAMPLES*sizeof(float)+512);
+    float *samples_b = Alloc(GetHeapAllocator(), _TEST_NUM_SAMPLES*sizeof(float)+512);
     samples_a = (float*)(((u64)samples_a+64)&~(63));
     samples_b = (float*)(((u64)samples_b+64)&~(63));
     memset(samples_a, 2, _TEST_NUM_SAMPLES*sizeof(float));
@@ -846,17 +846,17 @@ void test_linmath() {
 
 
 	{
-		// Test v2f32
-	    Vector2f32 v2f32_res = v2f32(1.0f, 2.0f);
-	    assert(v2f32_res.x == 1.0f && v2f32_res.y == 2.0f, "Failed: v2f32");
+		// Test V2
+	    Vector2f32 v2f32_res = V2(1.0f, 2.0f);
+	    assert(v2f32_res.x == 1.0f && v2f32_res.y == 2.0f, "Failed: V2");
 	
-	    // Test v3f32
-	    Vector3f32 v3f32_res = v3f32(1.0f, 2.0f, 3.0f);
-	    assert(v3f32_res.x == 1.0f && v3f32_res.y == 2.0f && v3f32_res.z == 3.0f, "Failed: v3f32");
+	    // Test V3
+	    Vector3f32 v3f32_res = V3(1.0f, 2.0f, 3.0f);
+	    assert(v3f32_res.x == 1.0f && v3f32_res.y == 2.0f && v3f32_res.z == 3.0f, "Failed: V3");
 	
-	    // Test v4f32
-	    Vector4f32 v4f32_res = v4f32(1.0f, 2.0f, 3.0f, 4.0f);
-	    assert(v4f32_res.x == 1.0f && v4f32_res.y == 2.0f && v4f32_res.z == 3.0f && v4f32_res.w == 4.0f, "Failed: v4f32");
+	    // Test V4
+	    Vector4f32 v4f32_res = V4(1.0f, 2.0f, 3.0f, 4.0f);
+	    assert(v4f32_res.x == 1.0f && v4f32_res.y == 2.0f && v4f32_res.z == 3.0f && v4f32_res.w == 4.0f, "Failed: V4");
 	
 	    // Test scalar vector constructors
 	    v2f32_res = v2f32_scalar(1.0f);
@@ -869,74 +869,74 @@ void test_linmath() {
 	    assert(v4f32_res.x == 1.0f && v4f32_res.y == 1.0f && v4f32_res.z == 1.0f && v4f32_res.w == 1.0f, "Failed: v4f32_scalar");
 	
 	    // Test vector addition
-	    v2f32_res = v2f32_add(v2f32(1.0f, 2.0f), v2f32(3.0f, 4.0f));
-	    assert(v2f32_res.x == 4.0f && v2f32_res.y == 6.0f, "Failed: v2f32_add");
+	    v2f32_res = V2Add(V2(1.0f, 2.0f), V2(3.0f, 4.0f));
+	    assert(v2f32_res.x == 4.0f && v2f32_res.y == 6.0f, "Failed: V2Add");
 	
-	    v3f32_res = v3f32_add(v3f32(1.0f, 2.0f, 3.0f), v3f32(4.0f, 5.0f, 6.0f));
-	    assert(v3f32_res.x == 5.0f && v3f32_res.y == 7.0f && v3f32_res.z == 9.0f, "Failed: v3f32_add");
+	    v3f32_res = V3Add(V3(1.0f, 2.0f, 3.0f), V3(4.0f, 5.0f, 6.0f));
+	    assert(v3f32_res.x == 5.0f && v3f32_res.y == 7.0f && v3f32_res.z == 9.0f, "Failed: V3Add");
 	
-	    v4f32_res = v4f32_add(v4f32(1.0f, 2.0f, 3.0f, 4.0f), v4f32(5.0f, 6.0f, 7.0f, 8.0f));
-	    assert(v4f32_res.x == 6.0f && v4f32_res.y == 8.0f && v4f32_res.z == 10.0f && v4f32_res.w == 12.0f, "Failed: v4f32_add");
+	    v4f32_res = V4Add(V4(1.0f, 2.0f, 3.0f, 4.0f), V4(5.0f, 6.0f, 7.0f, 8.0f));
+	    assert(v4f32_res.x == 6.0f && v4f32_res.y == 8.0f && v4f32_res.z == 10.0f && v4f32_res.w == 12.0f, "Failed: V4Add");
 	
 	    // Test vector subtraction
-	    v2f32_res = v2f32_sub(v2f32(3.0f, 4.0f), v2f32(1.0f, 2.0f));
-	    assert(v2f32_res.x == 2.0f && v2f32_res.y == 2.0f, "Failed: v2f32_sub");
+	    v2f32_res = V2Sub(V2(3.0f, 4.0f), V2(1.0f, 2.0f));
+	    assert(v2f32_res.x == 2.0f && v2f32_res.y == 2.0f, "Failed: V2Sub");
 	
-	    v3f32_res = v3f32_sub(v3f32(4.0f, 5.0f, 6.0f), v3f32(1.0f, 2.0f, 3.0f));
-	    assert(v3f32_res.x == 3.0f && v3f32_res.y == 3.0f && v3f32_res.z == 3.0f, "Failed: v3f32_sub");
+	    v3f32_res = V3Sub(V3(4.0f, 5.0f, 6.0f), V3(1.0f, 2.0f, 3.0f));
+	    assert(v3f32_res.x == 3.0f && v3f32_res.y == 3.0f && v3f32_res.z == 3.0f, "Failed: V3Sub");
 	
-	    v4f32_res = v4f32_sub(v4f32(5.0f, 6.0f, 7.0f, 8.0f), v4f32(1.0f, 2.0f, 3.0f, 4.0f));
-	    assert(v4f32_res.x == 4.0f && v4f32_res.y == 4.0f && v4f32_res.z == 4.0f && v4f32_res.w == 4.0f, "Failed: v4f32_sub");
+	    v4f32_res = V4Sub(V4(5.0f, 6.0f, 7.0f, 8.0f), V4(1.0f, 2.0f, 3.0f, 4.0f));
+	    assert(v4f32_res.x == 4.0f && v4f32_res.y == 4.0f && v4f32_res.z == 4.0f && v4f32_res.w == 4.0f, "Failed: V4Sub");
 	
 	    // Test vector multiplication
-	    v2f32_res = v2f32_mul(v2f32(2.0f, 3.0f), v2f32(4.0f, 5.0f));
-	    assert(v2f32_res.x == 8.0f && v2f32_res.y == 15.0f, "Failed: v2f32_mul");
+	    v2f32_res = V2Mul(V2(2.0f, 3.0f), V2(4.0f, 5.0f));
+	    assert(v2f32_res.x == 8.0f && v2f32_res.y == 15.0f, "Failed: V2Mul");
 	
-	    v3f32_res = v3f32_mul(v3f32(2.0f, 3.0f, 4.0f), v3f32(5.0f, 6.0f, 7.0f));
-	    assert(v3f32_res.x == 10.0f && v3f32_res.y == 18.0f && v3f32_res.z == 28.0f, "Failed: v3f32_mul");
+	    v3f32_res = V3Mul(V3(2.0f, 3.0f, 4.0f), V3(5.0f, 6.0f, 7.0f));
+	    assert(v3f32_res.x == 10.0f && v3f32_res.y == 18.0f && v3f32_res.z == 28.0f, "Failed: V3Mul");
 	
-	    v4f32_res = v4f32_mul(v4f32(2.0f, 3.0f, 4.0f, 5.0f), v4f32(6.0f, 7.0f, 8.0f, 9.0f));
-	    assert(v4f32_res.x == 12.0f && v4f32_res.y == 21.0f && v4f32_res.z == 32.0f && v4f32_res.w == 45.0f, "Failed: v4f32_mul");
+	    v4f32_res = V4Mul(V4(2.0f, 3.0f, 4.0f, 5.0f), V4(6.0f, 7.0f, 8.0f, 9.0f));
+	    assert(v4f32_res.x == 12.0f && v4f32_res.y == 21.0f && v4f32_res.z == 32.0f && v4f32_res.w == 45.0f, "Failed: V4Mul");
 	
 	    // Test vector division
-	    v2f32_res = v2f32_div(v2f32(6.0f, 8.0f), v2f32(2.0f, 4.0f));
-	    assert(v2f32_res.x == 3.0f && v2f32_res.y == 2.0f, "Failed: v2f32_div");
+	    v2f32_res = V2Div(V2(6.0f, 8.0f), V2(2.0f, 4.0f));
+	    assert(v2f32_res.x == 3.0f && v2f32_res.y == 2.0f, "Failed: V2Div");
 	
-	    v3f32_res = v3f32_div(v3f32(12.0f, 15.0f, 18.0f), v3f32(4.0f, 5.0f, 6.0f));
-	    assert(v3f32_res.x == 3.0f && v3f32_res.y == 3.0f && v3f32_res.z == 3.0f, "Failed: v3f32_div");
+	    v3f32_res = V3Div(V3(12.0f, 15.0f, 18.0f), V3(4.0f, 5.0f, 6.0f));
+	    assert(v3f32_res.x == 3.0f && v3f32_res.y == 3.0f && v3f32_res.z == 3.0f, "Failed: V3Div");
 	
-	    v4f32_res = v4f32_div(v4f32(20.0f, 24.0f, 28.0f, 32.0f), v4f32(4.0f, 6.0f, 7.0f, 8.0f));
-	    assert(v4f32_res.x == 5.0f && v4f32_res.y == 4.0f && v4f32_res.z == 4.0f && v4f32_res.w == 4.0f, "Failed: v4f32_div");
+	    v4f32_res = V4Div(V4(20.0f, 24.0f, 28.0f, 32.0f), V4(4.0f, 6.0f, 7.0f, 8.0f));
+	    assert(v4f32_res.x == 5.0f && v4f32_res.y == 4.0f && v4f32_res.z == 4.0f && v4f32_res.w == 4.0f, "Failed: V4Div");
 	
 	    // Test vector dot product
-	    float32 dot_res = v2f32_dot(v2f32(1.0f, 2.0f), v2f32(3.0f, 4.0f));
+	    float32 dot_res = v2f32_dot(V2(1.0f, 2.0f), V2(3.0f, 4.0f));
 	    assert(dot_res == 11.0f, "Failed: v2f32_dot");
 	
-	    dot_res = v3f32_dot(v3f32(1.0f, 2.0f, 3.0f), v3f32(4.0f, 5.0f, 6.0f));
+	    dot_res = v3f32_dot(V3(1.0f, 2.0f, 3.0f), V3(4.0f, 5.0f, 6.0f));
 	    assert(dot_res == 32.0f, "Failed: v3f32_dot");
 	
 	    // Test vector cross product
-	    float32 cross_res = v2f32_cross(v2f32(1.0f, 2.0f), v2f32(3.0f, 4.0f));
+	    float32 cross_res = v2f32_cross(V2(1.0f, 2.0f), V2(3.0f, 4.0f));
 	    assert(cross_res == -2.0f, "Failed: v2f32_cross");
 	
-	    Vector3f32 cross_v3_res = v3f32_cross(v3f32(1.0f, 2.0f, 3.0f), v3f32(4.0f, 5.0f, 6.0f));
+	    Vector3f32 cross_v3_res = v3f32_cross(V3(1.0f, 2.0f, 3.0f), V3(4.0f, 5.0f, 6.0f));
 	    assert(cross_v3_res.x == -3.0f && cross_v3_res.y == 6.0f && cross_v3_res.z == -3.0f, "Failed: v3f32_cross");
 	
 	    // Test length calculation
-	    float32 length_res = v2f32_length(v2f32(3.0f, 4.0f));
+	    float32 length_res = v2f32_length(V2(3.0f, 4.0f));
 	    assert(length_res == 5.0f, "Failed: v2f32_length");
 	
-	    length_res = v3f32_length(v3f32(1.0f, 2.0f, 2.0f));
+	    length_res = v3f32_length(V3(1.0f, 2.0f, 2.0f));
 	    assert(length_res == 3.0f, "Failed: v3f32_length");
 	
-	    length_res = v4f32_length(v4f32(2.0f, 2.0f, 2.0f, 2.0f));
+	    length_res = v4f32_length(V4(2.0f, 2.0f, 2.0f, 2.0f));
 	    assert(length_res == 4.0f, "Failed: v4f32_length");
 	
 	    // Test vector normalization
-	    v2f32_res = v2f32_normalize(v2f32(3.0f, 4.0f));
-	    assert(fabs(v2f32_res.x - 0.6f) < 0.0001f && fabs(v2f32_res.y - 0.8f) < 0.0001f, "Failed: v2f32_normalize");
+	    v2f32_res = V2Normalize(V2(3.0f, 4.0f));
+	    assert(fabs(v2f32_res.x - 0.6f) < 0.0001f && fabs(v2f32_res.y - 0.8f) < 0.0001f, "Failed: V2Normalize");
 	
-	    v3f32_res = v3f32_normalize(v3f32(1.0f, 2.0f, 2.0f));
+	    v3f32_res = v3f32_normalize(V3(1.0f, 2.0f, 2.0f));
 	    assert(fabs(v3f32_res.x - 1.0f/3.0f) < 0.0001f && fabs(v3f32_res.y - 2.0f/3.0f) < 0.0001f && fabs(v3f32_res.z - 2.0f/3.0f) < 0.0001f, "Failed: v3f32_normalize");
 	
 	    // Test vector conversions
@@ -952,28 +952,28 @@ void test_linmath() {
 	    Vector4f32 conv_v4f32 = v4f64_to_v4f32(v4f64(1.0, 2.0, 3.0, 4.0));
 	    assert(conv_v4f32.x == 1.0f && conv_v4f32.y == 2.0f && conv_v4f32.z == 3.0f && conv_v4f32.w == 4.0f, "Failed: v4f64_to_v4f32");
 	    
-	    Vector2s32 conv_v2s32 = v2f32_to_v2s32(v2f32(1.0f, 2.0f));
+	    Vector2s32 conv_v2s32 = v2f32_to_v2s32(V2(1.0f, 2.0f));
 	    assert(conv_v2s32.x == 1 && conv_v2s32.y == 2, "Failed: v2f32_to_v2s32");
 	
 	    conv_v2s32 = v2s64_to_v2s32(v2s64(1, 2));
 	    assert(conv_v2s32.x == 1 && conv_v2s32.y == 2, "Failed: v2s64_to_v2s32");
 	
-	    Vector3s32 conv_v3s32 = v3f32_to_v3s32(v3f32(1.0f, 2.0f, 3.0f));
+	    Vector3s32 conv_v3s32 = v3f32_to_v3s32(V3(1.0f, 2.0f, 3.0f));
 	    assert(conv_v3s32.x == 1 && conv_v3s32.y == 2 && conv_v3s32.z == 3, "Failed: v3f32_to_v3s32");
 	
-	    Vector4s32 conv_v4s32 = v4f32_to_v4s32(v4f32(1.0f, 2.0f, 3.0f, 4.0f));
+	    Vector4s32 conv_v4s32 = v4f32_to_v4s32(V4(1.0f, 2.0f, 3.0f, 4.0f));
 	    assert(conv_v4s32.x == 1 && conv_v4s32.y == 2 && conv_v4s32.z == 3 && conv_v4s32.w == 4, "Failed: v4f32_to_v4s32");
 	
-	    Vector2s64 conv_v2s64 = v2f32_to_v2s64(v2f32(1.0f, 2.0f));
+	    Vector2s64 conv_v2s64 = v2f32_to_v2s64(V2(1.0f, 2.0f));
 	    assert(conv_v2s64.x == 1 && conv_v2s64.y == 2, "Failed: v2f32_to_v2s64");
 	
 	    conv_v2s64 = v2f64_to_v2s64(v2f64(1.0, 2.0));
 	    assert(conv_v2s64.x == 1 && conv_v2s64.y == 2, "Failed: v2f64_to_v2s64");
 	
-	    Vector3s64 conv_v3s64 = v3f32_to_v3s64(v3f32(1.0f, 2.0f, 3.0f));
+	    Vector3s64 conv_v3s64 = v3f32_to_v3s64(V3(1.0f, 2.0f, 3.0f));
 	    assert(conv_v3s64.x == 1 && conv_v3s64.y == 2 && conv_v3s64.z == 3, "Failed: v3f32_to_v3s64");
 	
-	    Vector4s64 conv_v4s64 = v4f32_to_v4s64(v4f32(1.0f, 2.0f, 3.0f, 4.0f));
+	    Vector4s64 conv_v4s64 = v4f32_to_v4s64(V4(1.0f, 2.0f, 3.0f, 4.0f));
 	    assert(conv_v4s64.x == 1 && conv_v4s64.y == 2 && conv_v4s64.z == 3 && conv_v4s64.w == 4, "Failed: v4f32_to_v4s64");
 	    
 	    float v2f64_dot_product = v2f64_dot(v2f64(2, 7), v2f64(3, 2));
@@ -998,29 +998,29 @@ void test_linmath() {
     // Test vector operations
     Vector2 v2_a = v2(3.0f, 4.0f);
     Vector2 v2_b = v2(1.0f, 2.0f);
-    Vector2 v2_result = v2_add(v2_a, v2_b);
-    assert(v2_result.x == 4.0f && v2_result.y == 6.0f, "v2_add incorrect. %.3f, %.3f", v2_result.x, v2_result.y);
+    Vector2 v2_result = V2Add(v2_a, v2_b);
+    assert(v2_result.x == 4.0f && v2_result.y == 6.0f, "V2Add incorrect. %.3f, %.3f", v2_result.x, v2_result.y);
 
-    v2_result = v2_sub(v2_a, v2_b);
-    assert(v2_result.x == 2.0f && v2_result.y == 2.0f, "v2_sub incorrect");
+    v2_result = V2Sub(v2_a, v2_b);
+    assert(v2_result.x == 2.0f && v2_result.y == 2.0f, "V2Sub incorrect");
 
-    v2_result = v2_mul(v2_a, v2_b);
-    assert(v2_result.x == 3.0f && v2_result.y == 8.0f, "v2_mul incorrect");
+    v2_result = V2Mul(v2_a, v2_b);
+    assert(v2_result.x == 3.0f && v2_result.y == 8.0f, "V2Mul incorrect");
 
-    v2_result = v2_div(v2_a, v2_b);
-    assert(v2_result.x == 3.0f && v2_result.y == 2.0f, "v2_div incorrect");
+    v2_result = V2Div(v2_a, v2_b);
+    assert(v2_result.x == 3.0f && v2_result.y == 2.0f, "V2Div incorrect");
 
-    v2_result = v2_mulf(v2_a, 2.0f);
-    assert(v2_result.x == 6.0f && v2_result.y == 8.0f, "v2_mulf incorrect");
+    v2_result = V2Mulf(v2_a, 2.0f);
+    assert(v2_result.x == 6.0f && v2_result.y == 8.0f, "V2Mulf incorrect");
 
-    v2_result = v2_divf(v2_a, 2.0f);
-    assert(v2_result.x == 1.5f && v2_result.y == 2.0f, "v2_divf incorrect");
+    v2_result = V2Divf(v2_a, 2.0f);
+    assert(v2_result.x == 1.5f && v2_result.y == 2.0f, "V2Divf incorrect");
 
 
 	{
 	    // Test matrix operations
-	    Matrix4 m1 = m4_scalar(2.0f);
-	    assert(m1.data[0] == 2.0f && m1.data[5] == 2.0f && m1.data[10] == 2.0f && m1.data[15] == 2.0f, "m4_scalar incorrect");
+	    Matrix4 m1 = M4Scalar(2.0f);
+	    assert(m1.data[0] == 2.0f && m1.data[5] == 2.0f && m1.data[10] == 2.0f && m1.data[15] == 2.0f, "M4Scalar incorrect");
 	
 	    Vector3 translation = v3(1.0f, 2.0f, 3.0f);
 	    Matrix4 m2 = m4_make_translation(translation);
@@ -1035,13 +1035,13 @@ void test_linmath() {
 	    assert(ortho.m[0][0] == 1.0f && ortho.m[1][1] == 1.0f && ortho.m[2][2] == 1.0f, "m4_make_orthographic_projection incorrect");
 	
 	    // Test matrix multiplication
-	    Matrix4 m5 = m4_scalar(1.0f);
+	    Matrix4 m5 = M4Scalar(1.0f);
 	    m5.m[0][3] = 1.0f; m5.m[1][3] = 2.0f; m5.m[2][3] = 3.0f;
 	    Matrix4 result_matrix = m4_mul(m2, m5);
 	    assert(result_matrix.m[0][3] == 2.0f && result_matrix.m[1][3] == 4.0f && result_matrix.m[2][3] == 6.0f, "m4_mul incorrect");
 	
 	    // Test matrix inverse
-            Matrix4 identity = m4_scalar(1.0f);
+            Matrix4 identity = M4Scalar(1.0f);
             Matrix4 inverse_matrix = m4_inverse(identity);
             for (int i = 0; i < 4; ++i) {
                 for (int j = 0; j < 4; ++j) {
@@ -1050,24 +1050,24 @@ void test_linmath() {
             }
 
             // Test new rotation helpers
-            Matrix4 rot_x = m4_rotate_x(identity, PI32 * 0.5f);
+            Matrix4 rot_x = M4RotateX(identity, PI32 * 0.5f);
             assert(floats_roughly_match(rot_x.m[1][2], -1.0f) &&
                    floats_roughly_match(rot_x.m[2][1], 1.0f),
-                   "m4_rotate_x incorrect");
+                   "M4RotateX incorrect");
 
-            Matrix4 rot_y = m4_rotate_y(identity, PI32 * 0.5f);
+            Matrix4 rot_y = M4RotateY(identity, PI32 * 0.5f);
             assert(floats_roughly_match(rot_y.m[0][2], 1.0f) &&
                    floats_roughly_match(rot_y.m[2][0], -1.0f),
-                   "m4_rotate_y incorrect");
+                   "M4RotateY incorrect");
 
             // Test perspective projection helper
-            Matrix4 persp = m4_make_perspective_projection(PI32/2.0f, 1.0f, 1.0f, 10.0f);
-            assert(floats_roughly_match(persp.m[0][0], persp.m[1][1]), "m4_make_perspective_projection aspect");
-            assert(floats_roughly_match(persp.m[3][2], -1.0f), "m4_make_perspective_projection w row");
+            Matrix4 persp = M4MakePerspectiveProjection(PI32/2.0f, 1.0f, 1.0f, 10.0f);
+            assert(floats_roughly_match(persp.m[0][0], persp.m[1][1]), "M4MakePerspectiveProjection aspect");
+            assert(floats_roughly_match(persp.m[3][2], -1.0f), "M4MakePerspectiveProjection w row");
 
             // Test look-at helper
-            Matrix4 look = m4_make_look_at(v3f32(0,0,1), v3f32(0,0,0), v3f32(0,1,0));
-            assert(floats_roughly_match(look.m[2][3], -1.0f), "m4_make_look_at translation incorrect");
+            Matrix4 look = M4MakeLookAt(V3(0,0,1), V3(0,0,0), V3(0,1,0));
+            assert(floats_roughly_match(look.m[2][3], -1.0f), "M4MakeLookAt translation incorrect");
         }
     
     // Test Vector2 creation
@@ -1078,31 +1078,31 @@ void test_linmath() {
     assert(v2_test2.x == 3.0f && v2_test2.y == 4.0f, "Vector2 creation failed");
 
     // Test Vector2 addition
-    Vector2 v2_add_result = v2_add(v2_test1, v2_test2);
+    Vector2 v2_add_result = V2Add(v2_test1, v2_test2);
     assert(v2_add_result.x == 4.0f && v2_add_result.y == 6.0f, "Vector2 addition failed");
 
     // Test Vector2 subtraction
-    Vector2 v2_sub_result = v2_sub(v2_test2, v2_test1);
+    Vector2 v2_sub_result = V2Sub(v2_test2, v2_test1);
     assert(v2_sub_result.x == 2.0f && v2_sub_result.y == 2.0f, "Vector2 subtraction failed");
 
     // Test Vector2 multiplication
-    Vector2 v2_mul_result = v2_mul(v2_test1, v2_test2);
+    Vector2 v2_mul_result = V2Mul(v2_test1, v2_test2);
     assert(v2_mul_result.x == 3.0f && v2_mul_result.y == 8.0f, "Vector2 multiplication failed");
 
     // Test Vector2 scalar multiplication
-    Vector2 v2_mulf_result = v2_mulf(v2_test1, 2.0f);
+    Vector2 v2_mulf_result = V2Mulf(v2_test1, 2.0f);
     assert(v2_mulf_result.x == 2.0f && v2_mulf_result.y == 4.0f, "Vector2 scalar multiplication failed");
 
     // Test Vector2 division
-    Vector2 v2_div_result = v2_div(v2_test2, v2_test1);
+    Vector2 v2_div_result = V2Div(v2_test2, v2_test1);
     assert(v2_div_result.x == 3.0f && v2_div_result.y == 2.0f, "Vector2 division failed");
 
     // Test Vector2 scalar division
-    Vector2 v2_divf_result = v2_divf(v2_test2, 2.0f);
+    Vector2 v2_divf_result = V2Divf(v2_test2, 2.0f);
     assert(v2_divf_result.x == 1.5f && v2_divf_result.y == 2.0f, "Vector2 scalar division failed");
 
     // Test Vector2 normalization
-    Vector2 v2_norm_result = v2_normalize(v2(3.0f, 4.0f));
+    Vector2 v2_norm_result = V2Normalize(v2(3.0f, 4.0f));
     assert(fabs(v2_norm_result.x - 0.6f) < 1e-6 && fabs(v2_norm_result.y - 0.8f) < 1e-6, "Vector2 normalization failed");
 
     // Test Vector2 rotation
@@ -1119,27 +1119,27 @@ void test_linmath() {
     assert(v3_test2.x == 4.0f && v3_test2.y == 5.0f && v3_test2.z == 6.0f, "Vector3 creation failed");
 
     // Test Vector3 addition
-    Vector3 v3_add_result = v3_add(v3_test1, v3_test2);
+    Vector3 v3_add_result = V3Add(v3_test1, v3_test2);
     assert(v3_add_result.x == 5.0f && v3_add_result.y == 7.0f && v3_add_result.z == 9.0f, "Vector3 addition failed");
 
     // Test Vector3 subtraction
-    Vector3 v3_sub_result = v3_sub(v3_test2, v3_test1);
+    Vector3 v3_sub_result = V3Sub(v3_test2, v3_test1);
     assert(v3_sub_result.x == 3.0f && v3_sub_result.y == 3.0f && v3_sub_result.z == 3.0f, "Vector3 subtraction failed");
 
     // Test Vector3 multiplication
-    Vector3 v3_mul_result = v3_mul(v3_test1, v3_test2);
+    Vector3 v3_mul_result = V3Mul(v3_test1, v3_test2);
     assert(v3_mul_result.x == 4.0f && v3_mul_result.y == 10.0f && v3_mul_result.z == 18.0f, "Vector3 multiplication failed");
 
     // Test Vector3 scalar multiplication
-    Vector3 v3_mulf_result = v3_mulf(v3_test1, 2.0f);
+    Vector3 v3_mulf_result = V3Mulf(v3_test1, 2.0f);
     assert(v3_mulf_result.x == 2.0f && v3_mulf_result.y == 4.0f && v3_mulf_result.z == 6.0f, "Vector3 scalar multiplication failed");
 
     // Test Vector3 division
-    Vector3 v3_div_result = v3_div(v3_test2, v3_test1);
+    Vector3 v3_div_result = V3Div(v3_test2, v3_test1);
     assert(v3_div_result.x == 4.0f && v3_div_result.y == 2.5f && v3_div_result.z == 2.0f, "Vector3 division failed");
 
     // Test Vector3 scalar division
-    Vector3 v3_divf_result = v3_divf(v3_test2, 2.0f);
+    Vector3 v3_divf_result = V3Divf(v3_test2, 2.0f);
     assert(v3_divf_result.x == 2.0f && v3_divf_result.y == 2.5f && v3_divf_result.z == 3.0f, "Vector3 scalar division failed");
 
     // Test Vector4 creation
@@ -1150,50 +1150,50 @@ void test_linmath() {
     assert(v4_test2.x == 5.0f && v4_test2.y == 6.0f && v4_test2.z == 7.0f && v4_test2.w == 8.0f, "Vector4 creation failed");
 
     // Test Vector4 addition
-    Vector4 v4_add_result = v4_add(v4_test1, v4_test2);
+    Vector4 v4_add_result = V4Add(v4_test1, v4_test2);
     assert(v4_add_result.x == 6.0f && v4_add_result.y == 8.0f && v4_add_result.z == 10.0f && v4_add_result.w == 12.0f, "Vector4 addition failed");
 
     // Test Vector4 subtraction
-    Vector4 v4_sub_result = v4_sub(v4_test2, v4_test1);
+    Vector4 v4_sub_result = V4Sub(v4_test2, v4_test1);
     assert(v4_sub_result.x == 4.0f && v4_sub_result.y == 4.0f && v4_sub_result.z == 4.0f && v4_sub_result.w == 4.0f, "Vector4 subtraction failed");
 
     // Test Vector4 multiplication
-    Vector4 v4_mul_result = v4_mul(v4_test1, v4_test2);
+    Vector4 v4_mul_result = V4Mul(v4_test1, v4_test2);
     assert(v4_mul_result.x == 5.0f && v4_mul_result.y == 12.0f && v4_mul_result.z == 21.0f && v4_mul_result.w == 32.0f, "Vector4 multiplication failed");
 
     // Test Vector4 scalar multiplication
-    Vector4 v4_mulf_result = v4_mulf(v4_test1, 2.0f);
+    Vector4 v4_mulf_result = V4Mulf(v4_test1, 2.0f);
     assert(v4_mulf_result.x == 2.0f && v4_mulf_result.y == 4.0f && v4_mulf_result.z == 6.0f && v4_mulf_result.w == 8.0f, "Vector4 scalar multiplication failed");
 
     // Test Vector4 division
-    Vector4 v4_div_result = v4_div(v4_test2, v4_test1);
+    Vector4 v4_div_result = V4Div(v4_test2, v4_test1);
     assert(v4_div_result.x == 5.0f && v4_div_result.y == 3.0f && v4_div_result.w == 2.0f, "Vector4 division failed");
 
     // Test Vector4 scalar division
-    Vector4 v4_divf_result = v4_divf(v4_test2, 2.0f);
+    Vector4 v4_divf_result = V4Divf(v4_test2, 2.0f);
     assert(v4_divf_result.x == 2.5f && v4_divf_result.y == 3.0f && v4_divf_result.z == 3.5f && v4_divf_result.w == 4.0f, "Vector4 scalar division failed");
 
     // Test mixed vector and scalar operations
     Vector2 mixed_v2 = v2(2.0f, 4.0f);
-    Vector2 mixed_v2_result = v2_mulf(mixed_v2, 0.5f);
+    Vector2 mixed_v2_result = V2Mulf(mixed_v2, 0.5f);
     assert(mixed_v2_result.x == 1.0f && mixed_v2_result.y == 2.0f, "Mixed Vector2 scalar multiplication failed");
 
     Vector3 mixed_v3 = v3(3.0f, 6.0f, 9.0f);
-    Vector3 mixed_v3_result = v3_divf(mixed_v3, 3.0f);
+    Vector3 mixed_v3_result = V3Divf(mixed_v3, 3.0f);
     assert(mixed_v3_result.x == 1.0f && mixed_v3_result.y == 2.0f && mixed_v3_result.z == 3.0f, "Mixed Vector3 scalar division failed");
 
     Vector4 mixed_v4 = v4(4.0f, 8.0f, 12.0f, 16.0f);
-    Vector4 mixed_v4_result = v4_mulf(mixed_v4, 0.25f);
+    Vector4 mixed_v4_result = V4Mulf(mixed_v4, 0.25f);
     assert(mixed_v4_result.x == 1.0f && mixed_v4_result.y == 2.0f && mixed_v4_result.z == 3.0f && mixed_v4_result.w == 4.0f, "Mixed Vector4 scalar multiplication failed");
     
     
-    float v2_dot_product = v2_dot(v2(2, 7), v2(3, 2));
-    float v3_dot_product = v3_dot(v3(2, 7, 2), v3(3, 2, 9));
-    float v4_dot_product = v4_dot(v4(2, 7, 6, 1), v4(3, 2, 1, 4));
+    float v2_dot_product = V2Dot(v2(2, 7), v2(3, 2));
+    float v3_dot_product = V3Dot(v3(2, 7, 2), v3(3, 2, 9));
+    float v4_dot_product = V4Dot(v4(2, 7, 6, 1), v4(3, 2, 1, 4));
     
-    assert(floats_roughly_match(v2_dot_product, 20), "Failed: v2_dot");
-	assert(floats_roughly_match(v3_dot_product, 38), "Failed: v3_dot");
-	assert(floats_roughly_match(v4_dot_product, 30), "Failed: v4_dot");
+    assert(floats_roughly_match(v2_dot_product, 20), "Failed: V2Dot");
+	assert(floats_roughly_match(v3_dot_product, 38), "Failed: V3Dot");
+	assert(floats_roughly_match(v4_dot_product, 30), "Failed: V4Dot");
 	
 	Matrix3 identity = m3_identity();
     assert(identity.m[0][0] == 1.0f && identity.m[1][1] == 1.0f && identity.m[2][2] == 1.0f, "Failed: m3_identity is incorrect");
@@ -1328,7 +1328,7 @@ void test_intmath() {
 }
 
 void test_hash_table() {
-    Hash_Table table = make_hash_table(string, int, get_heap_allocator());
+    Hash_Table table = make_hash_table(string, int, GetHeapAllocator());
     
     string key1 = STR("Key string");
     int value1 = 69;
@@ -1428,11 +1428,11 @@ void test_mutex() {
     data.any_active_thread = false;
     mutex_init(&data.mutex);
 
-    Allocator allocator = get_heap_allocator();
+    Allocator allocator = GetHeapAllocator();
 
 	const int num_threads = 100;
 
-	Thread *threads = alloc(allocator, sizeof(Thread)*num_threads);
+	Thread *threads = Alloc(allocator, sizeof(Thread)*num_threads);
 	for (u64 i = 0; i < num_threads; i++) {
 		os_thread_init(&threads[i], mutex_test_increment_counter);
 		threads[i].data = &data;
@@ -1462,7 +1462,7 @@ void test_sort() {
     f64 seconds = 0;
     u64 cycles = 0;
     
-    Draw_Quad *items = alloc(get_heap_allocator(), (item_count * 2) * sizeof(Draw_Quad));
+    Draw_Quad *items = Alloc(GetHeapAllocator(), (item_count * 2) * sizeof(Draw_Quad));
     Draw_Quad *buffer = items + item_count;
 
     for (int a = 0; a < num_samples; a++) {
@@ -1475,11 +1475,11 @@ void test_sort() {
         u64 item_size = sizeof(Draw_Quad);
         u64 sort_value_offset_in_item = offsetof(Draw_Quad, z);
     
-        float64 start_seconds = os_get_elapsed_seconds();
+        float64 start_seconds = OsGetElapsedSeconds();
         u64 start_cycles = rdtsc();
         radix_sort(items, buffer, item_count, item_size, sort_value_offset_in_item, id_bits);
         u64 end_cycles = rdtsc();
-        float64 end_seconds = os_get_elapsed_seconds();
+        float64 end_seconds = OsGetElapsedSeconds();
     
         for (u64 i = 1; i < item_count; i++) {
             assert(items[i].z >= items[i-1].z, "Failed: not correctly sorted");
@@ -1503,11 +1503,11 @@ void test_sort() {
         u64 item_size = sizeof(Draw_Quad);
         u64 sort_value_offset_in_item = offsetof(Draw_Quad, z);
     
-        float64 start_seconds = os_get_elapsed_seconds();
+        float64 start_seconds = OsGetElapsedSeconds();
         u64 start_cycles = rdtsc();
         merge_sort(items, buffer, item_count, item_size, compare_draw_quads);
         u64 end_cycles = rdtsc();
-        float64 end_seconds = os_get_elapsed_seconds();
+        float64 end_seconds = OsGetElapsedSeconds();
     
         for (u64 i = 1; i < item_count; i++) {
             assert(items[i].z >= items[i-1].z, "Failed: not correctly sorted");
@@ -1528,7 +1528,7 @@ typedef struct Test_Thing {
 void test_growing_array() {
     Test_Thing *things = 0;
     
-    growing_array_init((void**)&things, sizeof(Test_Thing), get_heap_allocator());
+    growing_array_init((void**)&things, sizeof(Test_Thing), GetHeapAllocator());
     
     Test_Thing new_thing;
     new_thing.foo = 5;

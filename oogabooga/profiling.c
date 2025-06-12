@@ -27,7 +27,7 @@ void _profiler_report_time(string name, f64 count, f64 start) {
 		spinlock_init(&_profiler_lock);
 		profiler_initted = true;
 		
-		string_builder_init_reserve(&_profile_output, 1024*1000, get_heap_allocator());	
+		string_builder_init_reserve(&_profile_output, 1024*1000, GetHeapAllocator());	
 		
 	}
 	
@@ -46,17 +46,17 @@ void _profiler_report_time(string name, f64 count, f64 start) {
 }
 #if ENABLE_PROFILING
 #define tm_scope(name) \
-    for (f64 start_time = os_get_elapsed_seconds(), end_time = start_time, elapsed_time = 0; \
+    for (f64 start_time = OsGetElapsedSeconds(), end_time = start_time, elapsed_time = 0; \
          elapsed_time == 0; \
-         elapsed_time = (end_time = os_get_elapsed_seconds()) - start_time, _profiler_report_time(STR(name), elapsed_time, start_time))
+         elapsed_time = (end_time = OsGetElapsedSeconds()) - start_time, _profiler_report_time(STR(name), elapsed_time, start_time))
 #define tm_scope_var(name, var) \
-    for (f64 start_time = os_get_elapsed_seconds(), end_time = start_time, elapsed_time = 0; \
+    for (f64 start_time = OsGetElapsedSeconds(), end_time = start_time, elapsed_time = 0; \
          elapsed_time == 0; \
-         elapsed_time = (end_time = os_get_elapsed_seconds()) - start_time, var=elapsed_time)
+         elapsed_time = (end_time = OsGetElapsedSeconds()) - start_time, var=elapsed_time)
 #define tm_scope_accum(name, var) \
-    for (f64 start_time = os_get_elapsed_seconds(), end_time = start_time, elapsed_time = 0; \
+    for (f64 start_time = OsGetElapsedSeconds(), end_time = start_time, elapsed_time = 0; \
          elapsed_time == 0; \
-         elapsed_time = (end_time = os_get_elapsed_seconds()) - start_time, var+=elapsed_time)
+         elapsed_time = (end_time = OsGetElapsedSeconds()) - start_time, var+=elapsed_time)
 #else
 	#define tm_scope(...)
 	#define tm_scope_var(...)

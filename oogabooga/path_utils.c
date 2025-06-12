@@ -21,29 +21,29 @@ string get_file_extension(string path) {
 	return ZERO(string);
 }
 
-string get_file_name_including_extension(string file_path) {
-    if (file_path.count <= 0) return ZERO(string);
+string get_file_name_including_extension(string filePath) {
+    if (filePath.count <= 0) return ZERO(string);
 
     s64 last_separator = -1;
-    for (s64 i = file_path.count - 1; i >= 0; i--) {
-        if (file_path.data[i] == '/' || file_path.data[i] == '\\' || file_path.data[i] == ':') {
+    for (s64 i = filePath.count - 1; i >= 0; i--) {
+        if (filePath.data[i] == '/' || filePath.data[i] == '\\' || filePath.data[i] == ':') {
             last_separator = i;
             break;
         }
     }
 
     string file_name = ZERO(string);
-    if (last_separator != -1 && last_separator < file_path.count - 1) {
-        file_name.data = file_path.data + last_separator + 1;
-        file_name.count = file_path.count - last_separator - 1;
+    if (last_separator != -1 && last_separator < filePath.count - 1) {
+        file_name.data = filePath.data + last_separator + 1;
+        file_name.count = filePath.count - last_separator - 1;
     } else {
-        file_name = file_path; // If no separator was found, assume entire path is a file name.
+        file_name = filePath; // If no separator was found, assume entire path is a file name.
     }
 
     return file_name;
 }
-string get_file_name_excluding_extension(string file_path) {
-	string file_name = get_file_name_including_extension(file_path);
+string get_file_name_excluding_extension(string filePath) {
+	string file_name = get_file_name_including_extension(filePath);
 	
 	for (s64 i = file_name.count-1; i >= 1; i--) {
 		if (file_name.data[i] == '.') {

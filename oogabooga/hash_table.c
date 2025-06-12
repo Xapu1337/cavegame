@@ -8,7 +8,7 @@
 	
 	
 	// Make a table with key type 'string' and value type 'int', allocated on the heap
-	Hash_Table table = make_hash_table(string, int, get_heap_allocator());
+	Hash_Table table = make_hash_table(string, int, GetHeapAllocator());
 	
 	// Set key "Key string" to integer value 69. This returns whether or not key was newly added.
 	string key = STR("Key string");
@@ -106,7 +106,7 @@ Hash_Table make_hash_table_reserve_raw(u64 key_size, u64 value_size, u64 capacit
 	t.allocator = allocator;
 	
 	u64 entry_size = value_size+sizeof(u64);
-	t.entries = alloc(t.allocator, entry_size*capacity_count);
+	t.entries = Alloc(t.allocator, entry_size*capacity_count);
 	memset(t.entries, 0, entry_size*capacity_count);
 	t.capacity_count = capacity_count;
 	
@@ -120,7 +120,7 @@ void hash_table_reset(Hash_Table *t) {
 	t->count = 0;
 }
 void hash_table_destroy(Hash_Table *t) {
-	dealloc(t->allocator, t->entries);
+	Dealloc(t->allocator, t->entries);
 	
 	t->entries = 0;
 	t->count = 0;
@@ -139,10 +139,10 @@ void hash_table_reserve(Hash_Table *t, u64 required_count) {
 	u64 new_count = get_next_power_of_two(required_count);
 	u64 new_size = new_count*entry_size;
 	
-	void *new_entries = alloc(t->allocator, new_size);
+	void *new_entries = Alloc(t->allocator, new_size);
 	memcpy(new_entries, t->entries, current_size);
 	
-	dealloc(t->allocator, t->entries);
+	Dealloc(t->allocator, t->entries);
 	
 	t->entries = new_entries;
 	t->capacity_count = new_count;
@@ -164,8 +164,8 @@ void hash_table_add_raw(Hash_Table *t, u64 hash, void *k, void *v, u64 key_size,
 	u64 hash_offset = 0;
 	u64 value_offset = hash_offset + sizeof(u64);
 	
-	memcpy((u8*)t->entries+index+hash_offset,  &hash, sizeof(u64));
-	memcpy((u8*)t->entries+index+value_offset, v,     value_size);
+	memcpy((uint8_t*)t->entries+index+hash_offset,  &hash, sizeof(u64));
+	memcpy((uint8_t*)t->entries+index+value_offset, v,     value_size);
 }
 
 void *hash_table_find_raw(Hash_Table *t, u64 hash) {
@@ -178,9 +178,9 @@ void *hash_table_find_raw(Hash_Table *t, u64 hash) {
 	u64 value_offset = hash_offset + sizeof(u64);
 	
 	for (u64 i = 0; i < t->count; i += 1) {
-		u64 existing_hash = *(u64*)((u8*)t->entries+i*entry_size+hash_offset);
+		u64 existing_hash = *(u64*)((uint8_t*)t->entries+i*entry_size+hash_offset);
 		if (existing_hash == hash) {
-			void *value = ((u8*)t->entries+i*entry_size+value_offset);
+			void *value = ((uint8_t*)t->entries+i*entry_size+value_offset);
 			return value;
 		}
 	}
@@ -194,7 +194,7 @@ void *hash_table_get_nth_value(Hash_Table *t, u64 n) {
 	u64 hash_offset = 0;
 	u64 value_offset = hash_offset + sizeof(u64);
 	
-	return (u8*)t->entries+entry_size*n+value_offset;
+	return (uint8_t*)t->entries+entry_size*n+value_offset;
 }
 
 bool hash_table_contains_raw(Hash_Table *t, u64 hash) {

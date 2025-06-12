@@ -23,7 +23,7 @@ bool is_action_just_pressed(Action action) {
 		Input_Key_Code code = key_binds[action].codes[i];
 		if (code == 0) continue;
 		
-		if (is_key_just_pressed(code)) return true;
+		if (IsKeyJustPressed(code)) return true;
 	}
 	return false;
 }
@@ -35,7 +35,7 @@ int entry(int argc, char **argv) {
 	window.point_height = 720; 
 	window.x = 200;
 	window.y = 90;
-	window.clear_color = hex_to_rgba(0x6495EDff);
+	window.clearColor = hex_to_rgba(0x6495EDff);
 	
 	key_binds[ACTION_DASH].codes[0] = KEY_SPACEBAR;
 	key_binds[ACTION_DASH].codes[1] = GAMEPAD_A;
@@ -43,14 +43,14 @@ int entry(int argc, char **argv) {
 	key_binds[ACTION_SHOOT].codes[0] = MOUSE_BUTTON_LEFT;
 	key_binds[ACTION_SHOOT].codes[1] = GAMEPAD_RIGHT_BUMPER;
 
-	float64 last_time = os_get_elapsed_seconds();
+	float64 last_time = OsGetElapsedSeconds();
 	while (!window.should_close) {
-		reset_temporary_storage();
+		ResetTemporaryStorage();
 		
-		if (is_key_just_pressed(GAMEPAD_LEFT_TRIGGER)) {
+		if (IsKeyJustPressed(GAMEPAD_LEFT_TRIGGER)) {
 			log("Left trigger");
 		}
-		if (is_key_just_pressed(GAMEPAD_B)) {
+		if (IsKeyJustPressed(GAMEPAD_B)) {
 			log("B");
 		}
 		
@@ -58,11 +58,11 @@ int entry(int argc, char **argv) {
 		if (is_action_just_pressed(ACTION_SHOOT)) log("PEW PEW");
 		
 		// Vibrate depending on how far pushed the triggers are
-		set_gamepad_vibration(input_frame.left_trigger, input_frame.right_trigger);
+		set_gamepad_vibration(inputFrame.left_trigger, inputFrame.right_trigger);
 		
 		// Example to retrieve axes for multiple gamepads
-		for (u64 i = 0; i < input_frame.number_of_events; i++) {
-			Input_Event e = input_frame.events[i];
+		for (u64 i = 0; i < inputFrame.number_of_events; i++) {
+			Input_Event e = inputFrame.events[i];
 			
 			switch (e.kind) {
 				case INPUT_EVENT_GAMEPAD_AXIS: {
@@ -78,8 +78,8 @@ int entry(int argc, char **argv) {
 			}
 		}
 		
-		os_update(); 
-		gfx_update();
+		OsUpdate(); 
+		GfxUpdate();
 	}
 
 	return 0;

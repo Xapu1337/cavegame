@@ -29,8 +29,8 @@ void load_game_dll(char **argv) {
     
     // We need to copy the original and open the copy, so we can recompile the original and then close & replace
     // the copy.
-    string dll_path = string_concat(exe_dir, STR("/game.dll"), get_temporary_allocator());
-    string used_dll_path = string_concat(exe_dir, STR("/game-in-use.dll"), get_temporary_allocator());
+    string dll_path = StringConcat(exe_dir, STR("/game.dll"), GetTemporaryAllocator());
+    string used_dll_path = StringConcat(exe_dir, STR("/game-in-use.dll"), GetTemporaryAllocator());
     
     bool ok = os_file_copy(dll_path, used_dll_path, true);
     assert(ok, "Could not copy %s to %s", dll_path, used_dll_path);
@@ -53,26 +53,26 @@ int entry(int argc, char **argv) {
 	window.point_height = 720; 
 	window.x = 200;
 	window.y = 90;
-	window.clear_color = hex_to_rgba(0x6495EDff);
+	window.clearColor = hex_to_rgba(0x6495EDff);
 
-	float64 last_time = os_get_elapsed_seconds();
+	float64 last_time = OsGetElapsedSeconds();
 	while (!window.should_close) {
-		float64 now = os_get_elapsed_seconds();
+		float64 now = OsGetElapsedSeconds();
 		float64 delta = now-last_time;
 		if ((int)now != (int)last_time) log("%.2f FPS\n%.2fms", 1.0/(delta), (delta)*1000);
 		last_time = now;
 		
-		reset_temporary_storage();
+		ResetTemporaryStorage();
 		
 		game_update(delta);
 		
-		if (is_key_just_pressed('R')) {
+		if (IsKeyJustPressed('R')) {
             load_game_dll(argv);
             play_one_audio_clip(STR("oogabooga/examples/bruh.wav"));
 		}
 		
-		os_update(); 
-		gfx_update();
+		OsUpdate(); 
+		GfxUpdate();
 	}
 
 	return 0;

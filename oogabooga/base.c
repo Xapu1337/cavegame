@@ -1,6 +1,5 @@
 
 
-
 #include <stdio.h>
 #include <string.h>
 #define local_persist static
@@ -11,11 +10,9 @@
 
 #define null 0
 	
-void 
-printf(const char* fmt, ...);
+// printf declared in stdio.h
 
-void 
-dump_stack_trace();
+void dump_stack_trace();
 
 #define ASSERT_STR_HELPER(x) #x
 #define ASSERT_STR(x) ASSERT_STR_HELPER(x)
@@ -60,11 +57,6 @@ typedef struct Nothing {int nothing;} Nothing;
 	#define CONTEXT_EXTRA Nothing
 #endif
 
-typedef enum Allocator_Message {
-	ALLOCATOR_ALLOCATE,
-	ALLOCATOR_DEALLOCATE,
-	ALLOCATOR_REALLOCATE,
-} Allocator_Message;
 typedef void*(*Allocator_Proc)(u64, void*, Allocator_Message, void*);
 
 typedef enum Log_Level {
@@ -78,16 +70,10 @@ typedef enum Log_Level {
 
 
 
-typedef struct Allocator {
-	Allocator_Proc proc;
-	void *data;	
-} Allocator;
 
-Allocator
-get_heap_allocator();
+Allocator GetHeapAllocator();
 
-ogb_instance Allocator
-get_temporary_allocator();
+Allocator GetTemporaryAllocator();
 
 typedef struct Context {
 	void *logger; // void(*Logger_Proc)(Log_Level level, string fmt, ...)
@@ -104,23 +90,18 @@ typedef struct Context {
 //thread_local ogb_instance Context context;
 //thread_local ogb_instance Context context_stack[CONTEXT_STACK_MAX];
 //thread_local ogb_instance u64 num_contexts;
-ogb_instance 
 Context get_context();
 
-ogb_instance void* 
-alloc(Allocator allocator, u64 size);
+void* Alloc(Allocator allocator, uint64_t size);
 
-ogb_instance void* 
-alloc_uninitialized(Allocator allocator, u64 size);
+void* alloc_uninitialized(Allocator allocator, uint64_t size);
 
-ogb_instance void 
-dealloc(Allocator allocator, void *p);
+void Dealloc(Allocator allocator, void *p);
 
-ogb_instance void 
-push_context(Context c);
+void push_context(Context c);
 
-ogb_instance void 
-pop_context();
+void pop_context(void);
+
 //
 //
 
@@ -132,7 +113,7 @@ thread_local Context context_stack[CONTEXT_STACK_MAX];
 thread_local u64 num_contexts = 0;
 
 void* 
-alloc(Allocator allocator, u64 size) {
+Alloc(Allocator allocator, u64 size) {
 	assert(size > 0, "You requested an allocation of zero bytes. I'm not sure what you want with that.");
 	void *p = allocator.proc(size, 0, ALLOCATOR_ALLOCATE, allocator.data);
 #if DO_ZERO_INITIALIZATION
@@ -148,7 +129,7 @@ alloc_uninitialized(Allocator allocator, u64 size) {
 }
 
 void 
-dealloc(Allocator allocator, void *p) {
+Dealloc(Allocator allocator, void *p) {
 	assert(p != 0, "You tried to deallocate a pointer at adress 0. That doesn't make sense!");
 	allocator.proc(0, p, ALLOCATOR_DEALLOCATE, allocator.data);
 }

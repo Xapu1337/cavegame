@@ -42,9 +42,9 @@ void draw_thread(Thread *t);
 int entry(int argc, char **argv) {
 	window.title = STR("Threaded Drawing Example");
 	
-	Gfx_Font *font = load_font_from_disk(STR("C:/windows/fonts/arial.ttf"), get_heap_allocator());
+	Gfx_Font *font = load_font_from_disk(STR("C:/windows/fonts/arial.ttf"), GetHeapAllocator());
 	
-	Gfx_Image *sprite = load_image_from_disk(STR("oogabooga/examples/berry_bush.png"), get_heap_allocator());
+	Gfx_Image *sprite = load_image_from_disk(STR("oogabooga/examples/berry_bush.png"), GetHeapAllocator());
 	assert(sprite, "Could not load 'oogabooga/examples/berry_bush.png'");
 	
 	// This is overkill af on my computer with 32 logical processors, in fact 5-6 seems to peek in
@@ -54,8 +54,8 @@ int entry(int argc, char **argv) {
 	
 	u64 total_number_of_sprites = 150000;
 		
-	Thread *threads = (Thread*)alloc(get_heap_allocator(), number_of_threads*sizeof(Thread));
-	Draw_Context *draw_contexts = (Draw_Context*)alloc(get_heap_allocator(), number_of_threads*sizeof(Draw_Context));
+	Thread *threads = (Thread*)Alloc(GetHeapAllocator(), number_of_threads*sizeof(Thread));
+	Draw_Context *draw_contexts = (Draw_Context*)Alloc(GetHeapAllocator(), number_of_threads*sizeof(Draw_Context));
 	
 	// Initialize each thread and the respective draw context, and start the threads
 	for (u64 i = 0; i < number_of_threads; i += 1) {
@@ -86,11 +86,11 @@ int entry(int argc, char **argv) {
 	
 	int tick = 0;
 	
-	float64 last_time = os_get_elapsed_seconds();
+	float64 last_time = OsGetElapsedSeconds();
 	while (!window.should_close) tm_scope("Update") {
-		reset_temporary_storage();
+		ResetTemporaryStorage();
 		
-		float64 now = os_get_elapsed_seconds();
+		float64 now = OsGetElapsedSeconds();
 		if ((int)now != (int)last_time) log("%.2f FPS\n%.2fms", 1.0/(now-last_time), (now-last_time)*1000);
 		last_time = now;
 		
@@ -107,8 +107,8 @@ int entry(int argc, char **argv) {
 			os_binary_semaphore_signal(&draw_context->draw_thread_start_sem);
 		}
 		
-		os_update(); 
-		gfx_update();
+		OsUpdate(); 
+		GfxUpdate();
 		
 	}
 
@@ -124,14 +124,14 @@ void draw_thread(Thread *t) {
 	float32 sprite_height = 8;
 	
 	while (!window.should_close) tm_scope("Thread frame") {
-		reset_temporary_storage();
+		ResetTemporaryStorage();
 		
-		float64 now = os_get_elapsed_seconds();
+		float64 now = OsGetElapsedSeconds();
 		
 		os_binary_semaphore_wait(&draw_context->draw_thread_start_sem);
 		
 		tm_scope("Thread draw") {
-			draw_frame_reset(&draw_context->frame);
+			DrawFrameReset(&draw_context->frame);
 	
 			// Remember, seed_for_random is thread_local
 			seed_for_random = my_seed;
@@ -149,7 +149,7 @@ void draw_thread(Thread *t) {
 				);
 			}
 			
-			float64 duration = os_get_elapsed_seconds() - now;
+			float64 duration = OsGetElapsedSeconds() - now;
 			
 			draw_context->accum_seconds += duration;
 			draw_context->frame_count += 1;

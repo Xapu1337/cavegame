@@ -1,4 +1,5 @@
 
+#include "oogabooga.h"
 
 #ifdef _WIN32
 	typedef HANDLE Mutex_Handle;
@@ -9,20 +10,20 @@
 	
 #elif defined(__linux__)
     #ifndef OOGABOOGA_HEADLESS
-    #define "Linux is only supported for headless builds"
+#error "Linux is only supported for headless builds"
     #endif
-	typedef SOMETHING Mutex_Handle;
-	typedef SOMETHING Thread_Handle;
-	typedef SOMETHING Dynamic_Library_Handle;
-	typedef SOMETHING Window_Handle;
-	typedef SOMETHING File;
+	typedef void* Mutex_Handle;
+	typedef void* Thread_Handle;
+	typedef void* Dynamic_Library_Handle;
+	typedef void* Window_Handle;
+	typedef void* File;
 	#error "Linux is not supported yet";
 #elif defined(__APPLE__) && defined(__MACH__)
-	typedef SOMETHING Mutex_Handle;
-	typedef SOMETHING Thread_Handle;
-	typedef SOMETHING Dynamic_Library_Handle;
-	typedef SOMETHING Window_Handle;
-	typedef SOMETHING File;
+	typedef void* Mutex_Handle;
+	typedef void* Thread_Handle;
+	typedef void* Dynamic_Library_Handle;
+	typedef void* Window_Handle;
+	typedef void* File;
 	#error "Mac is not supported yet";
 #else
 	#error "Current OS not supported!";
@@ -36,19 +37,6 @@
 #define _INTSIZEOF(n)         ((sizeof(n) + sizeof(int) - 1) & ~(sizeof(int) - 1))
 
 typedef int   (__cdecl *Crt_Vsnprintf_Proc) (char*, size_t, const char*, va_list);
-
-typedef struct Os_Monitor {
-	u64 refresh_rate;
-	u64 resolution_x;
-	u64 resolution_y;
-	u64 work_area_x;
-	u64 work_area_y;
-	u64 work_area_width;
-	u64 work_area_height;
-	u64 dpi;
-	u64 dpi_y;
-	string name;
-} Os_Monitor;
 
 typedef struct Os_Context {
 	u64 page_size;
@@ -66,38 +54,6 @@ typedef struct Os_Context {
     void *static_memory_start, *static_memory_end;
     
 } Os_Context;
-
-typedef struct Os_Window {
-
-	// Keep in mind that setting these in runtime is potentially slow since they might trigger win32 calls!
-	string title;
-	union { s32 width;  s32 pixel_width;  };
-	union { s32 height; s32 pixel_height; };
-	DEPRECATED(s32 scaled_width, "Use point_width instead, which is 72th of an inch");
-	DEPRECATED(s32 scaled_height, "Use point_height instead, which is 72th of an inch");
-	s32 point_width; // 72th of an inch
-	s32 point_height; // 72th of an inch
-	union { s32 x; s32 pixel_x; };
-	union { s32 y; s32 pixel_y; };
-	s32 point_x; // 72th of an inch
-	s32 point_y; // 72th of an inch
-	Vector4 clear_color;
-	bool enable_vsync;
-	bool fullscreen;
-	bool allow_resize;
-	bool force_topmost;
-	u32 dpi;
-	float64 point_size_in_pixels;
-	
-	bool should_close;
-	
-	// readonly
-	bool _initialized;
-	Window_Handle _os_handle;
-	bool is_being_dragged;
-	Os_Monitor *monitor;
-	
-} Os_Window;
 
 // #Global
 ogb_instance Os_Window window;
@@ -163,16 +119,16 @@ os_thread_join(Thread *t);
 ///
 // Low-level Mutex primitive. Mutex in concurrency.c is probably a better alternative.
 Mutex_Handle ogb_instance
-os_make_mutex();
+OsMakeMutex();
 
 void ogb_instance
 os_destroy_mutex(Mutex_Handle m);
 
 void ogb_instance
-os_lock_mutex(Mutex_Handle m);
+OsLockMutex(Mutex_Handle m);
 
 void ogb_instance
-os_unlock_mutex(Mutex_Handle m);
+OsUnlockMutex(Mutex_Handle m);
 
 ///
 // Binary semaphore
@@ -211,10 +167,10 @@ os_high_precision_sleep(f64 ms);
 ///
 
 float64 ogb_instance
-DEPRECATED(os_get_current_time_in_seconds(), "Use os_get_elapsed_seconds() instead");
+DEPRECATED(os_get_current_time_in_seconds(), "Use OsGetElapsedSeconds() instead");
 
 float64 ogb_instance
-os_get_elapsed_seconds();
+OsGetElapsedSeconds();
 
 
 ///
@@ -392,7 +348,7 @@ void ogb_instance
 fprints(File f, string fmt, ...);
 
 void ogb_instance
-fprintf(File f, const char* fmt, ...);
+// fprintf uses File type, not standard FILE*
 
 #define fprint(...) _Generic((FIRST_ARG(__VA_ARGS__)), \
                            string:  fprints, \
@@ -449,7 +405,7 @@ os_get_stack_trace(u64 *trace_count, Allocator allocator);
 inline void 
 dump_stack_trace() {
 	u64 count;
-	string *strings = os_get_stack_trace(&count, get_temporary_allocator());
+	string *strings = os_get_stack_trace(&count, GetTemporaryAllocator());
 	
 	for (u64 i = 0; i < count; i++) {
 		string s = strings[i];
@@ -536,4 +492,4 @@ void ogb_instance
 os_init(u64 program_memory_size);
 
 void ogb_instance
-os_update();
+OsUpdate();

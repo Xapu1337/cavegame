@@ -104,11 +104,11 @@ typedef struct Input_Frame {
     Input_State_Flags key_states[INPUT_KEY_CODE_COUNT];
 } Input_Frame;
 
-extern Input_Frame input_frame;
+extern Input_Frame inputFrame;
 
-bool is_key_down(Input_Key_Code code);
+bool IsKeyDown(Input_Key_Code code);
 bool is_key_up(Input_Key_Code code);
-bool is_key_just_pressed(Input_Key_Code code);
+bool IsKeyJustPressed(Input_Key_Code code);
 bool is_key_just_released(Input_Key_Code code);
 bool consume_key_down(Input_Key_Code code);
 bool consume_key_just_pressed(Input_Key_Code code);

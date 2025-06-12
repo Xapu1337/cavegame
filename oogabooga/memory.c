@@ -1,5 +1,4 @@
 
-
 #define KB(x) (x*1024ull)
 #define MB(x) ((KB(x))*1024ull)
 #define GB(x) ((MB(x))*1024ull)
@@ -9,8 +8,8 @@
 #endif
 // We may need to allocate stuff in initialization time before the heap is ready.
 // That's what this is for.
-u8 init_memory_arena[INIT_MEMORY_SIZE];
-u8 *init_memory_head = init_memory_arena;
+uint8_t init_memory_arena[INIT_MEMORY_SIZE];
+uint8_t *init_memory_head = init_memory_arena;
 
 void* initialization_allocator_proc(u64 size, void *p, Allocator_Message message, void *data) {
 	switch (message) {
@@ -18,7 +17,7 @@ void* initialization_allocator_proc(u64 size, void *p, Allocator_Message message
 			p = init_memory_head;
 			init_memory_head += size;
 			
-			if (init_memory_head >= ((u8*)init_memory_arena+INIT_MEMORY_SIZE)) {
+			if (init_memory_head >= ((uint8_t*)init_memory_arena+INIT_MEMORY_SIZE)) {
 				os_write_string_to_stdout(STR("Out of initialization memory! Please provide more by increasing INIT_MEMORY_SIZE"));
 				crash();
 			}
@@ -103,7 +102,7 @@ u64 get_heap_block_size_including_metadata(Heap_Block *block) {
 }
 
 bool is_pointer_in_program_memory(void *p) {
-	return (u8*)p >= (u8*)program_memory && (u8*)p<((u8*)program_memory+program_memory_capacity);
+	return (uint8_t*)p >= (uint8_t*)program_memory && (uint8_t*)p<((uint8_t*)program_memory+program_memory_capacity);
 }
 bool is_pointer_in_stack(void* p) {
     void* stack_base = os_get_stack_base();
@@ -153,11 +152,11 @@ void sanity_check_block(Heap_Block *block) {
 }
 inline void check_meta(Heap_Allocation_Metadata *meta) {
 #if CONFIGURATION == DEBUG
-	assert(meta->signature == HEAP_META_SIGNATURE, "Heap error. Either 1) You passed a bad pointer to dealloc or 2) You corrupted the heap.");
+	assert(meta->signature == HEAP_META_SIGNATURE, "Heap error. Either 1) You passed a bad pointer to Dealloc or 2) You corrupted the heap.");
 #endif
 // If > 256GB then prolly not legit lol
-	assert(meta->size < 1024ULL*1024ULL*1024ULL*256ULL, "Heap error. Either 1) You passed a bad pointer to dealloc or 2) You corrupted the heap.");	
-	assert(is_pointer_in_program_memory(meta->block), "Heap error. Either 1) You passed a bad pointer to dealloc or 2) You corrupted the heap."); 
+	assert(meta->size < 1024ULL*1024ULL*1024ULL*256ULL, "Heap error. Either 1) You passed a bad pointer to Dealloc or 2) You corrupted the heap.");	
+	assert(is_pointer_in_program_memory(meta->block), "Heap error. Either 1) You passed a bad pointer to Dealloc or 2) You corrupted the heap."); 
 
 	assert((u64)meta >= (u64)meta->block->start && (u64)meta < (u64)meta->block->start+meta->block->size, "Heap error: Pointer is not in it's metadata block. This could be heap corruption but it's more likely an internal error. That's not good.");
 }
@@ -230,7 +229,7 @@ Heap_Block *make_heap_block(Heap_Block *parent, u64 size) {
 	block->total_allocated = 0;
 #endif
 	
-	block->start = ((u8*)block)+sizeof(Heap_Block);
+	block->start = ((uint8_t*)block)+sizeof(Heap_Block);
 	block->size = size;
 	block->next = 0;
 	block->free_head = (Heap_Free_Node*)block->start;
@@ -332,26 +331,26 @@ void *heap_alloc(u64 size) {
 	// Unlock best fit
 	
 	// #Copypaste
-	void *free_tail = (u8*)best_fit + best_fit->size;
+	void *free_tail = (uint8_t*)best_fit + best_fit->size;
 	void *first_page = (void*)align_previous(best_fit, os.page_size);
 	void *last_page_end = (void*)align_previous(free_tail, os.page_size);
-	if ((u8*)last_page_end > (u8*)first_page) {
+	if ((uint8_t*)last_page_end > (uint8_t*)first_page) {
 		os_unlock_program_memory_pages(first_page, (u64)last_page_end-(u64)first_page);
 	}
 	
 	Heap_Free_Node *new_free_node = 0;
 	if (size != best_fit->size) {
 		u64 remainder = best_fit->size - size;
-		new_free_node = (Heap_Free_Node*)(((u8*)best_fit)+size);
+		new_free_node = (Heap_Free_Node*)(((uint8_t*)best_fit)+size);
 		new_free_node->size = remainder;
 		new_free_node->next = best_fit->next;
 		
 		// Lock remaining free node
 		// #Copypaste
-		void *free_tail = (u8*)new_free_node + new_free_node->size;
+		void *free_tail = (uint8_t*)new_free_node + new_free_node->size;
 		void *next_page = (void*)align_next(new_free_node, os.page_size);
 		void *last_page_end = (void*)align_previous(free_tail, os.page_size);
-		if ((u8*)last_page_end > (u8*)next_page) {
+		if ((uint8_t*)last_page_end > (uint8_t*)next_page) {
 			os_lock_program_memory_pages(next_page, (u64)last_page_end-(u64)next_page);
 		}
 	}
@@ -392,7 +391,7 @@ void *heap_alloc(u64 size) {
 	spinlock_release(&heap_lock);
 	
 	
-	void *p = ((u8*)meta)+sizeof(Heap_Allocation_Metadata);
+	void *p = ((uint8_t*)meta)+sizeof(Heap_Allocation_Metadata);
 	assert((u64)p % HEAP_ALIGNMENT == 0, "Internal heap error. Result pointer is not aligned to HEAP_ALIGNMENT");
 	return p;
 }
@@ -404,7 +403,7 @@ void heap_dealloc(void *p) {
 	spinlock_acquire_or_wait(&heap_lock);
 	
 	assert(is_pointer_in_program_memory(p), "A bad pointer was passed tp heap_dealloc: it is out of program memory bounds!"); 
-	p = (u8*)p-sizeof(Heap_Allocation_Metadata);
+	p = (uint8_t*)p-sizeof(Heap_Allocation_Metadata);
 	Heap_Allocation_Metadata *meta = (Heap_Allocation_Metadata*)(p);
 	check_meta(meta);
 	
@@ -425,14 +424,14 @@ void heap_dealloc(void *p) {
 	
 	if (new_node < block->free_head) {
 		// #Copypaste
-		void *free_tail = (u8*)new_node + new_node->size;
+		void *free_tail = (uint8_t*)new_node + new_node->size;
 		void *next_page = (void*)align_next(new_node, os.page_size);
 		void *last_page_end = (void*)align_previous(free_tail, os.page_size);
-		if ((u8*)last_page_end > (u8*)next_page) {
+		if ((uint8_t*)last_page_end > (uint8_t*)next_page) {
 			os_lock_program_memory_pages(next_page, (u64)last_page_end-(u64)next_page);
 		}
 		
-		if ((u8*)new_node+size == (u8*)block->free_head) {
+		if ((uint8_t*)new_node+size == (uint8_t*)block->free_head) {
 			new_node->size = size + block->free_head->size;
 			new_node->next = block->free_head->next;
 			block->free_head = new_node;
@@ -448,10 +447,10 @@ void heap_dealloc(void *p) {
 			new_node->next = 0;
 			
 			// #Copypaste
-			void *free_tail = (u8*)new_node + new_node->size;
+			void *free_tail = (uint8_t*)new_node + new_node->size;
 			void *next_page = (void*)align_next(new_node, os.page_size);
 			void *last_page_end = (void*)align_previous(free_tail, os.page_size);
-			if ((u8*)last_page_end > (u8*)next_page) {
+			if ((uint8_t*)last_page_end > (uint8_t*)next_page) {
 				os_lock_program_memory_pages(next_page, (u64)last_page_end-(u64)next_page);
 			}
 			
@@ -470,8 +469,8 @@ void heap_dealloc(void *p) {
 				// anyways...
 				
 				if (new_node >= node) {
-					u8* node_tail = (u8*)node + node->size;
-					if (cast(u8*)new_node == node_tail) {
+					uint8_t* node_tail = (uint8_t*)node + node->size;
+					if (cast(uint8_t*)new_node == node_tail) {
 						
 						// We need to account for the cases where we coalesce free blocks with start/end in the middle
 						// of a page.
@@ -479,13 +478,13 @@ void heap_dealloc(void *p) {
 						u64 new_node_size = new_node->size;
 						
 						// #Copypaste
-						void *free_tail = (u8*)new_node + new_node->size;
+						void *free_tail = (uint8_t*)new_node + new_node->size;
 						void *next_page = (void*)align_previous(node_tail, os.page_size);
 						void *last_page_end = (void*)align_previous(free_tail, os.page_size);
 
-						if ((u8*)next_page < (u8*)node) next_page = (u8*)next_page + os.page_size;
+						if ((uint8_t*)next_page < (uint8_t*)node) next_page = (uint8_t*)next_page + os.page_size;
 						
-						if ((u8*)last_page_end > (u8*)next_page) {
+						if ((uint8_t*)last_page_end > (uint8_t*)next_page) {
 							os_lock_program_memory_pages(next_page, (u64)last_page_end-(u64)next_page);
 						}
 						
@@ -496,17 +495,17 @@ void heap_dealloc(void *p) {
 						new_node->next = node->next;
 						node->next = new_node;
 						
-						u8* new_node_tail = (u8*)new_node + new_node->size;
-						if (new_node->next && (u8*)new_node->next == new_node_tail) {
+						uint8_t* new_node_tail = (uint8_t*)new_node + new_node->size;
+						if (new_node->next && (uint8_t*)new_node->next == new_node_tail) {
 							new_node->size += new_node->next->size;
 							new_node->next = new_node->next->next;
 						}
 						
 						// #Copypaste
-						void *free_tail = (u8*)new_node + new_node->size;
+						void *free_tail = (uint8_t*)new_node + new_node->size;
 						void *next_page = (void*)align_next(new_node, os.page_size);
 						void *last_page_end = (void*)align_previous(free_tail, os.page_size);
-						if ((u8*)last_page_end > (u8*)next_page) {
+						if ((uint8_t*)last_page_end > (uint8_t*)next_page) {
 							os_lock_program_memory_pages(next_page, (u64)last_page_end-(u64)next_page);
 						}
 						
@@ -557,7 +556,7 @@ void* heap_allocator_proc(u64 size, void *p, Allocator_Message message, void* da
 	return 0;
 }
 
-Allocator get_heap_allocator() {
+Allocator GetHeapAllocator() {
 	Allocator heap_allocator;
 	
 	heap_allocator.proc = heap_allocator_proc;
@@ -580,7 +579,7 @@ ogb_instance void* temp_allocator_proc(u64 size, void *p, Allocator_Message mess
 
 // #Global
 ogb_instance Allocator 
-get_temporary_allocator();
+GetTemporaryAllocator();
 
 #if !OOGABOOGA_LINK_EXTERNAL_INSTANCE
 thread_local void * temporary_storage = 0;
@@ -589,7 +588,7 @@ thread_local bool   has_warned_temporary_storage_overflow = false;
 thread_local Allocator temp_allocator;
 
 ogb_instance Allocator 
-get_temporary_allocator() {
+GetTemporaryAllocator() {
 	if (!temporary_storage) return get_initialization_allocator();
 	return temp_allocator;
 }
@@ -605,7 +604,7 @@ ogb_instance void*
 talloc(u64 size);
 
 ogb_instance void 
-reset_temporary_storage();
+ResetTemporaryStorage();
 
 
 #if !OOGABOOGA_LINK_EXTERNAL_INSTANCE
@@ -644,9 +643,9 @@ void* talloc(u64 size) {
 	
 	void* p = temporary_storage_pointer;
 	
-	temporary_storage_pointer = (u8*)temporary_storage_pointer + size;
+	temporary_storage_pointer = (uint8_t*)temporary_storage_pointer + size;
 	
-	if ((u8*)temporary_storage_pointer >= (u8*)temporary_storage+TEMPORARY_STORAGE_SIZE) {
+	if ((uint8_t*)temporary_storage_pointer >= (uint8_t*)temporary_storage+TEMPORARY_STORAGE_SIZE) {
 		if (!has_warned_temporary_storage_overflow) {
 			os_write_string_to_stdout(STR("WARNING: temporary storage was overflown, we wrap around at the start.\n"));
 			has_warned_temporary_storage_overflow = true;
@@ -658,7 +657,7 @@ void* talloc(u64 size) {
 	return p;
 }
 
-void reset_temporary_storage() {
+void ResetTemporaryStorage() {
 	temporary_storage_pointer = temporary_storage;	
 	has_warned_temporary_storage_overflow = false;
 }
@@ -679,7 +678,7 @@ Arena make_arena(u64 size) {
 	size = align_next(size, 8);
 	Arena arena;
 	
-	arena.start = alloc(get_heap_allocator(), size);
+	arena.start = Alloc(GetHeapAllocator(), size);
 	arena.next = arena.start;
 	arena.size = size;
 	
@@ -688,7 +687,7 @@ Arena make_arena(u64 size) {
 
 void *arena_push(Arena *arena, u64 size) {
 	void *p = arena->next;
-	arena->next = (u8*)arena->next + size;
+	arena->next = (uint8_t*)arena->next + size;
 	return p;
 }
 #define arena_push_struct(parena, type) arena_push((parena), sizeof(type))
@@ -713,11 +712,11 @@ void* arena_allocator_proc(u64 size, void *p, Allocator_Message message, void* d
 
 // Allocates arena from heap
 Allocator make_arena_allocator(u64 size) {
-	void *mem = alloc(get_heap_allocator(), size + sizeof(Arena));
+	void *mem = Alloc(GetHeapAllocator(), size + sizeof(Arena));
 	
 	Arena *arena = (Arena*)mem;
 	
-	arena->start = (u8*)mem + sizeof(Arena);
+	arena->start = (uint8_t*)mem + sizeof(Arena);
 	arena->next = arena->start;
 	arena->size = size;
 	
@@ -728,9 +727,9 @@ Allocator make_arena_allocator(u64 size) {
 	return allocator;
 }
 Allocator make_arena_allocator_with_memory(u64 size, void *p) {
-	void *mem = alloc(get_heap_allocator(), size + sizeof(Arena));
+	void *mem = Alloc(GetHeapAllocator(), size + sizeof(Arena));
 	
-	Arena *arena = (Arena*)alloc(get_heap_allocator(), sizeof(Arena));
+	Arena *arena = (Arena*)Alloc(GetHeapAllocator(), sizeof(Arena));
 	
 	arena->start = p;
 	arena->next = arena->start;

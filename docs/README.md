@@ -1,103 +1,159 @@
 
-ooga booga
+# Oogabooga Engine
 
 ## TOC
-- [What is ooga booga?](#what-is-ooga-booga)
-	- [A new C Standard](#a-new-c-standard)
-	- [SIMPLICITY IS KING](#simplicity-is-king)
-	- [The "Build System"](#the-build-system)
+- [What is Oogabooga?](#what-is-oogabooga)
+	- [Professional C Development](#professional-c-development)
+	- [Cross-Platform Support](#cross-platform-support)
+	- [Unity Build System](#unity-build-system)
+	- [Header Files for IDE Support](#header-files-for-ide-support)
 - [Course: From Scratch to Steam](#course-from-scratch-to-steam)
 - [Quickstart](#quickstart)
+- [Platform Support](#platform-support)
 - [Examples & Documentation](#examples--documentation)
 - [Known bugs](#known-bugs)
 - [Licensing](#licensing)
 - [Contributions](#contributions)
 
-## What is ooga booga?
+## What is Oogabooga?
 
-Ooga booga, often referred to as a *game engine* for simplicity, is more so designed to be a new C Standard, i.e. a new way to develop software from scratch in C. Other than `<math.h>` we don't include a single C std header, but are instead writing a better standard library heavily optimized for developing games. Except for some image & audio file decoding, Ooga booga does not rely on any other third party code.
+Oogabooga is a professional C game engine designed for real-world game development. It provides a comprehensive game development framework that follows proper C practices while maintaining high performance and developer productivity.
 
-### A new C Standard
+### Professional C Development
 
-Let's face it. The C standard is terrible. Don't even get me started on `string.h`. To be fair, any mainstream language standard is terrible. 
+Oogabooga follows industry-standard C practices:
 
-So what if we could strip out the nonsense standard of C and slap on something that's specifically made for video games, prioritizing speed and *simplicity*?
+1. **Proper Header/Source Structure**  
+   Every `.c` file has a corresponding `.h` file with complete function declarations and type definitions. This enables IDE features like symbol navigation, autocomplete, and error checking.
 
-That's exactly what oogabooga sets out to do.
+2. **Platform-Aware Architecture**  
+   The engine is designed with clear platform abstractions, allowing the same game code to run on multiple platforms without modification.
 
-### SIMPLICITY IS KING
+3. **Modern Build System**  
+   While using Unity builds for performance, the engine supports both traditional build systems and modern IDEs through proper header organization.
 
-Ooga booga is designed to keep things simple, and let you solve video game problems the simplest way possible.
+4. **Type Safety and Documentation**  
+   All public APIs are properly declared in headers with comprehensive documentation for professional development workflows.
 
-What we mean by simple, is twofold:
+### Cross-Platform Support
 
-1. <b>Simple to use</b><br>
-	Performing SIMPLE and TRIVIAL tasks should be ... SIMPLE. If you want to draw a rectangle, there should be a single procedure to draw a rectangle. If you want to play an audio clip, there should be a single procedure to play an audio clip. Etc. This is something OS & Graphics API's tend to be fascinatingly terrible at even for the most trivial of tasks, and that is a big chunk of what we set out to solve.
+Oogabooga supports the following platforms:
 
-2. <b>Simple to understand</b><br>
-	When you need to do something more complicated, you need to understand the library you're working with. For some reason, it seems like it's a standard for libraries today to obscure the implementation details as much as possible spread out in layers and layers of procedure calls and abstractions. This is terrible.
-	In Oogabooga, there is none of that. We WANT you to delve into our implementations and see exactly what we do. We do not hide ANYTHING from you. We do not impose RESTRICTIONS on how you solve problems. If you need to know what a procedure does, you search for the symbol and look at the implementation code. That's it.
+- **Windows**: MSVC (default) or MinGW/GCC with D3D11 renderer
+- **Linux**: GCC with Vulkan renderer (no SDL2 dependency)
+- **macOS**: Planned (Metal renderer)
 
-	
-### The "Build System"
+The engine automatically detects the platform and selects the appropriate:
+- Compiler toolchain (MSVC/GCC/Clang)
+- Graphics API (D3D11/Vulkan/Metal)
+- OS abstractions (Windows API/POSIX)
 
-Our build system is a build.c and a build.bat which invokes the clang compiler on build.c. That's it. And we highly discourage anyone from introducing unnecessary complexity like a third party build system (cmake, premake) or to use header files at all whatsoever.
+### Unity Build System
 
-This might sound like we are breaking some law, but we're not. We're using a compiler to compile a file which includes all the other files, it doesn't get simpler. We are NOT using third party software to run the same compiler to compile the same files over and over again and write it all to disk to then try and link it together. That's what we call silly business (and unreasonably slow compile times, without any real benefit).
+For maximum compile-time performance, Oogabooga uses a Unity build approach:
+- All engine code is compiled together via `oogabooga.c`
+- No separate object files or complex linking
+- Extremely fast incremental builds
+- Single-step compilation and execution
 
-Oogabooga is made to be used in Unity builds. The idea is that you only include oogabooga.c somewhere in your project, specify the entry (see build.c) and now it's a Oogabooga project. Oogabooga is meant to replace the C standard, so it is not tested with projects which include standard C headers, so that will probably cause issues.
+### Header Files for IDE Support
+
+Unlike traditional "header-phobic" approaches, Oogabooga provides:
+- Complete `.h` files for every `.c` file
+- Umbrella header `oogabooga.h` for application inclusion
+- Full IDE support (IntelliJ, Visual Studio, VS Code, etc.)
+- Proper symbol navigation and error checking
+- Professional development workflow compatibility
 
 ## Course: From Scratch to Steam
 
 This project was started to be used in a course detailing the full ride from starting out making a game to publishing it to Steam. If you're keen on going all-in on getting a small game published to steam within 2-3 months, then check it out for free in our [Skool Community](https://www.skool.com/game-dev).
 
 ## Quickstart
-Windows is fully supported and the example also builds natively on Linux.
-1. Make sure Windows SDK is installed
-2. Install clang, add to path
-2. Clone repo to <project_dir>
-3. Make a file my_file.c in <project_dir>
-```
+
+### Windows
+1. Install Visual Studio 2019+ with C++ build tools, or install MinGW
+2. Clone repo to `<project_dir>`
+3. Create your game file `my_game.c`:
+
+```c
+#include "oogabooga/oogabooga.h"
+
 int entry(int argc, char **argv) {
-	
-	window.title = STR("Minimal Game Example");
-	window.scaled_width = 1280; // We need to set the scaled size if we want to handle system scaling (DPI)
-	window.scaled_height = 720; 
-	window.x = 200;
-	window.y = 90;
-	window.clear_color = hex_to_rgba(0x6495EDff);
+    window.title = STR("My Game");
+    window.scaled_width = 1280;
+    window.scaled_height = 720;
+    window.clear_color = hex_to_rgba(0x6495EDff);
 
-	while (!window.should_close) {
-		reset_temporary_storage();
-		
-		os_update(); 
-		gfx_update();
-	}
+    while (!window.should_close) {
+        reset_temporary_storage();
+        
+        os_update(); 
+        gfx_update();
+    }
 
-	return 0;
+    return 0;
 }
 ```
-4. in build.c add this line to the bottom
+
+4. Add to `build.c`:
+```c
+#include "my_game.c"
 ```
-#include "my_file.c"
+
+5. Build:
+   - **MSVC (default)**: `build_tool.exe`
+   - **MinGW**: `build_tool.exe --useMinGWOnWindows`
+
+6. Run: `build/game.exe`
+
+### Linux
+1. Install dependencies:
+```bash
+sudo apt install build-essential libx11-dev libvulkan-dev vulkan-tools
 ```
-5. Run `build.bat`
-6. Run build/cgame.exe
-7. profit
 
-### Linux Quickstart
-1. Run `./install_deps.sh` to install the required SDL2, GL and GLU development libraries.
-2. Use `./run.sh` to build the native SDL/OpenGL version. If no display server is present, the script only builds the binary.
+2. Clone repo and create your game file (same as Windows)
 
-In general, we try to leave a nice chunk of documentation in a comment at the top of the source code files when needed.
-An example would be: If you want to understand how to draw things, go to drawing.c and read the comment at the top of the file.
-This is however a WIP and probably not very well-maintained.
+3. Build: `./build_tool`
 
-The goal is however to have the main form of documentation be in the form of [examples](oogabooga/examples). Seeing things in practice is generally much more informative than theory.
+4. Run: `./build/game`
 
-Simply add `#include "oogabooga/examples/some_example.c"` to build.c and compile & run to see the example code in action.
+## Platform Support
 
-Other than the top-of-file documentation and examples, we have tried to write code that's easy to read & understand i.e. self-documenting. Ideally, a good way of finding what you need is to use your text editor to do a workspace-search for terms related to what you're trying to do and finding related functions/files/documentation.
+### Windows
+- **Compiler**: MSVC (default), MinGW/GCC (optional)
+- **Graphics**: Direct3D 11
+- **Audio**: Windows Audio Session API (WASAPI)
+- **Windowing**: Win32 API
+
+### Linux  
+- **Compiler**: GCC
+- **Graphics**: Vulkan (no SDL2 dependency)
+- **Audio**: ALSA
+- **Windowing**: X11
+
+### Build Options
+```bash
+./build_tool [options]
+
+Options:
+  --useMinGWOnWindows   Use MinGW/GCC instead of MSVC on Windows
+  --release             Build in release mode (default: debug)
+  --verbose             Verbose output
+  --help                Show help
+```
+
+## Architecture
+
+The engine is organized with clear separation of concerns:
+
+- **Platform Layer**: OS-specific implementations (Windows/Linux)
+- **Graphics Layer**: Renderer-specific implementations (D3D11/Vulkan)
+- **Engine Core**: Cross-platform game systems
+- **Application Layer**: Your game code
+
+Platform-specific code is completely hidden from application code. Your game includes only `oogabooga.h` and uses the same API regardless of platform.
 
 ## Known bugs & issues
 - If DPI changes in runtime, updating window position or size will be a bit weird

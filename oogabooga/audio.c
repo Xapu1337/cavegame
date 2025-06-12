@@ -107,7 +107,7 @@ typedef struct {
     u32 data1;
     u16 data2;
     u16 data3;
-    u8  data4[8];
+    uint8_t  data4[8];
 } Wav_Subformat_Guid;
 inline bool is_equal_wav_guid(const Wav_Subformat_Guid* a, const Wav_Subformat_Guid* b) {
     return (
@@ -199,8 +199,8 @@ wav_open_file(string path, Wav_Stream *wav, u64 sample_rate, u64 *number_of_fram
     }
     
 
-	if (!strings_match(string_view(header, 0, 4), STR("RIFF"))) return false;
-	if (!strings_match(string_view(header, 8, 4), STR("WAVE"))) {
+	if (!StringsMatch(string_view(header, 0, 4), STR("RIFF"))) return false;
+	if (!StringsMatch(string_view(header, 8, 4), STR("WAVE"))) {
 		log_error("Invalid header in wave file @ %s", path);
 		os_file_close(wav->file);
 		return false;
@@ -231,15 +231,15 @@ wav_open_file(string path, Wav_Stream *wav, u64 sample_rate, u64 *number_of_fram
 	    
 	    // Ignored chunks
 	    // (yes, some wave files actually has a chunk with id "junk")
-	    if (strings_match(chunk_id, STR("bext"))
-	     || strings_match(chunk_id, STR("fact"))
-	     || strings_match(chunk_id, STR("junk"))) {
+	    if (StringsMatch(chunk_id, STR("bext"))
+	     || StringsMatch(chunk_id, STR("fact"))
+	     || StringsMatch(chunk_id, STR("junk"))) {
 	     	u64 pos = os_file_get_pos(wav->file);
 	     	os_file_set_pos(wav->file, pos+chunk_size);
 	    	continue;
 	    }
 	    
-	    if (!strings_match(chunk_id, STR("data")) && chunk_size <= NON_DATA_CHUNK_MAX_SIZE) {
+	    if (!StringsMatch(chunk_id, STR("data")) && chunk_size <= NON_DATA_CHUNK_MAX_SIZE) {
 	    	ok = os_file_read(wav->file, chunk.data, chunk_size, &read);
 		    if (!ok || read != chunk_size) {
 		        os_file_close(wav->file);
@@ -247,7 +247,7 @@ wav_open_file(string path, Wav_Stream *wav, u64 sample_rate, u64 *number_of_fram
 		    }
 	    }
 	    
-	    if (strings_match(chunk_id, STR("fmt "))) {
+	    if (StringsMatch(chunk_id, STR("fmt "))) {
 	    	
 	    	if (chunk_size != 16 && chunk_size != 18 && chunk_size != 40) {
 	    		log_error("Invalid wav fmt chunk, bad size %d", chunk_size);
@@ -272,7 +272,7 @@ wav_open_file(string path, Wav_Stream *wav, u64 sample_rate, u64 *number_of_fram
 	    		wav->sub_format            = *(Wav_Subformat_Guid*)(chunk.data+24);
 	    	}
 	    	
-	    } else if (strings_match(chunk_id, STR("data"))) {
+	    } else if (StringsMatch(chunk_id, STR("data"))) {
 	    	
 	    	u64 number_of_bytes = chunk_size;
 	    	
@@ -407,11 +407,11 @@ wav_read_frames(Wav_Stream *wav, Audio_Format format, void *frames,
 			
 			// Convert any integer to f32
 			for (u64 f = 0; f < frames_to_read; f++) {
-			    void *raw_frame = (u8*)raw_buffer + f * frame_size;
-			    void *dst_frame = (u8*)convert_buffer + f * convert_frame_size;
+			    void *raw_frame = (uint8_t*)raw_buffer + f * frame_size;
+			    void *dst_frame = (uint8_t*)convert_buffer + f * convert_frame_size;
 			    for (u64 c = 0; c < wav->channels; c++) {
-			        void *raw_comp = (u8*)raw_frame + c * comp_size;
-			        void *dst_comp = (u8*)dst_frame + c * out_comp_size;
+			        void *raw_comp = (uint8_t*)raw_frame + c * comp_size;
+			        void *dst_comp = (uint8_t*)dst_frame + c * out_comp_size;
 			
 			        s64 i = 0;
 			        if (wav->valid_bits_per_sample == 32) {
@@ -419,11 +419,11 @@ wav_read_frames(Wav_Stream *wav, Audio_Format format, void *frames,
 			        } else if (wav->valid_bits_per_sample == 16) {
 			            i = *(s16*)raw_comp;
 			        } else if (wav->valid_bits_per_sample == 24) {
-			            u8 bytes[3];
+			            uint8_t bytes[3];
 			            memcpy(bytes, raw_comp, 3);
 			            
 			            u16 test = 0x1;
-			            bool is_little_endian = *((u8*)&test) == 0x1;
+			            bool is_little_endian = *((uint8_t*)&test) == 0x1;
 			            
 			            if (is_little_endian) {
 			                i = (s32)((bytes[0] << 0) | (bytes[1] << 8) | (bytes[2] << 16));
@@ -448,11 +448,11 @@ wav_read_frames(Wav_Stream *wav, Audio_Format format, void *frames,
 		} else if (raw_is_f32) {
 			// Convert f32 to s16
 			for (u64 f = 0; f < frames_to_read; f++) {
-				void *raw_frame = (u8*)raw_buffer + f*frame_size;
-				void *dst_frame = (u8*)convert_buffer + f*convert_frame_size;
+				void *raw_frame = (uint8_t*)raw_buffer + f*frame_size;
+				void *dst_frame = (uint8_t*)convert_buffer + f*convert_frame_size;
 				for (u64 c = 0; c < wav->channels; c++) {
-					void *raw_comp = (u8*)raw_frame + c*comp_size;
-					void *dst_comp = (u8*)dst_frame + c*out_comp_size;
+					void *raw_comp = (uint8_t*)raw_frame + c*comp_size;
+					void *dst_comp = (uint8_t*)dst_frame + c*out_comp_size;
 					
 					*(s16*)dst_comp = (s16)(*((f32*)raw_comp) * 32768.0f);
 				}
@@ -461,11 +461,11 @@ wav_read_frames(Wav_Stream *wav, Audio_Format format, void *frames,
 			assert(raw_is_int);
 			// Convert any integer to s16
 			for (u64 f = 0; f < frames_to_read; f++) {
-				void *raw_frame = (u8*)raw_buffer + f*frame_size;
-				void *dst_frame = (u8*)convert_buffer + f*convert_frame_size;
+				void *raw_frame = (uint8_t*)raw_buffer + f*frame_size;
+				void *dst_frame = (uint8_t*)convert_buffer + f*convert_frame_size;
 				for (u64 c = 0; c < wav->channels; c++) {
-					void *raw_comp = (u8*)raw_frame + c*comp_size;
-					void *dst_comp = (u8*)dst_frame + c*out_comp_size;
+					void *raw_comp = (uint8_t*)raw_frame + c*comp_size;
+					void *dst_comp = (uint8_t*)dst_frame + c*out_comp_size;
 					
 					s64 i = 0;
 			        if (wav->valid_bits_per_sample == 32) {
@@ -473,11 +473,11 @@ wav_read_frames(Wav_Stream *wav, Audio_Format format, void *frames,
 			        } else if (wav->valid_bits_per_sample == 16) {
 			            i = *(s16*)raw_comp;
 			        } else if (wav->valid_bits_per_sample == 24) {
-			            u8 bytes[3];
+			            uint8_t bytes[3];
 			            memcpy(bytes, raw_comp, 3);
 			            
 			            u16 test = 0x1;
-			            bool is_little_endian = *((u8*)&test) == 0x1;
+			            bool is_little_endian = *((uint8_t*)&test) == 0x1;
 			            
 			            if (is_little_endian) {
 			                i = (s32)((bytes[0] << 0) | (bytes[1] << 8) | (bytes[2] << 16));
@@ -520,7 +520,7 @@ wav_load_file(string path, void **frames, Audio_Format format, u64 *number_of_fr
 	u64 comp_size = get_audio_bit_width_byte_size(format.bit_width);
 	u64 frame_size = comp_size*format.channels;
 	
-	*frames = alloc(allocator, *number_of_frames*frame_size);
+	*frames = Alloc(allocator, *number_of_frames*frame_size);
 	
 	u64 read = wav_read_frames(&wav, format, *frames, *number_of_frames);
 	if (read != *number_of_frames) {
@@ -537,11 +537,11 @@ wav_load_file(string path, void **frames, Audio_Format format, u64 *number_of_fr
 void
 audio_prepare_intermediate_buffers() {
 	if (!audio_intermediate_mega_buffer) {
-		audio_intermediate_mega_buffer = alloc(get_heap_allocator(), MB(2));
+		audio_intermediate_mega_buffer = Alloc(GetHeapAllocator(), MB(2));
 		memset(audio_intermediate_mega_buffer, 0, MB(2));
 		audio_intermediate_mega_buffer_size = MB(2);
 		
-		growing_array_init((void**)&audio_intermediate_heap_buffers, sizeof(void*), get_heap_allocator());
+		growing_array_init((void**)&audio_intermediate_heap_buffers, sizeof(void*), GetHeapAllocator());
 	}
 	
 	u64 heap_buffer_count = growing_array_get_valid_count(audio_intermediate_heap_buffers);
@@ -549,7 +549,7 @@ audio_prepare_intermediate_buffers() {
 	
 		for (u64 i = 0; i < heap_buffer_count; i += 1) {
 			void *buffer = audio_intermediate_heap_buffers[i];
-			dealloc(get_heap_allocator(), buffer);
+			Dealloc(GetHeapAllocator(), buffer);
 		}
 	
 		growing_array_clear((void**)&audio_intermediate_heap_buffers);
@@ -560,9 +560,9 @@ audio_prepare_intermediate_buffers() {
 	if (new_size != audio_intermediate_mega_buffer_size) {
 		new_size = get_next_power_of_two(new_size);
 		
-		dealloc(get_heap_allocator(), audio_intermediate_mega_buffer);
+		Dealloc(GetHeapAllocator(), audio_intermediate_mega_buffer);
 		
-		audio_intermediate_mega_buffer = alloc(get_heap_allocator(), new_size);
+		audio_intermediate_mega_buffer = Alloc(GetHeapAllocator(), new_size);
 		memset(audio_intermediate_mega_buffer, 0, new_size);
 		audio_intermediate_mega_buffer_size = new_size;
 		heap_allocated_intermediate_bytes = 0;
@@ -582,10 +582,10 @@ audio_get_intermediate_buffer(u64 size) {
 	
 	if (size < remaining) {
 		void *p = audio_intermediate_mega_buffer_next;
-		audio_intermediate_mega_buffer_next = (u8*)audio_intermediate_mega_buffer_next + size;
+		audio_intermediate_mega_buffer_next = (uint8_t*)audio_intermediate_mega_buffer_next + size;
 		return p;
 	} else {
-		void *p = alloc(get_heap_allocator(), get_next_power_of_two(size));
+		void *p = Alloc(GetHeapAllocator(), get_next_power_of_two(size));
 		heap_allocated_intermediate_bytes += get_next_power_of_two(size);
 		log_verbose("Audio had to heap allocate an intermediate buffer of %dkb", get_next_power_of_two(size)/1000);
 		growing_array_add((void**)&audio_intermediate_heap_buffers, &p);
@@ -702,7 +702,7 @@ audio_open_source_load_format(Audio_Source *src, string path, Audio_Format forma
 		src->number_of_frames = stb_vorbis_stream_length_in_samples(src->ogg);
 		third_party_allocator = ZERO(Allocator);
 		
-		src->pcm_frames = alloc(src->allocator, src->number_of_frames*frame_size);
+		src->pcm_frames = Alloc(src->allocator, src->number_of_frames*frame_size);
 		int retrieved = audio_source_get_frames(
 			src, 
 			0, 
@@ -716,7 +716,7 @@ audio_open_source_load_format(Audio_Source *src, string path, Audio_Format forma
 		third_party_allocator = ZERO(Allocator);
 		
 		if (retrieved != src->number_of_frames) {
-			dealloc(src->allocator, src->pcm_frames);
+			Dealloc(src->allocator, src->pcm_frames);
 			return false;
 		}
 	} else {
@@ -749,7 +749,7 @@ audio_source_destroy(Audio_Source *src) {
 				}
 				case AUDIO_DECODER_OGG: {
 					stb_vorbis_close(src->ogg);
-					dealloc_string(src->allocator, src->ogg_raw);
+					DeallocString(src->allocator, src->ogg_raw);
 					break;
 				}
 			}
@@ -757,7 +757,7 @@ audio_source_destroy(Audio_Source *src) {
 			break;
 		}
 		case AUDIO_SOURCE_MEMORY: {
-			dealloc(src->allocator, src->pcm_frames);
+			Dealloc(src->allocator, src->pcm_frames);
 			break;
 		}
 	}
@@ -887,7 +887,7 @@ audio_source_sample_next_frames(Audio_Source *src, u64 first_frame_index, u64 nu
 		assert(num_retrieved <= number_of_frames);
 		
 		if (num_retrieved < number_of_frames) {
-			void *dst_remain = ((u8*)output_buffer) + num_retrieved*frame_size;
+			void *dst_remain = ((uint8_t*)output_buffer) + num_retrieved*frame_size;
 			if (looping) {
 				num_retrieved = audio_source_get_frames(
 					src, 
@@ -905,14 +905,14 @@ audio_source_sample_next_frames(Audio_Source *src, u64 first_frame_index, u64 nu
 	}
 	case AUDIO_SOURCE_MEMORY: {
 		s64 first_number_of_frames = min(number_of_frames, src->number_of_frames-first_frame_index);
-		void *src_pcm_start = (u8*)src->pcm_frames + first_frame_index*frame_size;
+		void *src_pcm_start = (uint8_t*)src->pcm_frames + first_frame_index*frame_size;
 		
 		memcpy(output_buffer, src_pcm_start, first_number_of_frames*frame_size);
 		new_index += first_number_of_frames;
 		
 		s64 remainder = number_of_frames-first_number_of_frames;
 		if (remainder > 0) {
-			void *dst_remain = (u8*)output_buffer + first_number_of_frames*frame_size;
+			void *dst_remain = (uint8_t*)output_buffer + first_number_of_frames*frame_size;
 			
 			if (looping) {
 				memcpy(dst_remain, src->pcm_frames, frame_size*remainder);
@@ -949,8 +949,8 @@ mix_frames(void *dst, void *src, u64 frame_count, Audio_Format format) {
         
         for (u64 c = 0; c < format.channels; c++) {
 
-            void *src_sample = (u8*)src + frame*frame_size + c*comp_size;
-            void *dst_sample = (u8*)dst + frame*frame_size + c*comp_size;
+            void *src_sample = (uint8_t*)src + frame*frame_size + c*comp_size;
+            void *dst_sample = (uint8_t*)dst + frame*frame_size + c*comp_size;
 
             switch (format.bit_width) {
                 case AUDIO_BITS_32: {
@@ -1022,14 +1022,14 @@ resample_frames(void *dst, Audio_Format dst_format,
 
         f32 lerp_factor = src_frame_index_f - (f32)src_frame_index_1;
 
-        void *src_frame_1 = (u8*)src + src_frame_index_1 * src_frame_size;
-        void *src_frame_2 = (u8*)src + src_frame_index_2 * src_frame_size;
-        void *dst_frame = (u8*)dst + dst_frame_index * dst_frame_size;
+        void *src_frame_1 = (uint8_t*)src + src_frame_index_1 * src_frame_size;
+        void *src_frame_2 = (uint8_t*)src + src_frame_index_2 * src_frame_size;
+        void *dst_frame = (uint8_t*)dst + dst_frame_index * dst_frame_size;
 
         for (int c = 0; c < src_format.channels; c++) {
-            void *src_comp_1 = (u8*)src_frame_1 + c * src_comp_size;
-            void *src_comp_2 = (u8*)src_frame_2 + c * src_comp_size;
-            void *dst_comp = (u8*)dst_frame + c * dst_comp_size;
+            void *src_comp_1 = (uint8_t*)src_frame_1 + c * src_comp_size;
+            void *src_comp_2 = (uint8_t*)src_frame_2 + c * src_comp_size;
+            void *dst_comp = (uint8_t*)dst_frame + c * dst_comp_size;
 
             if (src_format.bit_width == AUDIO_BITS_32) {
                 float32 sample_1 = *((f32*)src_comp_1);
@@ -1078,13 +1078,13 @@ convert_frames(void *dst, Audio_Format dst_format,
 	// #Speed #Simd
 	if (need_sample_conversion) {
 		for (u64 src_frame_index = 0; src_frame_index < src_frame_count; src_frame_index++) {
-	        void *src_frame = ((u8*)src) + src_frame_index*src_frame_size;
-	        void *dst_frame = ((u8*)dst) + src_frame_index*dst_frame_size;
+	        void *src_frame = ((uint8_t*)src) + src_frame_index*src_frame_size;
+	        void *dst_frame = ((uint8_t*)dst) + src_frame_index*dst_frame_size;
 	        
 	    	union {
 	    		s16 s16_sample;
 	    		f32 f32_sample;
-	    		u8 data[4];
+	    		uint8_t data[4];
 	    	} avg;
 	    	
 	    	// We only need the average if downscaling or src format is more than 1 when
@@ -1098,7 +1098,7 @@ convert_frames(void *dst, Audio_Format dst_format,
 	        	f32 sum = 0;
 	        	for (int c = 0; c < src_format.channels; c++) {
 	        		avg.s16_sample = 0;
-	        		void *src_comp = (u8*)src_frame + c * src_comp_size;
+	        		void *src_comp = (uint8_t*)src_frame + c * src_comp_size;
 	        		convert_one_component(
 	        			avg.data, dst_format.bit_width, 
 	        			src_comp, src_format.bit_width
@@ -1123,13 +1123,13 @@ convert_frames(void *dst, Audio_Format dst_format,
 	        	// care about non-stereo/mono audio.
 	        	
 				for (int c = 0; c < dst_format.channels; c++) {
-					void *dst_comp = (u8*)dst_frame + c * dst_comp_size;
+					void *dst_comp = (uint8_t*)dst_frame + c * dst_comp_size;
 					memcpy(dst_comp, avg.data, dst_comp_size);
 				}
 				
 	        } else if (src_format.channels == 1) {
 	        	for (int c = 0; c < dst_format.channels; c++) {
-					void *dst_comp = (u8*)dst_frame + c * dst_comp_size;
+					void *dst_comp = (uint8_t*)dst_frame + c * dst_comp_size;
 					convert_one_component(dst_comp,  dst_format.bit_width,
 									      src_frame, src_format.bit_width);
 				}
@@ -1141,8 +1141,8 @@ convert_frames(void *dst, Audio_Format dst_format,
 	        	// just get the average in src and set that to the extra channels in dst.
 	        	
 	        	for (int c = 0; c < dst_format.channels; c++) {
-	        		void *dst_comp = (u8*)dst_frame + c * dst_comp_size;
-	        		void *src_comp = (u8*)src_frame + c * src_comp_size;
+	        		void *dst_comp = (uint8_t*)dst_frame + c * dst_comp_size;
+	        		void *src_comp = (uint8_t*)src_frame + c * src_comp_size;
 	        		
 	        		if (c < src_format.channels) 
 	        			convert_one_component(dst_comp, dst_format.bit_width,
@@ -1154,8 +1154,8 @@ convert_frames(void *dst, Audio_Format dst_format,
 	        } else {
 	        	// Same channel count, just copy components over
 	        	for (int c = 0; c < dst_format.channels; c++) {
-                    void *dst_comp = (u8*)dst_frame + c * dst_comp_size;
-                    void *src_comp = (u8*)src_frame + c * src_comp_size;
+                    void *dst_comp = (uint8_t*)dst_frame + c * dst_comp_size;
+                    void *src_comp = (uint8_t*)src_frame + c * src_comp_size;
                     convert_one_component(dst_comp, dst_format.bit_width, src_comp, src_format.bit_width);
                 }
 	        }
@@ -1276,7 +1276,7 @@ audio_player_get_one() {
 	
 	// No free player found, make another block
 	// #Volatile can't assign to last->next before this is zero initialized
-	Audio_Player_Block *new_block = alloc(get_heap_allocator(), sizeof(Audio_Player_Block));
+	Audio_Player_Block *new_block = Alloc(GetHeapAllocator(), sizeof(Audio_Player_Block));
 	
 #if !DO_ZERO_INITIALIATION
 	memset(new_block, 0, sizeof(*new_block));
@@ -1497,7 +1497,7 @@ void
 DEPRECATED(play_one_audio_clip_at_position(string path, Vector3 pos), "Use play_one_audio_clip_with_config() instead") {
 	if (!just_audio_clips_initted) {
 		just_audio_clips_initted = true;
-		just_audio_clips = make_hash_table(string, Audio_Source, get_heap_allocator());
+		just_audio_clips = make_hash_table(string, Audio_Source, GetHeapAllocator());
 	}
 	
 	Audio_Source *src_ptr = hash_table_find(&just_audio_clips, path);
@@ -1505,7 +1505,7 @@ DEPRECATED(play_one_audio_clip_at_position(string path, Vector3 pos), "Use play_
 		play_one_audio_clip_source_at_position(*src_ptr, pos);
 	} else {
 		Audio_Source new_src;
-		bool ok = audio_open_source_stream(&new_src, path, get_heap_allocator());
+		bool ok = audio_open_source_stream(&new_src, path, GetHeapAllocator());
 		if (!ok) {
 			log_error("Could not load audio to play from %s", path);
 			return;
@@ -1519,7 +1519,7 @@ void
 play_one_audio_clip_with_config(string path, Audio_Playback_Config config) {
 	if (!just_audio_clips_initted) {
 		just_audio_clips_initted = true;
-		just_audio_clips = make_hash_table(string, Audio_Source, get_heap_allocator());
+		just_audio_clips = make_hash_table(string, Audio_Source, GetHeapAllocator());
 	}
 	
 	Audio_Source *src_ptr = hash_table_find(&just_audio_clips, path);
@@ -1527,7 +1527,7 @@ play_one_audio_clip_with_config(string path, Audio_Playback_Config config) {
 		play_one_audio_clip_source_with_config(*src_ptr, config);
 	} else {
 		Audio_Source new_src;
-		bool ok = audio_open_source_stream(&new_src, path, get_heap_allocator());
+		bool ok = audio_open_source_stream(&new_src, path, GetHeapAllocator());
 		if (!ok) {
 			log_error("Could not load audio to play from %s", path);
 			return;
@@ -1553,7 +1553,7 @@ audio_apply_fade_in(void *frames, u64 number_of_frames, Audio_Format format,
     for (u64 f = 0; f < number_of_frames; f++) {
     	f32 frame_t = (f32)f/(f32)number_of_frames;
     	for (u64 c = 0; c < format.channels; c++) {
-    		void *p = ((u8*)frames)+frame_size*f+c*comp_size;
+    		void *p = ((uint8_t*)frames)+frame_size*f+c*comp_size;
 	    	switch (format.bit_width) {
 	    		case AUDIO_BITS_32: {
 	    			f32 s = (*(f32*)p);
@@ -1578,7 +1578,7 @@ audio_apply_fade_out(void *frames, u64 number_of_frames, Audio_Format format,
     for (s64 f = ((s64)number_of_frames)-1; f >= 0; f--) {
     	f32 frame_t = (f32)f/(f32)number_of_frames;
     	for (u64 c = 0; c < format.channels; c++) {
-    		void *p = ((u8*)frames)+frame_size*f+c*comp_size;
+    		void *p = ((uint8_t*)frames)+frame_size*f+c*comp_size;
 	    	switch (format.bit_width) {
 	    		case AUDIO_BITS_32: {
 	    			f32 s = (*(f32*)p);
@@ -1615,7 +1615,7 @@ void apply_audio_spacialization_mono(void* frames, Audio_Format format, u64 numb
         convert_one_component(
         	&sample, 
         	AUDIO_BITS_32, 
-        	(u8*)frames+i*frame_size,
+        	(uint8_t*)frames+i*frame_size,
         	format.bit_width
     	);
 
@@ -1625,7 +1625,7 @@ void apply_audio_spacialization_mono(void* frames, Audio_Format format, u64 numb
         prev_sample = sample;
 
         convert_one_component(
-	    	(u8*)frames+i*frame_size,
+	    	(uint8_t*)frames+i*frame_size,
 	    	format.bit_width,
 	    	&sample, 
 	    	AUDIO_BITS_32
@@ -1660,7 +1660,7 @@ void apply_audio_spacialization(void* frames, Audio_Format format, u64 number_of
             convert_one_component(
             	&sample, 
             	AUDIO_BITS_32, 
-            	(u8*)frames+i*frame_size+c*comp_size, 
+            	(uint8_t*)frames+i*frame_size+c*comp_size, 
             	format.bit_width
         	);
             float32 gain = 1.0f / format.channels;
@@ -1712,7 +1712,7 @@ void apply_audio_spacialization(void* frames, Audio_Format format, u64 number_of
 			sample *= gain;
 			// Convert back to whatever
 			convert_one_component(
-            	(u8*)frames+i*frame_size+c*comp_size, 
+            	(uint8_t*)frames+i*frame_size+c*comp_size, 
             	format.bit_width,
             	&sample, 
             	AUDIO_BITS_32
@@ -1738,14 +1738,14 @@ void apply_audio_volume(void* frames, Audio_Format format, u64 number_of_frames,
             convert_one_component(
             	&sample, 
             	AUDIO_BITS_32, 
-            	(u8*)frames+i*frame_size+c*comp_size, 
+            	(uint8_t*)frames+i*frame_size+c*comp_size, 
             	format.bit_width
         	);
         	
         	sample *= vol;
         	
 			convert_one_component(
-            	(u8*)frames+i*frame_size+c*comp_size, 
+            	(uint8_t*)frames+i*frame_size+c*comp_size, 
             	format.bit_width,
             	&sample, 
             	AUDIO_BITS_32
@@ -1761,7 +1761,7 @@ void
 do_program_audio_sample(u64 number_of_output_frames, Audio_Format out_format, 
 							 void *output) {
 							 
-	reset_temporary_storage();
+	ResetTemporaryStorage();
 	
 	audio_prepare_intermediate_buffers();
 							 
@@ -1774,7 +1774,7 @@ do_program_audio_sample(u64 number_of_output_frames, Audio_Format out_format,
 	Audio_Player_Block *block = &audio_player_block;
 	
 	if (!audio_source_start_time_records) {
-		growing_array_init_reserve((void**)&audio_source_start_time_records, sizeof(float64), next_audio_source_uid, get_heap_allocator());
+		growing_array_init_reserve((void**)&audio_source_start_time_records, sizeof(float64), next_audio_source_uid, GetHeapAllocator());
 	}
 	
 	if (growing_array_get_valid_count(audio_source_start_time_records) < next_audio_source_uid) {
@@ -1861,7 +1861,7 @@ do_program_audio_sample(u64 number_of_output_frames, Audio_Format out_format,
 			if (p->frame_index == 0) { 
 			
 				float64 start_time = audio_source_start_time_records[src.uid];
-				float64 now = os_get_elapsed_seconds();
+				float64 now = OsGetElapsedSeconds();
 
 				float64 time_since_last_source_started = now - start_time;
 				
@@ -1995,7 +1995,7 @@ do_program_audio_sample(u64 number_of_output_frames, Audio_Format out_format,
 					
 					if (frames_to_fade < number_of_sample_frames) {
 						memset(
-							(u8*)target_buffer+(frames_to_fade*out_frame_size), 
+							(uint8_t*)target_buffer+(frames_to_fade*out_frame_size), 
 							0, 
 							(number_of_sample_frames-frames_to_fade)*out_frame_size
 						);
@@ -2031,13 +2031,13 @@ do_program_audio_sample(u64 number_of_output_frames, Audio_Format out_format,
 		
 					Vector3 pos_in_view = m4_transform(view, v4(v3_expand(p->config.position), 1.0)).xyz;
 					
-					float32 distance = fabsf(v3_length(pos_in_view));
+					float32 distance = fabsf(V3Length(pos_in_view));
 					float32 distance_min = p->config.spacial_distance_min;
 					float32 distance_max = p->config.spacial_distance_max;
 					
 					float32 distance_scale_factor 
 							= clamp((distance-distance_min)/(distance_max-distance_min), 0, 1);
-					ndc = v3_mulf(v3_normalize(ndc), distance_scale_factor);
+					ndc = V3Mulf(V3Normalize(ndc), distance_scale_factor);
 				}
 				
 				apply_audio_spacialization(mix_buffer, out_format, number_of_output_frames, ndc);

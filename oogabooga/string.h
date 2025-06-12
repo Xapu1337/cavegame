@@ -2,9 +2,12 @@
 #define OOGABOOGA_STRING_H
 
 #include <stdint.h>
+#include "base.h"
 
 typedef struct string { uint64_t count; uint8_t *data; } string;
-typedef struct Allocator Allocator;
+
+// String literal macro
+#define STR(s) ((string){ LengthOfNullTerminatedString((const char*)s), (uint8_t*)s })
 
 typedef struct String_Builder {
     union { struct {uint64_t count; uint8_t *buffer;}; string result; };
@@ -12,19 +15,19 @@ typedef struct String_Builder {
     Allocator allocator;
 } String_Builder;
 
-uint64_t length_of_null_terminated_string(const char *cstring);
-string    alloc_string(Allocator allocator, uint64_t count);
-void      dealloc_string(Allocator allocator, string s);
+uint64_t LengthOfNullTerminatedString(const char *cstring);
+string    AllocString(Allocator allocator, uint64_t count);
+void      DeallocString(Allocator allocator, string s);
 string    talloc_string(uint64_t count);
-string    string_concat(string left, string right, Allocator allocator);
-char*     convert_to_null_terminated_string(string s, Allocator allocator);
-char*     temp_convert_to_null_terminated_string(string s);
-bool      strings_match(string a, string b);
-string    string_view(string s, uint64_t start_index, uint64_t count);
-int64_t   string_find_from_left(string s, string sub);
+string    StringConcat(string left, string right, Allocator allocator);
+char*     ConvertToNullTerminatedString(string s, Allocator allocator);
+char*     TempConvertToNullTerminatedString(string s);
+bool      StringsMatch(string a, string b);
+string    string_view(string s, uint64_t startIndex, uint64_t count);
+int64_t   StringFindFromLeft(string s, string sub);
 int64_t   string_find_from_right(string s, string sub);
 bool      string_starts_with(string s, string sub);
-string    string_copy(string s, Allocator allocator);
+string    StringCopy(string s, Allocator allocator);
 void      string_builder_reserve(String_Builder *b, uint64_t required_capacity);
 void      string_builder_init_reserve(String_Builder *b, uint64_t reserved_capacity, Allocator allocator);
 void      string_builder_init(String_Builder *b, Allocator allocator);

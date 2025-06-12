@@ -8,27 +8,27 @@ int entry(int argc, char **argv) {
 	window.x = 200;
 	window.y = 200;
 
-	window.clear_color = hex_to_rgba(0x2a2d3aff);
+	window.clearColor = hex_to_rgba(0x2a2d3aff);
 	
-	Gfx_Image *bush_image = load_image_from_disk(STR("oogabooga/examples/berry_bush.png"), get_heap_allocator());
+	Gfx_Image *bush_image = load_image_from_disk(STR("oogabooga/examples/berry_bush.png"), GetHeapAllocator());
 	assert(bush_image, "Failed loading berry_bush.png");
-	Gfx_Image *hammer_image = load_image_from_disk(STR("oogabooga/examples/hammer.png"), get_heap_allocator());
+	Gfx_Image *hammer_image = load_image_from_disk(STR("oogabooga/examples/hammer.png"), GetHeapAllocator());
 	assert(hammer_image, "Failed loading hammer.png");
 	
 	Custom_Mouse_Pointer hammer_pointer 
-	   = os_make_custom_mouse_pointer_from_file(STR("oogabooga/examples/hammer.png"), 16, 16, get_heap_allocator());
+	   = os_make_custom_mouse_pointer_from_file(STR("oogabooga/examples/hammer.png"), 16, 16, GetHeapAllocator());
 	assert(hammer_pointer != 0, "Could not load hammer pointer");
 	
 	
-	void *my_data = alloc(get_heap_allocator(), 32*32*4);
+	void *my_data = Alloc(GetHeapAllocator(), 32*32*4);
 	memset(my_data, 0xffffffff, 32*32*4);
-	Gfx_Image *my_image = make_image(32, 32, 4, my_data, get_heap_allocator());
+	Gfx_Image *my_image = make_image(32, 32, 4, my_data, GetHeapAllocator());
 	for (int *c = (int*)my_data; c < (int*)my_data+16*16; c += 1) {
 		*c = 0xff0000ff;
 	}
 	gfx_set_image_data(my_image, 0, 0, 16, 16, my_data);
 	
-	Gfx_Font *font = load_font_from_disk(STR("C:/windows/fonts/arial.ttf"), get_heap_allocator());
+	Gfx_Font *font = load_font_from_disk(STR("C:/windows/fonts/arial.ttf"), GetHeapAllocator());
 	assert(font, "Failed loading arial.ttf, %d", GetLastError());
 	
 	// This makes sure atlas is rendered for ascii.
@@ -41,43 +41,43 @@ int entry(int argc, char **argv) {
 	const float64 fps_limit = 69000;
 	const float64 min_frametime = 1.0 / fps_limit;
 	
-	Matrix4 camera_xform = m4_scalar(1.0);
+	Matrix4 cameraXform = M4Scalar(1.0);
 	
-	float64 last_time = os_get_elapsed_seconds();
+	float64 last_time = OsGetElapsedSeconds();
 	while (!window.should_close) tm_scope("Frame") {
-		reset_temporary_storage();
+		ResetTemporaryStorage();
 		
-		float64 now = os_get_elapsed_seconds();
+		float64 now = OsGetElapsedSeconds();
 		float64 delta = now - last_time;
 		if (delta < min_frametime) {
 			os_high_precision_sleep((min_frametime-delta)*1000.0);
-			now = os_get_elapsed_seconds();
+			now = OsGetElapsedSeconds();
 			delta = now - last_time;
 		}
 		last_time = now;
 		
 		float32 aspect = (float32)window.width/(float32)window.height;
 	
-		draw_frame.projection = m4_make_orthographic_projection(-aspect, aspect, -1, 1, -1, 10);
+		drawFrame.projection = m4_make_orthographic_projection(-aspect, aspect, -1, 1, -1, 10);
 		
 		const float32 cam_move_speed = 4.0;
 		Vector2 cam_move_axis = v2(0, 0);
-		if (is_key_down('A')) {
+		if (IsKeyDown('A')) {
 			cam_move_axis.x -= 1.0;
 		}
-		if (is_key_down('D')) {
+		if (IsKeyDown('D')) {
 			cam_move_axis.x += 1.0;
 		}
-		if (is_key_down('S')) {
+		if (IsKeyDown('S')) {
 			cam_move_axis.y -= 1.0;
 		}
-		if (is_key_down('W')) {
+		if (IsKeyDown('W')) {
 			cam_move_axis.y += 1.0;
 		}
 		
-		Vector2 cam_move = v2_mulf(cam_move_axis, delta * cam_move_speed);
-		camera_xform = m4_translate(camera_xform, v3(v2_expand(cam_move), 0));
-		draw_frame.camera_xform = camera_xform;
+		Vector2 cam_move = V2Mulf(cam_move_axis, delta * cam_move_speed);
+		cameraXform = M4Translate(cameraXform, v3(v2_expand(cam_move), 0));
+		drawFrame.cameraXform = cameraXform;
 
 		seed_for_random = 69;
 		for (u64 i = 0; i < 150000; i++) {
@@ -98,8 +98,8 @@ int entry(int argc, char **argv) {
 			log("ms: %.2f", delta*1000.0);
 		}
 		
-		gfx_update();
-		os_update();
+		GfxUpdate();
+		OsUpdate();
 	}
 
 	return 0;

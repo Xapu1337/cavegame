@@ -1,0 +1,1928 @@
+In file included from oogabooga/oogabooga.c:412,
+                 from build.c:31:
+oogabooga/linmath.h:57:15: error: redefinition of ‘union Vector2f32’
+   57 | typedef union Vector2f32 {
+      |               ^~~~~~~~~~
+oogabooga/linmath.h:15:15: note: originally defined here
+   15 | typedef union Vector2f32 {
+      |               ^~~~~~~~~~
+oogabooga/linmath.h:60:3: error: conflicting types for ‘Vector2f32’; have ‘union Vector2f32’
+   60 | } Vector2f32;
+      |   ^~~~~~~~~~
+oogabooga/linmath.h:19:3: note: previous declaration of ‘Vector2f32’ with type ‘Vector2f32’
+   19 | } Vector2f32;
+      |   ^~~~~~~~~~
+oogabooga/linmath.h:62:15: error: redefinition of ‘union Vector3f32’
+   62 | typedef union Vector3f32 {
+      |               ^~~~~~~~~~
+oogabooga/linmath.h:21:15: note: originally defined here
+   21 | typedef union Vector3f32 {
+      |               ^~~~~~~~~~
+oogabooga/linmath.h:67:3: error: conflicting types for ‘Vector3f32’; have ‘union Vector3f32’
+   67 | } Vector3f32;
+      |   ^~~~~~~~~~
+oogabooga/linmath.h:27:3: note: previous declaration of ‘Vector3f32’ with type ‘Vector3f32’
+   27 | } Vector3f32;
+      |   ^~~~~~~~~~
+oogabooga/linmath.h:69:15: error: redefinition of ‘union Vector4f32’
+   69 | typedef union Vector4f32 {
+      |               ^~~~~~~~~~
+oogabooga/linmath.h:29:15: note: originally defined here
+   29 | typedef union Vector4f32 {
+      |               ^~~~~~~~~~
+oogabooga/linmath.h:78:3: error: conflicting types for ‘Vector4f32’; have ‘union Vector4f32’
+   78 | } Vector4f32;
+      |   ^~~~~~~~~~
+oogabooga/linmath.h:37:3: note: previous declaration of ‘Vector4f32’ with type ‘Vector4f32’
+   37 | } Vector4f32;
+      |   ^~~~~~~~~~
+oogabooga/linmath.h:80:16: error: redefinition of ‘struct Matrix4’
+   80 | typedef struct Matrix4 {
+      |                ^~~~~~~
+oogabooga/linmath.h:45:16: note: originally defined here
+   45 | typedef struct Matrix4 {
+      |                ^~~~~~~
+oogabooga/linmath.h:82:3: error: conflicting types for ‘Matrix4’; have ‘struct Matrix4’
+   82 | } Matrix4;
+      |   ^~~~~~~
+oogabooga/linmath.h:47:3: note: previous declaration of ‘Matrix4’ with type ‘Matrix4’
+   47 | } Matrix4;
+      |   ^~~~~~~
+oogabooga/linmath.h:84:15: error: redefinition of ‘union Quaternion’
+   84 | typedef union Quaternion {
+      |               ^~~~~~~~~~
+oogabooga/linmath.h:39:15: note: originally defined here
+   39 | typedef union Quaternion {
+      |               ^~~~~~~~~~
+oogabooga/linmath.h:88:3: error: conflicting types for ‘Quaternion’; have ‘union Quaternion’
+   88 | } Quaternion;
+      |   ^~~~~~~~~~
+oogabooga/linmath.h:43:3: note: previous declaration of ‘Quaternion’ with type ‘Quaternion’
+   43 | } Quaternion;
+      |   ^~~~~~~~~~
+oogabooga/linmath.h:214:41: error: unknown type name ‘Vector2’; did you mean ‘Vector4f32’?
+  214 | Draw_Quad* DrawRectXform(Matrix4 xform, Vector2 size, Vector4 color);
+      |                                         ^~~~~~~
+      |                                         Vector4f32
+oogabooga/linmath.h:214:55: error: unknown type name ‘Vector4’; did you mean ‘Vector4f32’?
+  214 | Draw_Quad* DrawRectXform(Matrix4 xform, Vector2 size, Vector4 color);
+      |                                                       ^~~~~~~
+      |                                                       Vector4f32
+In file included from oogabooga/oogabooga.c:509:
+oogabooga/base.c:16:1: error: two or more data types in declaration specifiers
+   16 | void
+      | ^~~~
+oogabooga/base.c:77:11: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘GetHeapAllocator’
+   77 | Allocator GetHeapAllocator();
+      |           ^~~~~~~~~~~~~~~~
+oogabooga/base.c:80:11: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘GetTemporaryAllocator’
+   80 | Allocator GetTemporaryAllocator();
+      |           ^~~~~~~~~~~~~~~~~~~~~
+oogabooga/base.c:101:1: error: expected identifier or ‘(’ before ‘void’
+  101 | void* Alloc(Allocator allocator, uint64_t size);
+      | ^~~~
+oogabooga/base.c:104:1: error: expected identifier or ‘(’ before ‘void’
+  104 | void* alloc_uninitialized(Allocator allocator, uint64_t size);
+      | ^~~~
+oogabooga/base.c:107:1: error: two or more data types in declaration specifiers
+  107 | void Dealloc(Allocator allocator, void *p);
+      | ^~~~
+oogabooga/string.c: In function ‘string_view’:
+oogabooga/base.c:21:60: warning: ' ' flag used with ‘%o’ gnu_printf format [-Wformat=]
+   21 | #define assert_line(line, cond, ...) {if(!(cond)) { printf("\nAssertion failed in file " __FILE__ " on line " ASSERT_STR(line) "\n\nFailed Condition: " #cond ". Message: " __VA_ARGS__); printf("\n"); dump_stack_trace(); crash(); }}
+      |                                                            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+oogabooga/base.c:22:28: note: in expansion of macro ‘assert_line’
+   22 | #define assert(cond, ...) {assert_line(__LINE__, cond, __VA_ARGS__)}
+      |                            ^~~~~~~~~~~
+oogabooga/string.c:80:9: note: in expansion of macro ‘assert’
+   80 |         assert(startIndex < s.count, "string_view startIndex % out of range for string count %", startIndex, s.count);
+      |         ^~~~~~
+oogabooga/base.c:21:60: warning: format ‘%o’ expects argument of type ‘unsigned int’, but argument 2 has type ‘u64’ {aka ‘long unsigned int’} [-Wformat=]
+   21 | #define assert_line(line, cond, ...) {if(!(cond)) { printf("\nAssertion failed in file " __FILE__ " on line " ASSERT_STR(line) "\n\nFailed Condition: " #cond ". Message: " __VA_ARGS__); printf("\n"); dump_stack_trace(); crash(); }}
+      |                                                            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+oogabooga/base.c:22:28: note: in expansion of macro ‘assert_line’
+   22 | #define assert(cond, ...) {assert_line(__LINE__, cond, __VA_ARGS__)}
+      |                            ^~~~~~~~~~~
+oogabooga/string.c:80:9: note: in expansion of macro ‘assert’
+   80 |         assert(startIndex < s.count, "string_view startIndex % out of range for string count %", startIndex, s.count);
+      |         ^~~~~~
+oogabooga/base.c:21:60: warning: spurious trailing ‘%’ in format [-Wformat=]
+   21 | #define assert_line(line, cond, ...) {if(!(cond)) { printf("\nAssertion failed in file " __FILE__ " on line " ASSERT_STR(line) "\n\nFailed Condition: " #cond ". Message: " __VA_ARGS__); printf("\n"); dump_stack_trace(); crash(); }}
+      |                                                            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+oogabooga/base.c:22:28: note: in expansion of macro ‘assert_line’
+   22 | #define assert(cond, ...) {assert_line(__LINE__, cond, __VA_ARGS__)}
+      |                            ^~~~~~~~~~~
+oogabooga/string.c:80:9: note: in expansion of macro ‘assert’
+   80 |         assert(startIndex < s.count, "string_view startIndex % out of range for string count %", startIndex, s.count);
+      |         ^~~~~~
+oogabooga/base.c:21:60: warning: too many arguments for format [-Wformat-extra-args]
+   21 | #define assert_line(line, cond, ...) {if(!(cond)) { printf("\nAssertion failed in file " __FILE__ " on line " ASSERT_STR(line) "\n\nFailed Condition: " #cond ". Message: " __VA_ARGS__); printf("\n"); dump_stack_trace(); crash(); }}
+      |                                                            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+oogabooga/base.c:22:28: note: in expansion of macro ‘assert_line’
+   22 | #define assert(cond, ...) {assert_line(__LINE__, cond, __VA_ARGS__)}
+      |                            ^~~~~~~~~~~
+oogabooga/string.c:80:9: note: in expansion of macro ‘assert’
+   80 |         assert(startIndex < s.count, "string_view startIndex % out of range for string count %", startIndex, s.count);
+      |         ^~~~~~
+In file included from oogabooga/oogabooga.c:511:
+oogabooga/string.c: In function ‘StringFindFromLeft’:
+oogabooga/string.c:95:27: warning: comparison of integer expressions of different signedness: ‘s64’ {aka ‘long int’} and ‘uint64_t’ {aka ‘long unsigned int’} [-Wsign-compare]
+   95 |         for (s64 i = 0; i <= s.count-sub.count; i++) {
+      |                           ^~
+oogabooga/string.c: In function ‘string_builder_reserve’:
+oogabooga/string.c:139:28: error: implicit declaration of function ‘max’; did you mean ‘fmax’? [-Wimplicit-function-declaration]
+  139 |         u64 new_capacity = max(b->buffer_capacity*2, (u64)(required_capacity*1.5));
+      |                            ^~~
+      |                            fmax
+In file included from oogabooga/oogabooga.c:512:
+oogabooga/unicode.c: In function ‘utf8_to_utf32’:
+oogabooga/unicode.c:76:23: warning: comparison of integer expressions of different signedness: ‘u64’ {aka ‘long unsigned int’} and ‘s64’ {aka ‘long int’} [-Wsign-compare]
+   76 |     for (u64 i = 1; i <= continuation_bytes; i++) {  // Do nothing if it is 0.
+      |                       ^~
+oogabooga/unicode.c: In function ‘next_utf8’:
+oogabooga/unicode.c:106:21: warning: comparison of unsigned expression in ‘>= 0’ is always true [-Wtype-limits]
+  106 |     assert(s->count >= 0);
+      |                     ^~
+oogabooga/base.c:21:44: note: in definition of macro ‘assert_line’
+   21 | #define assert_line(line, cond, ...) {if(!(cond)) { printf("\nAssertion failed in file " __FILE__ " on line " ASSERT_STR(line) "\n\nFailed Condition: " #cond ". Message: " __VA_ARGS__); printf("\n"); dump_stack_trace(); crash(); }}
+      |                                            ^~~~
+oogabooga/unicode.c:106:5: note: in expansion of macro ‘assert’
+  106 |     assert(s->count >= 0);
+      |     ^~~~~~
+In file included from oogabooga/oogabooga.c:513:
+oogabooga/string_format.c: In function ‘format_string_to_buffer’:
+oogabooga/string_format.c:52:42: warning: comparison of integer expressions of different signedness: ‘long int’ and ‘u64’ {aka ‘long unsigned int’} [-Wsign-compare]
+   52 |     while (*p != '\0' && (bufp - buffer) < count - 1) {
+      |                                          ^
+oogabooga/string_format.c:66:72: warning: comparison of integer expressions of different signedness: ‘long int’ and ‘u64’ {aka ‘long unsigned int’} [-Wsign-compare]
+   66 |                         for (u64 i = 0; i < s.count && (bufp - buffer) < count - 1; i++) {
+      |                                                                        ^
+oogabooga/string_format.c:75:62: warning: comparison of integer expressions of different signedness: ‘long int’ and ‘u64’ {aka ‘long unsigned int’} [-Wsign-compare]
+   75 |                         while (*s != '\0' && (bufp - buffer) < count - 1) {
+      |                                                              ^
+oogabooga/string_format.c:92:54: warning: comparison of integer expressions of different signedness: ‘long int’ and ‘u64’ {aka ‘long unsigned int’} [-Wsign-compare]
+   92 |                 while (*s != '\0' && (bufp - buffer) < count - 1) {
+      |                                                      ^
+oogabooga/string_format.c:181:65: warning: comparison of integer expressions of different signedness: ‘long int’ and ‘u64’ {aka ‘long unsigned int’} [-Wsign-compare]
+  181 |                 for (int i = 0; i < temp_len && (bufp - buffer) < count - 1; i++) {
+      |                                                                 ^
+oogabooga/string_format.c: In function ‘sprint_null_terminated_string_va_list_to_buffer’:
+oogabooga/string_format.c:212:26: warning: comparison of unsigned expression in ‘>= 0’ is always true [-Wtype-limits]
+  212 |     if (formatted_length >= 0 && formatted_length < bufferSize) {
+      |                          ^~
+oogabooga/string_format.c: In function ‘print_va_list_buffered’:
+oogabooga/string_format.c:302:28: error: implicit declaration of function ‘min’; did you mean ‘fmin’? [-Wimplicit-function-declaration]
+  302 |                 u64 size = min(current.count, PRINT_BUFFER_SIZE-1);
+      |                            ^~~
+      |                            fmin
+oogabooga/string_format.c: At top level:
+oogabooga/string_format.c:329:6: error: conflicting types for ‘printf’; have ‘void(const char *, ...)’
+  329 | void printf(const char* fmt, ...) {
+      |      ^~~~~~
+In file included from oogabooga/oogabooga.c:153:
+/usr/include/stdio.h:363:12: note: previous declaration of ‘printf’ with type ‘int(const char *, ...)’
+  363 | extern int printf (const char *__restrict __format, ...);
+      |            ^~~~~~
+oogabooga/string_format.c: In function ‘string_builder_prints’:
+oogabooga/string_format.c:360:25: error: invalid initializer
+  360 |         va_list args1 = 0;
+      |                         ^
+oogabooga/string_format.c:362:25: error: invalid initializer
+  362 |         va_list args2 = 0;
+      |                         ^
+oogabooga/string_format.c: In function ‘string_builder_printf’:
+oogabooga/string_format.c:379:25: error: invalid initializer
+  379 |         va_list args1 = 0;
+      |                         ^
+oogabooga/string_format.c:381:25: error: invalid initializer
+  381 |         va_list args2 = 0;
+      |                         ^
+oogabooga/string_format.c: At top level:
+oogabooga/string_format.c:396:71: warning: backslash-newline at end of file
+  396 | #define string_builder_print(...) _Generic((SECOND_ARG(__VA_ARGS__)), \
+In file included from oogabooga/oogabooga.c:514:
+oogabooga/hash.c:71:35: warning: backslash-newline at end of file
+   71 | #define get_hash(x) _Generic((x), \
+In file included from oogabooga/oogabooga.c:516:
+oogabooga/growing_array.c: In function ‘growing_array_find_index_from_left_by_value’:
+oogabooga/growing_array.c:267:13: error: implicit declaration of function ‘bytes_match’ [-Wimplicit-function-declaration]
+  267 |         if (bytes_match(next, p, header->block_size_in_bytes)) {
+      |             ^~~~~~~~~~~
+oogabooga/growing_array.c: In function ‘growing_array_ordered_remove_by_pointer’:
+oogabooga/growing_array.c:276:27: warning: unused variable ‘header’ [-Wunused-variable]
+  276 |     Growing_Array_Header *header = ((Growing_Array_Header*)*array) - 1;
+      |                           ^~~~~~
+oogabooga/growing_array.c: In function ‘growing_array_unordered_remove_by_pointer’:
+oogabooga/growing_array.c:288:27: warning: unused variable ‘header’ [-Wunused-variable]
+  288 |     Growing_Array_Header *header = ((Growing_Array_Header*)*array) - 1;
+      |                           ^~~~~~
+oogabooga/growing_array.c: In function ‘growing_array_ordered_remove_one_by_value’:
+oogabooga/growing_array.c:300:27: warning: unused variable ‘header’ [-Wunused-variable]
+  300 |     Growing_Array_Header *header = ((Growing_Array_Header*)*array) - 1;
+      |                           ^~~~~~
+oogabooga/growing_array.c: In function ‘growing_array_unordered_remove_one_by_value’:
+oogabooga/growing_array.c:312:27: warning: unused variable ‘header’ [-Wunused-variable]
+  312 |     Growing_Array_Header *header = ((Growing_Array_Header*)*array) - 1;
+      |                           ^~~~~~
+In file included from oogabooga/oogabooga.c:517:
+oogabooga/path_utils.c: In function ‘get_file_name_including_extension’:
+oogabooga/path_utils.c:36:48: warning: comparison of integer expressions of different signedness: ‘s64’ {aka ‘long int’} and ‘uint64_t’ {aka ‘long unsigned int’} [-Wsign-compare]
+   36 |     if (last_separator != -1 && last_separator < filePath.count - 1) {
+      |                                                ^
+oogabooga/path_utils.c: In function ‘get_directory_of’:
+oogabooga/path_utils.c:59:32: warning: comparison of unsigned expression in ‘>= 0’ is always true [-Wtype-limits]
+   59 |     for (u64 i = path.count; i >= 0; i--) {
+      |                                ^~
+In file included from oogabooga/oogabooga.c:518:
+oogabooga/utility.c: At top level:
+oogabooga/utility.c:2:9: warning: ‘PI32’ redefined
+    2 | #define PI32 3.14159265359f
+      |         ^~~~
+oogabooga/linmath.h:51:9: note: this is the location of the previous definition
+   51 | #define PI32 3.14159265358979323846f
+      |         ^~~~
+oogabooga/utility.c: In function ‘radix_sort’:
+oogabooga/utility.c:33:29: warning: comparison of integer expressions of different signedness: ‘u32’ {aka ‘unsigned int’} and ‘int’ [-Wsign-compare]
+   33 |     for (u32 pass = 0; pass < PASS_COUNT; ++pass) {
+      |                             ^
+oogabooga/utility.c:49:27: warning: comparison of integer expressions of different signedness: ‘u32’ {aka ‘unsigned int’} and ‘int’ [-Wsign-compare]
+   49 |         for (u32 i = 1; i < RADIX; ++i) {
+      |                           ^
+oogabooga/utility.c: At top level:
+oogabooga/utility.c:112:13: error: conflicting types for ‘bytes_match’; have ‘_Bool(void *, void *, u64)’ {aka ‘_Bool(void *, void *, long unsigned int)’}
+  112 | inline bool bytes_match(void *a, void *b, u64 count) { return memcmp(a, b, count) == 0; }
+      |             ^~~~~~~~~~~
+oogabooga/growing_array.c:267:13: note: previous implicit declaration of ‘bytes_match’ with type ‘int()’
+  267 |         if (bytes_match(next, p, header->block_size_in_bytes)) {
+      |             ^~~~~~~~~~~
+In file included from oogabooga/oogabooga.c:519:
+oogabooga/linmath.c: In function ‘V2’:
+oogabooga/linmath.c:195:75: warning: missing braces around initializer [-Wmissing-braces]
+  195 | inline Vector2f32 V2(float32 x, float32 y)                       { return (Vector2f32){x, y}; }
+      |                                                                           ^
+      |                                                                                        {   }
+oogabooga/linmath.c: In function ‘V3’:
+oogabooga/linmath.c:196:75: warning: missing braces around initializer [-Wmissing-braces]
+  196 | inline Vector3f32 V3(float32 x, float32 y, float32 z)            { return (Vector3f32){x, y, z}; }
+      |                                                                           ^
+      |                                                                                        {      }
+oogabooga/linmath.c: In function ‘V4’:
+oogabooga/linmath.c:197:75: warning: missing braces around initializer [-Wmissing-braces]
+  197 | inline Vector4f32 V4(float32 x, float32 y, float32 z, float32 w) { return (Vector4f32){x, y, z, w}; }
+      |                                                                           ^
+      |                                                                                        {         }
+oogabooga/linmath.c: In function ‘v2f64’:
+oogabooga/linmath.c:198:78: warning: missing braces around initializer [-Wmissing-braces]
+  198 | inline Vector2f64 v2f64(float64 x, float64 y)                       { return (Vector2f64){x, y}; }
+      |                                                                              ^
+      |                                                                                           {   }
+oogabooga/linmath.c: In function ‘v3f64’:
+oogabooga/linmath.c:199:78: warning: missing braces around initializer [-Wmissing-braces]
+  199 | inline Vector3f64 v3f64(float64 x, float64 y, float64 z)            { return (Vector3f64){x, y, z}; }
+      |                                                                              ^
+      |                                                                                           {      }
+oogabooga/linmath.c: In function ‘v4f64’:
+oogabooga/linmath.c:200:78: warning: missing braces around initializer [-Wmissing-braces]
+  200 | inline Vector4f64 v4f64(float64 x, float64 y, float64 z, float64 w) { return (Vector4f64){x, y, z, w}; }
+      |                                                                              ^
+      |                                                                                           {         }
+oogabooga/linmath.c: In function ‘v2s32’:
+oogabooga/linmath.c:201:78: warning: missing braces around initializer [-Wmissing-braces]
+  201 | inline Vector2s32 v2s32(s32     x, s32     y)                       { return (Vector2s32){x, y}; }
+      |                                                                              ^
+      |                                                                                           {   }
+oogabooga/linmath.c: In function ‘v3s32’:
+oogabooga/linmath.c:202:78: warning: missing braces around initializer [-Wmissing-braces]
+  202 | inline Vector3s32 v3s32(s32     x, s32     y, s32     z)            { return (Vector3s32){x, y, z}; }
+      |                                                                              ^
+      |                                                                                           {      }
+oogabooga/linmath.c: In function ‘v4s32’:
+oogabooga/linmath.c:203:78: warning: missing braces around initializer [-Wmissing-braces]
+  203 | inline Vector4s32 v4s32(s32     x, s32     y, s32     z, s32     w) { return (Vector4s32){x, y, z, w}; }
+      |                                                                              ^
+      |                                                                                           {         }
+oogabooga/linmath.c: In function ‘v2s64’:
+oogabooga/linmath.c:204:78: warning: missing braces around initializer [-Wmissing-braces]
+  204 | inline Vector2s64 v2s64(s64     x, s64     y)                       { return (Vector2s64){x, y}; }
+      |                                                                              ^
+      |                                                                                           {   }
+oogabooga/linmath.c: In function ‘v3s64’:
+oogabooga/linmath.c:205:78: warning: missing braces around initializer [-Wmissing-braces]
+  205 | inline Vector3s64 v3s64(s64     x, s64     y, s64     z)            { return (Vector3s64){x, y, z}; }
+      |                                                                              ^
+      |                                                                                           {      }
+oogabooga/linmath.c: In function ‘v4s64’:
+oogabooga/linmath.c:206:78: warning: missing braces around initializer [-Wmissing-braces]
+  206 | inline Vector4s64 v4s64(s64     x, s64     y, s64     z, s64     w) { return (Vector4s64){x, y, z, w}; }
+      |                                                                              ^
+      |                                                                                           {         }
+oogabooga/linmath.c: In function ‘v2f32_scalar’:
+oogabooga/linmath.c:208:52: warning: missing braces around initializer [-Wmissing-braces]
+  208 | inline Vector2f32 v2f32_scalar(float32 a) { return (Vector2f32){a, a}; }
+      |                                                    ^
+      |                                                                 {   }
+oogabooga/linmath.c: In function ‘v3f32_scalar’:
+oogabooga/linmath.c:209:52: warning: missing braces around initializer [-Wmissing-braces]
+  209 | inline Vector3f32 v3f32_scalar(float32 a) { return (Vector3f32){a, a, a}; }
+      |                                                    ^
+      |                                                                 {      }
+oogabooga/linmath.c: In function ‘v4f32_scalar’:
+oogabooga/linmath.c:210:52: warning: missing braces around initializer [-Wmissing-braces]
+  210 | inline Vector4f32 v4f32_scalar(float32 a) { return (Vector4f32){a, a, a, a}; }
+      |                                                    ^
+      |                                                                 {         }
+oogabooga/linmath.c: In function ‘v2f64_scalar’:
+oogabooga/linmath.c:211:52: warning: missing braces around initializer [-Wmissing-braces]
+  211 | inline Vector2f64 v2f64_scalar(float32 a) { return (Vector2f64){a, a}; }
+      |                                                    ^
+      |                                                                 {   }
+oogabooga/linmath.c: In function ‘v3f64_scalar’:
+oogabooga/linmath.c:212:52: warning: missing braces around initializer [-Wmissing-braces]
+  212 | inline Vector3f64 v3f64_scalar(float32 a) { return (Vector3f64){a, a, a}; }
+      |                                                    ^
+      |                                                                 {      }
+oogabooga/linmath.c: In function ‘v4f64_scalar’:
+oogabooga/linmath.c:213:52: warning: missing braces around initializer [-Wmissing-braces]
+  213 | inline Vector4f64 v4f64_scalar(float32 a) { return (Vector4f64){a, a, a, a}; }
+      |                                                    ^
+      |                                                                 {         }
+oogabooga/linmath.c: In function ‘v2s32_scalar’:
+oogabooga/linmath.c:214:52: warning: missing braces around initializer [-Wmissing-braces]
+  214 | inline Vector2s32 v2s32_scalar(s32     a) { return (Vector2s32){a, a}; }
+      |                                                    ^
+      |                                                                 {   }
+oogabooga/linmath.c: In function ‘v3s32_scalar’:
+oogabooga/linmath.c:215:52: warning: missing braces around initializer [-Wmissing-braces]
+  215 | inline Vector3s32 v3s32_scalar(s32     a) { return (Vector3s32){a, a, a}; }
+      |                                                    ^
+      |                                                                 {      }
+oogabooga/linmath.c: In function ‘v4s32_scalar’:
+oogabooga/linmath.c:216:52: warning: missing braces around initializer [-Wmissing-braces]
+  216 | inline Vector4s32 v4s32_scalar(s32     a) { return (Vector4s32){a, a, a, a}; }
+      |                                                    ^
+      |                                                                 {         }
+oogabooga/linmath.c: In function ‘v2s64_scalar’:
+oogabooga/linmath.c:217:52: warning: missing braces around initializer [-Wmissing-braces]
+  217 | inline Vector2s64 v2s64_scalar(s64     a) { return (Vector2s64){a, a}; }
+      |                                                    ^
+      |                                                                 {   }
+oogabooga/linmath.c: In function ‘v3s64_scalar’:
+oogabooga/linmath.c:218:52: warning: missing braces around initializer [-Wmissing-braces]
+  218 | inline Vector3s64 v3s64_scalar(s64     a) { return (Vector3s64){a, a, a}; }
+      |                                                    ^
+      |                                                                 {      }
+oogabooga/linmath.c: In function ‘v4s64_scalar’:
+oogabooga/linmath.c:219:52: warning: missing braces around initializer [-Wmissing-braces]
+  219 | inline Vector4s64 v4s64_scalar(s64     a) { return (Vector4s64){a, a, a, a}; }
+      |                                                    ^
+      |                                                                 {         }
+oogabooga/linmath.c: At top level:
+oogabooga/linmath.c:221:30: warning: missing braces around initializer [-Wmissing-braces]
+  221 | const Vector2f32 v2f32_one = {1, 1};
+      |                              ^
+      |                               {   }
+oogabooga/linmath.c:222:30: warning: missing braces around initializer [-Wmissing-braces]
+  222 | const Vector3f32 v3f32_one = {1, 1, 1};
+      |                              ^
+      |                               {      }
+oogabooga/linmath.c:223:30: warning: missing braces around initializer [-Wmissing-braces]
+  223 | const Vector4f32 v4f32_one = {1, 1, 1, 1};
+      |                              ^
+      |                               {         }
+oogabooga/linmath.c:224:30: warning: missing braces around initializer [-Wmissing-braces]
+  224 | const Vector2f64 v2f64_one = {1, 1};
+      |                              ^
+      |                               {   }
+oogabooga/linmath.c:225:30: warning: missing braces around initializer [-Wmissing-braces]
+  225 | const Vector3f64 v3f64_one = {1, 1, 1};
+      |                              ^
+      |                               {      }
+oogabooga/linmath.c:226:30: warning: missing braces around initializer [-Wmissing-braces]
+  226 | const Vector4f64 v4f64_one = {1, 1, 1, 1};
+      |                              ^
+      |                               {         }
+oogabooga/linmath.c:227:30: warning: missing braces around initializer [-Wmissing-braces]
+  227 | const Vector2s32 v2s32_one = {1, 1};
+      |                              ^
+      |                               {   }
+oogabooga/linmath.c:228:30: warning: missing braces around initializer [-Wmissing-braces]
+  228 | const Vector3s32 v3s32_one = {1, 1, 1};
+      |                              ^
+      |                               {      }
+oogabooga/linmath.c:229:30: warning: missing braces around initializer [-Wmissing-braces]
+  229 | const Vector4s32 v4s32_one = {1, 1, 1, 1};
+      |                              ^
+      |                               {         }
+oogabooga/linmath.c:230:30: warning: missing braces around initializer [-Wmissing-braces]
+  230 | const Vector2s64 v2s64_one = {1, 1};
+      |                              ^
+      |                               {   }
+oogabooga/linmath.c:231:30: warning: missing braces around initializer [-Wmissing-braces]
+  231 | const Vector3s64 v3s64_one = {1, 1, 1};
+      |                              ^
+      |                               {      }
+oogabooga/linmath.c:232:30: warning: missing braces around initializer [-Wmissing-braces]
+  232 | const Vector4s64 v4s64_one = {1, 1, 1, 1};
+      |                              ^
+      |                               {         }
+oogabooga/linmath.c:234:31: warning: missing braces around initializer [-Wmissing-braces]
+  234 | const Vector2f32 v2f32_zero = {0, 0};
+      |                               ^
+      |                                {   }
+oogabooga/linmath.c:235:31: warning: missing braces around initializer [-Wmissing-braces]
+  235 | const Vector3f32 v3f32_zero = {0, 0, 0};
+      |                               ^
+      |                                {      }
+oogabooga/linmath.c:236:31: warning: missing braces around initializer [-Wmissing-braces]
+  236 | const Vector4f32 v4f32_zero = {0, 0, 0, 0};
+      |                               ^
+      |                                {         }
+oogabooga/linmath.c:237:31: warning: missing braces around initializer [-Wmissing-braces]
+  237 | const Vector2f64 v2f64_zero = {0, 0};
+      |                               ^
+      |                                {   }
+oogabooga/linmath.c:238:31: warning: missing braces around initializer [-Wmissing-braces]
+  238 | const Vector3f64 v3f64_zero = {0, 0, 0};
+      |                               ^
+      |                                {      }
+oogabooga/linmath.c:239:31: warning: missing braces around initializer [-Wmissing-braces]
+  239 | const Vector4f64 v4f64_zero = {0, 0, 0, 0};
+      |                               ^
+      |                                {         }
+oogabooga/linmath.c:240:31: warning: missing braces around initializer [-Wmissing-braces]
+  240 | const Vector2s32 v2s32_zero = {0, 0};
+      |                               ^
+      |                                {   }
+oogabooga/linmath.c:241:31: warning: missing braces around initializer [-Wmissing-braces]
+  241 | const Vector3s32 v3s32_zero = {0, 0, 0};
+      |                               ^
+      |                                {      }
+oogabooga/linmath.c:242:31: warning: missing braces around initializer [-Wmissing-braces]
+  242 | const Vector4s32 v4s32_zero = {0, 0, 0, 0};
+      |                               ^
+      |                                {         }
+oogabooga/linmath.c:243:31: warning: missing braces around initializer [-Wmissing-braces]
+  243 | const Vector2s64 v2s64_zero = {0, 0};
+      |                               ^
+      |                                {   }
+oogabooga/linmath.c:244:31: warning: missing braces around initializer [-Wmissing-braces]
+  244 | const Vector3s64 v3s64_zero = {0, 0, 0};
+      |                               ^
+      |                                {      }
+oogabooga/linmath.c:245:31: warning: missing braces around initializer [-Wmissing-braces]
+  245 | const Vector4s64 v4s64_zero = {0, 0, 0, 0};
+      |                               ^
+      |                                {         }
+In file included from oogabooga/os_interface.c:2,
+                 from oogabooga/oogabooga.c:520:
+oogabooga/oogabooga.h:179:13: error: two or more data types in declaration specifiers
+  179 | typedef f32 float;
+      |             ^~~~~
+oogabooga/oogabooga.h:179:1: warning: useless type name in empty declaration
+  179 | typedef f32 float;
+      | ^~~~~~~
+oogabooga/oogabooga.h:180:13: error: two or more data types in declaration specifiers
+  180 | typedef f64 double;
+      |             ^~~~~~
+oogabooga/oogabooga.h:180:1: warning: useless type name in empty declaration
+  180 | typedef f64 double;
+      | ^~~~~~~
+oogabooga/oogabooga.h:219:9: warning: ‘CHECK_NULL’ redefined
+  219 | #define CHECK_NULL(ptr) ASSERT((ptr) != NULL)
+      |         ^~~~~~~~~~
+oogabooga/oogabooga.c:204:13: note: this is the location of the previous definition
+  204 |     #define CHECK_NULL(ptr) do { if (!(ptr)) { assert_fail("Null pointer", __FILE__, __LINE__); } } while(0)
+      |             ^~~~~~~~~~
+oogabooga/oogabooga.h:228:9: warning: ‘SAFE_DEREF’ redefined
+  228 | #define SAFE_DEREF(ptr) \
+      |         ^~~~~~~~~~
+oogabooga/oogabooga.c:203:13: note: this is the location of the previous definition
+  203 |     #define SAFE_DEREF(ptr) ((ptr) ? (ptr) : (assert_fail("Null pointer dereference", __FILE__, __LINE__), (ptr)))
+      |             ^~~~~~~~~~
+oogabooga/os_interface.c:13:2: error: #error "Linux is only supported for headless builds"
+   13 | #error "Linux is only supported for headless builds"
+      |  ^~~~~
+oogabooga/os_interface.c:19:23: error: conflicting types for ‘File’; have ‘void *’
+   19 |         typedef void* File;
+      |                       ^~~~
+In file included from oogabooga/oogabooga.c:443:
+oogabooga/os_interface.h:127:21: note: previous declaration of ‘File’ with type ‘File’
+  127 | typedef struct File File;
+      |                     ^~~~
+oogabooga/os_interface.c:20:10: error: #error "Linux is not supported yet";
+   20 |         #error "Linux is not supported yet";
+      |          ^~~~~
+oogabooga/os_interface.c:39:23: error: expected ‘)’ before ‘*’ token
+   39 | typedef int   (__cdecl *Crt_Vsnprintf_Proc) (char*, size_t, const char*, va_list);
+      |                       ^~
+      |                       )
+oogabooga/os_interface.c:47:9: error: unknown type name ‘Crt_Vsnprintf_Proc’
+   47 |         Crt_Vsnprintf_Proc crt_vsnprintf;
+      |         ^~~~~~~~~~~~~~~~~~
+oogabooga/os_interface.c: In function ‘vsnprintf’:
+oogabooga/os_interface.c:70:16: error: called object is not a function or function pointer
+   70 |         return os.crt_vsnprintf(buffer, n, fmt, args);
+      |                ^~
+oogabooga/os_interface.c: At top level:
+oogabooga/os_interface.c:359:1: error: two or more data types in declaration specifiers
+  359 | void fprint_va_list_buffered(File f, const string fmt, va_list args) {
+      | ^~~~
+In file included from oogabooga/oogabooga.c:521:
+oogabooga/cpu.c:214:17: warning: ‘thread_local’ redefined
+  214 |         #define thread_local __thread
+      |                 ^~~~~~~~~~~~
+oogabooga/oogabooga.c:278:13: note: this is the location of the previous definition
+  278 |     #define thread_local THREAD_LOCAL
+      |             ^~~~~~~~~~~~
+In file included from oogabooga/oogabooga.c:525:
+oogabooga/memory.c:2:9: warning: ‘KB’ redefined
+    2 | #define KB(x) (x*1024ull)
+      |         ^~
+oogabooga/oogabooga.h:196:9: note: this is the location of the previous definition
+  196 | #define KB(x) ((x) * 1024ULL)
+      |         ^~
+oogabooga/memory.c:3:9: warning: ‘MB’ redefined
+    3 | #define MB(x) ((KB(x))*1024ull)
+      |         ^~
+oogabooga/oogabooga.h:197:9: note: this is the location of the previous definition
+  197 | #define MB(x) ((x) * 1024ULL * 1024ULL)
+      |         ^~
+oogabooga/memory.c:4:9: warning: ‘GB’ redefined
+    4 | #define GB(x) ((MB(x))*1024ull)
+      |         ^~
+oogabooga/oogabooga.h:198:9: note: this is the location of the previous definition
+  198 | #define GB(x) ((x) * 1024ULL * 1024ULL * 1024ULL)
+      |         ^~
+oogabooga/memory.c:168:3: error: conflicting types for ‘Heap_Search_Result’; have ‘struct <anonymous>’
+  168 | } Heap_Search_Result;
+      |   ^~~~~~~~~~~~~~~~~~
+In file included from oogabooga/oogabooga.c:461:
+oogabooga/memory.h:12:35: note: previous declaration of ‘Heap_Search_Result’ with type ‘Heap_Search_Result’
+   12 | typedef struct Heap_Search_Result Heap_Search_Result;
+      |                                   ^~~~~~~~~~~~~~~~~~
+oogabooga/memory.c: In function ‘make_arena_allocator_with_memory’:
+oogabooga/memory.c:730:15: warning: unused variable ‘mem’ [-Wunused-variable]
+  730 |         void *mem = Alloc(GetHeapAllocator(), size + sizeof(Arena));
+      |               ^~~
+In file included from oogabooga/oogabooga.c:526:
+oogabooga/third_party.c: In function ‘ln’:
+oogabooga/third_party.c:22:16: warning: unused variable ‘s’ [-Wunused-variable]
+   22 |   unsigned int s = (t < 0) ? (-t) : t;
+      |                ^
+oogabooga/third_party.c: In function ‘natural_log’:
+oogabooga/third_party.c:67:16: warning: unused variable ‘s’ [-Wunused-variable]
+   67 |   unsigned int s = (t < 0) ? (-t) : t;
+      |                ^
+In file included from oogabooga/third_party.c:157:
+oogabooga/third_party/stb_vorbis.c: At top level:
+oogabooga/third_party/stb_vorbis.c:23:9: warning: ‘EOF’ redefined
+   23 | #define EOF -1
+      |         ^~~
+/usr/include/stdio.h:105:9: note: this is the location of the previous definition
+  105 | #define EOF (-1)
+      |         ^~~
+oogabooga/third_party/stb_vorbis.c:25:11: error: unknown type name ‘OggFile’; did you mean ‘File’?
+   25 | int fgetc(OggFile f) {
+      |           ^~~~~~~
+      |           File
+oogabooga/third_party/stb_vorbis.c:35:55: error: unknown type name ‘OggFile’; did you mean ‘File’?
+   35 | size_t fread(void *buffer, size_t size, size_t count, OggFile f) {
+      |                                                       ^~~~~~~
+      |                                                       File
+oogabooga/third_party/stb_vorbis.c:45:12: error: unknown type name ‘OggFile’; did you mean ‘File’?
+   45 | long ftell(OggFile f) {
+      |            ^~~~~~~
+      |            File
+oogabooga/third_party/stb_vorbis.c:54:11: error: unknown type name ‘OggFile’; did you mean ‘File’?
+   54 | int fseek(OggFile f, s64 offset, s64 origin) {
+      |           ^~~~~~~
+      |           File
+oogabooga/third_party/stb_vorbis.c:72:1: error: unknown type name ‘OggFile’; did you mean ‘File’?
+   72 | OggFile fopen(const char *filename, const char *mode) {
+      | ^~~~~~~
+      | File
+oogabooga/third_party/stb_vorbis.c:72:9: error: conflicting types for ‘fopen’; have ‘int(const char *, const char *)’
+   72 | OggFile fopen(const char *filename, const char *mode) {
+      |         ^~~~~
+/usr/include/stdio.h:264:14: note: previous declaration of ‘fopen’ with type ‘FILE *(const char * restrict,  const char * restrict)’
+  264 | extern FILE *fopen (const char *__restrict __filename,
+      |              ^~~~~
+oogabooga/third_party/stb_vorbis.c: In function ‘fopen’:
+oogabooga/third_party/stb_vorbis.c:103:5: error: unknown type name ‘OggFile’; did you mean ‘File’?
+  103 |     OggFile f = os_file_open_s(STR(filename), flags);
+      |     ^~~~~~~
+      |     File
+oogabooga/third_party/stb_vorbis.c: At top level:
+oogabooga/third_party/stb_vorbis.c:107:12: error: unknown type name ‘OggFile’; did you mean ‘File’?
+  107 | int fclose(OggFile f) {
+      |            ^~~~~~~
+      |            File
+oogabooga/third_party/stb_vorbis.c:396:42: error: unknown type name ‘OggFile’; did you mean ‘File’?
+  396 | extern stb_vorbis * stb_vorbis_open_file(OggFile f, int close_handle_on_close,
+      |                                          ^~~~~~~
+      |                                          File
+oogabooga/third_party/stb_vorbis.c:406:50: error: unknown type name ‘OggFile’; did you mean ‘File’?
+  406 | extern stb_vorbis * stb_vorbis_open_file_section(OggFile f, int close_handle_on_close,
+      |                                                  ^~~~~~~
+      |                                                  File
+oogabooga/third_party/stb_vorbis.c:922:4: error: unknown type name ‘OggFile’; did you mean ‘File’?
+  922 |    OggFile f;
+      |    ^~~~~~~
+      |    File
+oogabooga/third_party/stb_vorbis.c: In function ‘get8’:
+oogabooga/third_party/stb_vorbis.c:1469:19: error: passing argument 1 of ‘fgetc’ makes pointer from integer without a cast [-Wint-conversion]
+ 1469 |    int c = fgetc(z->f);
+      |                  ~^~~
+      |                   |
+      |                   int
+/usr/include/stdio.h:575:25: note: expected ‘FILE *’ but argument is of type ‘int’
+  575 | extern int fgetc (FILE *__stream) __nonnull ((1));
+      |                   ~~~~~~^~~~~~~~
+oogabooga/third_party/stb_vorbis.c: In function ‘getn’:
+oogabooga/third_party/stb_vorbis.c:1496:27: error: passing argument 4 of ‘fread’ makes pointer from integer without a cast [-Wint-conversion]
+ 1496 |    if (fread(data, n, 1, z->f) == 1)
+      |                          ~^~~
+      |                           |
+      |                           int
+/usr/include/stdio.h:729:51: note: expected ‘FILE * restrict’ but argument is of type ‘int’
+  729 |                      size_t __n, FILE *__restrict __stream) __wur
+      |                                  ~~~~~~~~~~~~~~~~~^~~~~~~~
+oogabooga/third_party/stb_vorbis.c: In function ‘skip’:
+oogabooga/third_party/stb_vorbis.c:1514:23: error: passing argument 1 of ‘ftell’ makes pointer from integer without a cast [-Wint-conversion]
+ 1514 |       long x = ftell(z->f);
+      |                      ~^~~
+      |                       |
+      |                       int
+/usr/include/stdio.h:775:30: note: expected ‘FILE *’ but argument is of type ‘int’
+  775 | extern long int ftell (FILE *__stream) __wur __nonnull ((1));
+      |                        ~~~~~~^~~~~~~~
+oogabooga/third_party/stb_vorbis.c:1515:14: error: passing argument 1 of ‘fseek’ makes pointer from integer without a cast [-Wint-conversion]
+ 1515 |       fseek(z->f, x+n, SEEK_SET);
+      |             ~^~~
+      |              |
+      |              int
+/usr/include/stdio.h:769:25: note: expected ‘FILE *’ but argument is of type ‘int’
+  769 | extern int fseek (FILE *__stream, long int __off, int __whence)
+      |                   ~~~~~~^~~~~~~~
+oogabooga/third_party/stb_vorbis.c: In function ‘set_file_offset’:
+oogabooga/third_party/stb_vorbis.c:1543:16: error: passing argument 1 of ‘fseek’ makes pointer from integer without a cast [-Wint-conversion]
+ 1543 |    if (!fseek(f->f, loc, SEEK_SET))
+      |               ~^~~
+      |                |
+      |                int
+/usr/include/stdio.h:769:25: note: expected ‘FILE *’ but argument is of type ‘int’
+  769 | extern int fseek (FILE *__stream, long int __off, int __whence)
+      |                   ~~~~~~^~~~~~~~
+oogabooga/third_party/stb_vorbis.c:1546:11: error: passing argument 1 of ‘fseek’ makes pointer from integer without a cast [-Wint-conversion]
+ 1546 |    fseek(f->f, f->f_start, SEEK_END);
+      |          ~^~~
+      |           |
+      |           int
+/usr/include/stdio.h:769:25: note: expected ‘FILE *’ but argument is of type ‘int’
+  769 | extern int fseek (FILE *__stream, long int __off, int __whence)
+      |                   ~~~~~~^~~~~~~~
+oogabooga/third_party/stb_vorbis.c: In function ‘decode_residue’:
+oogabooga/third_party/stb_vorbis.c:1051:41: error: implicit declaration of function ‘alloca’; did you mean ‘Alloc’? [-Wimplicit-function-declaration]
+ 1051 | #define temp_alloc(f,size)              alloca(size) // #Modified
+      |                                         ^~~~~~
+oogabooga/third_party/stb_vorbis.c:1056:58: note: in expansion of macro ‘temp_alloc’
+ 1056 | #define temp_block_array(f,count,size)  make_block_array(temp_alloc(f,array_size_required(count,size)), count, size)
+      |                                                          ^~~~~~~~~~
+oogabooga/third_party/stb_vorbis.c:2241:42: note: in expansion of macro ‘temp_block_array’
+ 2241 |    uint8 ***part_classdata = (uint8 ***) temp_block_array(f,f->channels, part_read * sizeof(**part_classdata));
+      |                                          ^~~~~~~~~~~~~~~~
+oogabooga/third_party/stb_vorbis.c:1051:41: error: passing argument 1 of ‘make_block_array’ makes pointer from integer without a cast [-Wint-conversion]
+ 1051 | #define temp_alloc(f,size)              alloca(size) // #Modified
+      |                                         ^~~~~~~~~~~~
+      |                                         |
+      |                                         int
+oogabooga/third_party/stb_vorbis.c:1056:58: note: in expansion of macro ‘temp_alloc’
+ 1056 | #define temp_block_array(f,count,size)  make_block_array(temp_alloc(f,array_size_required(count,size)), count, size)
+      |                                                          ^~~~~~~~~~
+oogabooga/third_party/stb_vorbis.c:2241:42: note: in expansion of macro ‘temp_block_array’
+ 2241 |    uint8 ***part_classdata = (uint8 ***) temp_block_array(f,f->channels, part_read * sizeof(**part_classdata));
+      |                                          ^~~~~~~~~~~~~~~~
+oogabooga/third_party/stb_vorbis.c:1059:37: note: expected ‘void *’ but argument is of type ‘int’
+ 1059 | static void *make_block_array(void *mem, int count, int size)
+      |                               ~~~~~~^~~
+oogabooga/third_party/stb_vorbis.c: In function ‘inverse_mdct’:
+oogabooga/third_party/stb_vorbis.c:2758:18: warning: cast to pointer from integer of different size [-Wint-to-pointer-cast]
+ 2758 |    float *buf2 = (float *) temp_alloc(f, n2 * sizeof(*buf2));
+      |                  ^
+oogabooga/third_party/stb_vorbis.c: In function ‘vorbis_deinit’:
+oogabooga/third_party/stb_vorbis.c:4390:34: error: passing argument 1 of ‘fclose’ makes pointer from integer without a cast [-Wint-conversion]
+ 4390 |    if (p->close_on_free) fclose(p->f);
+      |                                 ~^~~
+      |                                  |
+      |                                  int
+/usr/include/stdio.h:184:26: note: expected ‘FILE *’ but argument is of type ‘int’
+  184 | extern int fclose (FILE *__stream) __nonnull ((1));
+      |                    ~~~~~~^~~~~~~~
+oogabooga/third_party/stb_vorbis.c: In function ‘vorbis_init’:
+oogabooga/third_party/stb_vorbis.c:4416:9: error: assignment to ‘int’ from ‘void *’ makes integer from pointer without a cast [-Wint-conversion]
+ 4416 |    p->f = NULL;
+      |         ^
+oogabooga/third_party/stb_vorbis.c: In function ‘stb_vorbis_get_file_offset’:
+oogabooga/third_party/stb_vorbis.c:4675:34: error: passing argument 1 of ‘ftell’ makes pointer from integer without a cast [-Wint-conversion]
+ 4675 |    return (unsigned int) (ftell(f->f) - f->f_start);
+      |                                 ~^~~
+      |                                  |
+      |                                  int
+/usr/include/stdio.h:775:30: note: expected ‘FILE *’ but argument is of type ‘int’
+  775 | extern long int ftell (FILE *__stream) __wur __nonnull ((1));
+      |                        ~~~~~~^~~~~~~~
+oogabooga/third_party/stb_vorbis.c: At top level:
+oogabooga/third_party/stb_vorbis.c:5175:43: error: unknown type name ‘OggFile’; did you mean ‘File’?
+ 5175 | stb_vorbis * stb_vorbis_open_file_section(OggFile file, int close_on_free, int *error, const stb_vorbis_alloc *Alloc, unsigned int length)
+      |                                           ^~~~~~~
+      |                                           File
+oogabooga/third_party/stb_vorbis.c:5196:35: error: unknown type name ‘OggFile’; did you mean ‘File’?
+ 5196 | stb_vorbis * stb_vorbis_open_file(OggFile file, int close_on_free, int *error, const stb_vorbis_alloc *Alloc)
+      |                                   ^~~~~~~
+      |                                   File
+oogabooga/third_party/stb_vorbis.c: In function ‘stb_vorbis_open_filename’:
+oogabooga/third_party/stb_vorbis.c:5208:4: error: unknown type name ‘OggFile’; did you mean ‘File’?
+ 5208 |    OggFile f;
+      |    ^~~~~~~
+      |    File
+oogabooga/third_party/stb_vorbis.c:5212:14: error: implicit declaration of function ‘stb_vorbis_open_file’; did you mean ‘stb_vorbis_open_filename’? [-Wimplicit-function-declaration]
+ 5212 |       return stb_vorbis_open_file(f, TRUE, error, Alloc);
+      |              ^~~~~~~~~~~~~~~~~~~~
+      |              stb_vorbis_open_filename
+oogabooga/third_party/stb_vorbis.c:5212:14: error: returning ‘int’ from a function with return type ‘stb_vorbis *’ makes pointer from integer without a cast [-Wint-conversion]
+ 5212 |       return stb_vorbis_open_file(f, TRUE, error, Alloc);
+      |              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from oogabooga/oogabooga.c:530:
+oogabooga/os_impl_linux.c: In function ‘os_thread_init’:
+oogabooga/os_impl_linux.c:25:6: error: ‘Thread’ has no member named ‘started’
+   25 |     t->started = false;
+      |      ^~
+oogabooga/os_impl_linux.c:26:6: error: ‘Thread’ has no member named ‘joinable’
+   26 |     t->joinable = false;
+      |      ^~
+oogabooga/os_impl_linux.c: In function ‘os_thread_destroy’:
+oogabooga/os_impl_linux.c:32:10: error: ‘Thread’ has no member named ‘joinable’
+   32 |     if (t->joinable) {
+      |          ^~
+oogabooga/os_impl_linux.c: In function ‘os_thread_start’:
+oogabooga/os_impl_linux.c:48:16: error: ‘Thread’ has no member named ‘started’
+   48 |     if (!t || t->started) return;
+      |                ^~
+oogabooga/os_impl_linux.c:50:37: error: ‘Thread’ has no member named ‘handle’; did you mean ‘os_handle’?
+   50 |     int result = pthread_create(&t->handle, NULL, thread_wrapper, t);
+      |                                     ^~~~~~
+      |                                     os_handle
+oogabooga/os_impl_linux.c:52:10: error: ‘Thread’ has no member named ‘started’
+   52 |         t->started = true;
+      |          ^~
+oogabooga/os_impl_linux.c:53:10: error: ‘Thread’ has no member named ‘joinable’
+   53 |         t->joinable = true;
+      |          ^~
+oogabooga/os_impl_linux.c: In function ‘os_thread_join’:
+oogabooga/os_impl_linux.c:58:17: error: ‘Thread’ has no member named ‘joinable’
+   58 |     if (!t || !t->joinable) return;
+      |                 ^~
+oogabooga/os_impl_linux.c:60:21: error: ‘Thread’ has no member named ‘handle’; did you mean ‘os_handle’?
+   60 |     pthread_join(t->handle, NULL);
+      |                     ^~~~~~
+      |                     os_handle
+oogabooga/os_impl_linux.c:61:6: error: ‘Thread’ has no member named ‘joinable’
+   61 |     t->joinable = false;
+      |      ^~
+oogabooga/os_impl_linux.c: In function ‘os_binary_semaphore_init’:
+oogabooga/os_impl_linux.c:107:28: error: ‘Binary_Semaphore’ has no member named ‘mutex’
+  107 |     pthread_mutex_init(&sem->mutex, NULL);
+      |                            ^~
+oogabooga/os_impl_linux.c:108:27: error: ‘Binary_Semaphore’ has no member named ‘condition’
+  108 |     pthread_cond_init(&sem->condition, NULL);
+      |                           ^~
+oogabooga/os_impl_linux.c:109:8: error: ‘Binary_Semaphore’ has no member named ‘state’
+  109 |     sem->state = initial_state;
+      |        ^~
+oogabooga/os_impl_linux.c: In function ‘os_binary_semaphore_destroy’:
+oogabooga/os_impl_linux.c:115:31: error: ‘Binary_Semaphore’ has no member named ‘mutex’
+  115 |     pthread_mutex_destroy(&sem->mutex);
+      |                               ^~
+oogabooga/os_impl_linux.c:116:30: error: ‘Binary_Semaphore’ has no member named ‘condition’
+  116 |     pthread_cond_destroy(&sem->condition);
+      |                              ^~
+oogabooga/os_impl_linux.c: In function ‘os_binary_semaphore_wait’:
+oogabooga/os_impl_linux.c:123:28: error: ‘Binary_Semaphore’ has no member named ‘mutex’
+  123 |     pthread_mutex_lock(&sem->mutex);
+      |                            ^~
+oogabooga/os_impl_linux.c:124:16: error: ‘Binary_Semaphore’ has no member named ‘state’
+  124 |     while (!sem->state) {
+      |                ^~
+oogabooga/os_impl_linux.c:125:31: error: ‘Binary_Semaphore’ has no member named ‘condition’
+  125 |         pthread_cond_wait(&sem->condition, &sem->mutex);
+      |                               ^~
+oogabooga/os_impl_linux.c:125:48: error: ‘Binary_Semaphore’ has no member named ‘mutex’
+  125 |         pthread_cond_wait(&sem->condition, &sem->mutex);
+      |                                                ^~
+oogabooga/os_impl_linux.c:127:8: error: ‘Binary_Semaphore’ has no member named ‘state’
+  127 |     sem->state = false;
+      |        ^~
+oogabooga/os_impl_linux.c:128:30: error: ‘Binary_Semaphore’ has no member named ‘mutex’
+  128 |     pthread_mutex_unlock(&sem->mutex);
+      |                              ^~
+oogabooga/os_impl_linux.c: In function ‘os_binary_semaphore_signal’:
+oogabooga/os_impl_linux.c:134:28: error: ‘Binary_Semaphore’ has no member named ‘mutex’
+  134 |     pthread_mutex_lock(&sem->mutex);
+      |                            ^~
+oogabooga/os_impl_linux.c:135:8: error: ‘Binary_Semaphore’ has no member named ‘state’
+  135 |     sem->state = true;
+      |        ^~
+oogabooga/os_impl_linux.c:136:29: error: ‘Binary_Semaphore’ has no member named ‘condition’
+  136 |     pthread_cond_signal(&sem->condition);
+      |                             ^~
+oogabooga/os_impl_linux.c:137:30: error: ‘Binary_Semaphore’ has no member named ‘mutex’
+  137 |     pthread_mutex_unlock(&sem->mutex);
+      |                              ^~
+oogabooga/os_impl_linux.c: In function ‘os_sleep’:
+oogabooga/os_impl_linux.c:145:5: error: implicit declaration of function ‘nanosleep’ [-Wimplicit-function-declaration]
+  145 |     nanosleep(&ts, NULL);
+      |     ^~~~~~~~~
+oogabooga/os_impl_linux.c: In function ‘os_get_current_time_in_seconds’:
+oogabooga/os_impl_linux.c:228:5: error: implicit declaration of function ‘clock_gettime’; did you mean ‘SYS_clock_gettime’? [-Wimplicit-function-declaration]
+  228 |     clock_gettime(CLOCK_MONOTONIC, &ts);
+      |     ^~~~~~~~~~~~~
+      |     SYS_clock_gettime
+oogabooga/os_impl_linux.c:228:19: error: ‘CLOCK_MONOTONIC’ undeclared (first use in this function)
+  228 |     clock_gettime(CLOCK_MONOTONIC, &ts);
+      |                   ^~~~~~~~~~~~~~~
+oogabooga/os_impl_linux.c:228:19: note: each undeclared identifier is reported only once for each function it appears in
+oogabooga/os_impl_linux.c: In function ‘os_get_thread_id’:
+oogabooga/os_impl_linux.c:238:17: error: implicit declaration of function ‘syscall’ [-Wimplicit-function-declaration]
+  238 |     return (u32)syscall(SYS_gettid);
+      |                 ^~~~~~~
+In file included from oogabooga/oogabooga.c:533:
+oogabooga/gfx_interface.c: At top level:
+oogabooga/gfx_interface.c:19:79: error: conflicting types for ‘Gfx_Shader_Extension’; have ‘struct <anonymous>’
+   19 |                 typedef struct { void *ps; void *cbuffer; u64 cbuffer_size; } Gfx_Shader_Extension;
+      |                                                                               ^~~~~~~~~~~~~~~~~~~~
+In file included from oogabooga/oogabooga.c:466:
+oogabooga/gfx_interface.h:14:3: note: previous declaration of ‘Gfx_Shader_Extension’ with type ‘Gfx_Shader_Extension’
+   14 | } Gfx_Shader_Extension;
+      |   ^~~~~~~~~~~~~~~~~~~~
+In file included from oogabooga/oogabooga.c:534:
+oogabooga/drawing.c:399:25: error: unknown type name ‘Gfx_Glyph’
+  399 | bool draw_text_callback(Gfx_Glyph glyph, Gfx_Font_Atlas *atlas, float glyph_x, float glyph_y, void *ud) {
+      |                         ^~~~~~~~~
+oogabooga/drawing.c:399:42: error: unknown type name ‘Gfx_Font_Atlas’
+  399 | bool draw_text_callback(Gfx_Glyph glyph, Gfx_Font_Atlas *atlas, float glyph_x, float glyph_y, void *ud) {
+      |                                          ^~~~~~~~~~~~~~
+oogabooga/drawing.c:421:1: error: unknown type name ‘Gfx_Text_Metrics’
+  421 | Gfx_Text_Metrics draw_text_and_measure_in_frame(Gfx_Font *font, string text, u32 raster_height, Vector2 position, Vector2 scale, Vector4 color, Draw_Frame *frame) {
+      | ^~~~~~~~~~~~~~~~
+oogabooga/drawing.c: In function ‘draw_text_and_measure_in_frame’:
+oogabooga/drawing.c:422:17: error: ‘Gfx_Text_Metrics’ undeclared (first use in this function)
+  422 |         return (Gfx_Text_Metrics){0};
+      |                 ^~~~~~~~~~~~~~~~
+oogabooga/drawing.c:422:34: error: expected ‘;’ before ‘{’ token
+  422 |         return (Gfx_Text_Metrics){0};
+      |                                  ^
+      |                                  ;
+oogabooga/drawing.c: At top level:
+oogabooga/drawing.c:510:1: error: unknown type name ‘Gfx_Text_Metrics’
+  510 | Gfx_Text_Metrics draw_text_and_measure(Gfx_Font *font, string text, u32 raster_height, Vector2 position, Vector2 scale, Vector4 color) {
+      | ^~~~~~~~~~~~~~~~
+In file included from oogabooga/oogabooga.c:540:
+oogabooga/gfx_impl_vulkan.c:24:2: warning: #warning "Vulkan headers not found. Vulkan renderer will be disabled." [-Wcpp]
+   24 | #warning "Vulkan headers not found. Vulkan renderer will be disabled."
+      |  ^~~~~~~
+In file included from oogabooga/oogabooga.c:547:
+oogabooga/input.c:73:31: warning: missing braces around initializer [-Wmissing-braces]
+   73 | Vector2 deadzone_left_stick = {0.2, 0.2};
+      |                               ^
+      |                                {       }
+oogabooga/input.c:74:32: warning: missing braces around initializer [-Wmissing-braces]
+   74 | Vector2 deadzone_right_stick = {0.2, 0.2};
+      |                                ^
+      |                                 {       }
+In file included from oogabooga/oogabooga.c:548:
+oogabooga/tests.c: In function ‘test_allocator’:
+oogabooga/tests.c:39:13: warning: unused variable ‘h’ [-Wunused-variable]
+   39 |         u64 h = get_hash((string*)69);
+      |             ^
+oogabooga/tests.c: In function ‘test_file_io’:
+oogabooga/tests.c:490:52: error: implicit declaration of function ‘GetLastError’ [-Wimplicit-function-declaration]
+  490 |     assert(read_result, "Failed: os_file_read %d", GetLastError());
+      |                                                    ^~~~~~~~~~~~
+oogabooga/base.c:21:173: note: in definition of macro ‘assert_line’
+   21 | #define assert_line(line, cond, ...) {if(!(cond)) { printf("\nAssertion failed in file " __FILE__ " on line " ASSERT_STR(line) "\n\nFailed Condition: " #cond ". Message: " __VA_ARGS__); printf("\n"); dump_stack_trace(); crash(); }}
+      |                                                                                                                                                                             ^~~~~~~~~~~
+oogabooga/tests.c:490:5: note: in expansion of macro ‘assert’
+  490 |     assert(read_result, "Failed: os_file_read %d", GetLastError());
+      |     ^~~~~~
+oogabooga/tests.c:519:16: error: passing argument 1 of ‘fprintf’ makes pointer from integer without a cast [-Wint-conversion]
+  519 |         fprint(balls, "Hello, %cs!", "Balls");
+      |                ^~~~~
+      |                |
+      |                int
+oogabooga/os_interface.c:356:29: note: in definition of macro ‘fprint’
+  356 |                           )(__VA_ARGS__)
+      |                             ^~~~~~~~~~~
+/usr/include/stdio.h:357:38: note: expected ‘FILE * restrict’ but argument is of type ‘int’
+  357 | extern int fprintf (FILE *__restrict __stream,
+      |                     ~~~~~~~~~~~~~~~~~^~~~~~~~
+oogabooga/tests.c:519:23: warning: format ‘%c’ expects argument of type ‘int’, but argument 3 has type ‘char *’ [-Wformat=]
+  519 |         fprint(balls, "Hello, %cs!", "Balls");
+      |                       ^~~~~~~~~~~~~  ~~~~~~~
+      |                                      |
+      |                                      char *
+oogabooga/os_interface.c:356:29: note: in definition of macro ‘fprint’
+  356 |                           )(__VA_ARGS__)
+      |                             ^~~~~~~~~~~
+oogabooga/tests.c:519:32: note: format string is defined here
+  519 |         fprint(balls, "Hello, %cs!", "Balls");
+      |                               ~^
+      |                                |
+      |                                int
+      |                               %s
+oogabooga/tests.c:539:10: warning: unused variable ‘new_integers’ [-Wunused-variable]
+  539 |     u64 *new_integers = (u64*)integers_data.data;
+      |          ^~~~~~~~~~~~
+oogabooga/tests.c: In function ‘test_linmath’:
+oogabooga/tests.c:1206:27: warning: missing braces around initializer [-Wmissing-braces]
+ 1206 |     Vector2 translation = {2.0f, 3.0f};
+      |                           ^
+      |                            {         }
+oogabooga/tests.c:1217:21: warning: missing braces around initializer [-Wmissing-braces]
+ 1217 |     Vector2 scale = {2.0f, 3.0f};
+      |                     ^
+      |                      {         }
+oogabooga/tests.c:1246:17: warning: missing braces around initializer [-Wmissing-braces]
+ 1246 |     Vector3 v = {1.0f, 2.0f, 1.0f};
+      |                 ^
+      |                  {               }
+oogabooga/tests.c: In function ‘test_intmath’:
+oogabooga/tests.c:1258:5: error: unknown type name ‘Vector2i’; did you mean ‘Vector2’?
+ 1258 |     Vector2i v2i_test = v2i(1, 2);
+      |     ^~~~~~~~
+      |     Vector2
+oogabooga/tests.c:1258:25: error: implicit declaration of function ‘v2i’; did you mean ‘v2’? [-Wimplicit-function-declaration]
+ 1258 |     Vector2i v2i_test = v2i(1, 2);
+      |                         ^~~
+      |                         v2
+oogabooga/tests.c:1259:20: error: request for member ‘x’ in something not a structure or union
+ 1259 |     assert(v2i_test.x == 1 && v2i_test.y == 2, "v2i creation incorrect");
+      |                    ^
+oogabooga/base.c:21:44: note: in definition of macro ‘assert_line’
+   21 | #define assert_line(line, cond, ...) {if(!(cond)) { printf("\nAssertion failed in file " __FILE__ " on line " ASSERT_STR(line) "\n\nFailed Condition: " #cond ". Message: " __VA_ARGS__); printf("\n"); dump_stack_trace(); crash(); }}
+      |                                            ^~~~
+oogabooga/tests.c:1259:5: note: in expansion of macro ‘assert’
+ 1259 |     assert(v2i_test.x == 1 && v2i_test.y == 2, "v2i creation incorrect");
+      |     ^~~~~~
+oogabooga/tests.c:1259:39: error: request for member ‘y’ in something not a structure or union
+ 1259 |     assert(v2i_test.x == 1 && v2i_test.y == 2, "v2i creation incorrect");
+      |                                       ^
+oogabooga/base.c:21:44: note: in definition of macro ‘assert_line’
+   21 | #define assert_line(line, cond, ...) {if(!(cond)) { printf("\nAssertion failed in file " __FILE__ " on line " ASSERT_STR(line) "\n\nFailed Condition: " #cond ". Message: " __VA_ARGS__); printf("\n"); dump_stack_trace(); crash(); }}
+      |                                            ^~~~
+oogabooga/tests.c:1259:5: note: in expansion of macro ‘assert’
+ 1259 |     assert(v2i_test.x == 1 && v2i_test.y == 2, "v2i creation incorrect");
+      |     ^~~~~~
+oogabooga/tests.c:1261:5: error: unknown type name ‘Vector3i’; did you mean ‘Vector3’?
+ 1261 |     Vector3i v3i_test = v3i(1, 2, 3);
+      |     ^~~~~~~~
+      |     Vector3
+oogabooga/tests.c:1261:25: error: implicit declaration of function ‘v3i’; did you mean ‘v3’? [-Wimplicit-function-declaration]
+ 1261 |     Vector3i v3i_test = v3i(1, 2, 3);
+      |                         ^~~
+      |                         v3
+oogabooga/tests.c:1262:20: error: request for member ‘x’ in something not a structure or union
+ 1262 |     assert(v3i_test.x == 1 && v3i_test.y == 2 && v3i_test.z == 3, "v3i creation incorrect");
+      |                    ^
+oogabooga/base.c:21:44: note: in definition of macro ‘assert_line’
+   21 | #define assert_line(line, cond, ...) {if(!(cond)) { printf("\nAssertion failed in file " __FILE__ " on line " ASSERT_STR(line) "\n\nFailed Condition: " #cond ". Message: " __VA_ARGS__); printf("\n"); dump_stack_trace(); crash(); }}
+      |                                            ^~~~
+oogabooga/tests.c:1262:5: note: in expansion of macro ‘assert’
+ 1262 |     assert(v3i_test.x == 1 && v3i_test.y == 2 && v3i_test.z == 3, "v3i creation incorrect");
+      |     ^~~~~~
+oogabooga/tests.c:1262:39: error: request for member ‘y’ in something not a structure or union
+ 1262 |     assert(v3i_test.x == 1 && v3i_test.y == 2 && v3i_test.z == 3, "v3i creation incorrect");
+      |                                       ^
+oogabooga/base.c:21:44: note: in definition of macro ‘assert_line’
+   21 | #define assert_line(line, cond, ...) {if(!(cond)) { printf("\nAssertion failed in file " __FILE__ " on line " ASSERT_STR(line) "\n\nFailed Condition: " #cond ". Message: " __VA_ARGS__); printf("\n"); dump_stack_trace(); crash(); }}
+      |                                            ^~~~
+oogabooga/tests.c:1262:5: note: in expansion of macro ‘assert’
+ 1262 |     assert(v3i_test.x == 1 && v3i_test.y == 2 && v3i_test.z == 3, "v3i creation incorrect");
+      |     ^~~~~~
+oogabooga/tests.c:1262:58: error: request for member ‘z’ in something not a structure or union
+ 1262 |     assert(v3i_test.x == 1 && v3i_test.y == 2 && v3i_test.z == 3, "v3i creation incorrect");
+      |                                                          ^
+oogabooga/base.c:21:44: note: in definition of macro ‘assert_line’
+   21 | #define assert_line(line, cond, ...) {if(!(cond)) { printf("\nAssertion failed in file " __FILE__ " on line " ASSERT_STR(line) "\n\nFailed Condition: " #cond ". Message: " __VA_ARGS__); printf("\n"); dump_stack_trace(); crash(); }}
+      |                                            ^~~~
+oogabooga/tests.c:1262:5: note: in expansion of macro ‘assert’
+ 1262 |     assert(v3i_test.x == 1 && v3i_test.y == 2 && v3i_test.z == 3, "v3i creation incorrect");
+      |     ^~~~~~
+oogabooga/tests.c:1264:5: error: unknown type name ‘Vector4i’; did you mean ‘Vector4’?
+ 1264 |     Vector4i v4i_test = v4i(1, 2, 3, 4);
+      |     ^~~~~~~~
+      |     Vector4
+oogabooga/tests.c:1264:25: error: implicit declaration of function ‘v4i’; did you mean ‘v4’? [-Wimplicit-function-declaration]
+ 1264 |     Vector4i v4i_test = v4i(1, 2, 3, 4);
+      |                         ^~~
+      |                         v4
+oogabooga/tests.c:1265:20: error: request for member ‘x’ in something not a structure or union
+ 1265 |     assert(v4i_test.x == 1 && v4i_test.y == 2 && v4i_test.z == 3 && v4i_test.w == 4, "v4i creation incorrect");
+      |                    ^
+oogabooga/base.c:21:44: note: in definition of macro ‘assert_line’
+   21 | #define assert_line(line, cond, ...) {if(!(cond)) { printf("\nAssertion failed in file " __FILE__ " on line " ASSERT_STR(line) "\n\nFailed Condition: " #cond ". Message: " __VA_ARGS__); printf("\n"); dump_stack_trace(); crash(); }}
+      |                                            ^~~~
+oogabooga/tests.c:1265:5: note: in expansion of macro ‘assert’
+ 1265 |     assert(v4i_test.x == 1 && v4i_test.y == 2 && v4i_test.z == 3 && v4i_test.w == 4, "v4i creation incorrect");
+      |     ^~~~~~
+oogabooga/tests.c:1265:39: error: request for member ‘y’ in something not a structure or union
+ 1265 |     assert(v4i_test.x == 1 && v4i_test.y == 2 && v4i_test.z == 3 && v4i_test.w == 4, "v4i creation incorrect");
+      |                                       ^
+oogabooga/base.c:21:44: note: in definition of macro ‘assert_line’
+   21 | #define assert_line(line, cond, ...) {if(!(cond)) { printf("\nAssertion failed in file " __FILE__ " on line " ASSERT_STR(line) "\n\nFailed Condition: " #cond ". Message: " __VA_ARGS__); printf("\n"); dump_stack_trace(); crash(); }}
+      |                                            ^~~~
+oogabooga/tests.c:1265:5: note: in expansion of macro ‘assert’
+ 1265 |     assert(v4i_test.x == 1 && v4i_test.y == 2 && v4i_test.z == 3 && v4i_test.w == 4, "v4i creation incorrect");
+      |     ^~~~~~
+oogabooga/tests.c:1265:58: error: request for member ‘z’ in something not a structure or union
+ 1265 |     assert(v4i_test.x == 1 && v4i_test.y == 2 && v4i_test.z == 3 && v4i_test.w == 4, "v4i creation incorrect");
+      |                                                          ^
+oogabooga/base.c:21:44: note: in definition of macro ‘assert_line’
+   21 | #define assert_line(line, cond, ...) {if(!(cond)) { printf("\nAssertion failed in file " __FILE__ " on line " ASSERT_STR(line) "\n\nFailed Condition: " #cond ". Message: " __VA_ARGS__); printf("\n"); dump_stack_trace(); crash(); }}
+      |                                            ^~~~
+oogabooga/tests.c:1265:5: note: in expansion of macro ‘assert’
+ 1265 |     assert(v4i_test.x == 1 && v4i_test.y == 2 && v4i_test.z == 3 && v4i_test.w == 4, "v4i creation incorrect");
+      |     ^~~~~~
+oogabooga/tests.c:1265:77: error: request for member ‘w’ in something not a structure or union
+ 1265 |     assert(v4i_test.x == 1 && v4i_test.y == 2 && v4i_test.z == 3 && v4i_test.w == 4, "v4i creation incorrect");
+      |                                                                             ^
+oogabooga/base.c:21:44: note: in definition of macro ‘assert_line’
+   21 | #define assert_line(line, cond, ...) {if(!(cond)) { printf("\nAssertion failed in file " __FILE__ " on line " ASSERT_STR(line) "\n\nFailed Condition: " #cond ". Message: " __VA_ARGS__); printf("\n"); dump_stack_trace(); crash(); }}
+      |                                            ^~~~
+oogabooga/tests.c:1265:5: note: in expansion of macro ‘assert’
+ 1265 |     assert(v4i_test.x == 1 && v4i_test.y == 2 && v4i_test.z == 3 && v4i_test.w == 4, "v4i creation incorrect");
+      |     ^~~~~~
+oogabooga/tests.c:1268:5: error: unknown type name ‘Vector2i’; did you mean ‘Vector2’?
+ 1268 |     Vector2i v2i_a = v2i(3, 4);
+      |     ^~~~~~~~
+      |     Vector2
+oogabooga/tests.c:1269:5: error: unknown type name ‘Vector2i’; did you mean ‘Vector2’?
+ 1269 |     Vector2i v2i_b = v2i(1, 2);
+      |     ^~~~~~~~
+      |     Vector2
+oogabooga/tests.c:1270:5: error: unknown type name ‘Vector2i’; did you mean ‘Vector2’?
+ 1270 |     Vector2i v2i_result = v2i_add(v2i_a, v2i_b);
+      |     ^~~~~~~~
+      |     Vector2
+oogabooga/tests.c:1270:35: error: incompatible type for argument 1 of ‘v2s32_add’
+ 1270 |     Vector2i v2i_result = v2i_add(v2i_a, v2i_b);
+      |                                   ^~~~~
+      |                                   |
+      |                                   int
+oogabooga/linmath.c:253:40: note: expected ‘Vector2s32’ but argument is of type ‘int’
+  253 | inline Vector2s32 v2s32_add(Vector2s32 a, Vector2s32 b)  { return v2s32(a.x+b.x, a.y+b.y); }
+      |                             ~~~~~~~~~~~^
+oogabooga/tests.c:1270:42: error: incompatible type for argument 2 of ‘v2s32_add’
+ 1270 |     Vector2i v2i_result = v2i_add(v2i_a, v2i_b);
+      |                                          ^~~~~
+      |                                          |
+      |                                          int
+oogabooga/linmath.c:253:54: note: expected ‘Vector2s32’ but argument is of type ‘int’
+  253 | inline Vector2s32 v2s32_add(Vector2s32 a, Vector2s32 b)  { return v2s32(a.x+b.x, a.y+b.y); }
+      |                                           ~~~~~~~~~~~^
+oogabooga/tests.c:1271:22: error: request for member ‘x’ in something not a structure or union
+ 1271 |     assert(v2i_result.x == 4 && v2i_result.y == 6, "v2i_add incorrect");
+      |                      ^
+oogabooga/base.c:21:44: note: in definition of macro ‘assert_line’
+   21 | #define assert_line(line, cond, ...) {if(!(cond)) { printf("\nAssertion failed in file " __FILE__ " on line " ASSERT_STR(line) "\n\nFailed Condition: " #cond ". Message: " __VA_ARGS__); printf("\n"); dump_stack_trace(); crash(); }}
+      |                                            ^~~~
+oogabooga/tests.c:1271:5: note: in expansion of macro ‘assert’
+ 1271 |     assert(v2i_result.x == 4 && v2i_result.y == 6, "v2i_add incorrect");
+      |     ^~~~~~
+oogabooga/tests.c:1271:43: error: request for member ‘y’ in something not a structure or union
+ 1271 |     assert(v2i_result.x == 4 && v2i_result.y == 6, "v2i_add incorrect");
+      |                                           ^
+oogabooga/base.c:21:44: note: in definition of macro ‘assert_line’
+   21 | #define assert_line(line, cond, ...) {if(!(cond)) { printf("\nAssertion failed in file " __FILE__ " on line " ASSERT_STR(line) "\n\nFailed Condition: " #cond ". Message: " __VA_ARGS__); printf("\n"); dump_stack_trace(); crash(); }}
+      |                                            ^~~~
+oogabooga/tests.c:1271:5: note: in expansion of macro ‘assert’
+ 1271 |     assert(v2i_result.x == 4 && v2i_result.y == 6, "v2i_add incorrect");
+      |     ^~~~~~
+oogabooga/tests.c:1273:26: error: incompatible type for argument 1 of ‘v2s32_sub’
+ 1273 |     v2i_result = v2i_sub(v2i_a, v2i_b);
+      |                          ^~~~~
+      |                          |
+      |                          int
+oogabooga/linmath.c:266:40: note: expected ‘Vector2s32’ but argument is of type ‘int’
+  266 | inline Vector2s32 v2s32_sub(Vector2s32 a, Vector2s32 b)  { return v2s32(a.x-b.x, a.y-b.y); }
+      |                             ~~~~~~~~~~~^
+oogabooga/tests.c:1273:33: error: incompatible type for argument 2 of ‘v2s32_sub’
+ 1273 |     v2i_result = v2i_sub(v2i_a, v2i_b);
+      |                                 ^~~~~
+      |                                 |
+      |                                 int
+oogabooga/linmath.c:266:54: note: expected ‘Vector2s32’ but argument is of type ‘int’
+  266 | inline Vector2s32 v2s32_sub(Vector2s32 a, Vector2s32 b)  { return v2s32(a.x-b.x, a.y-b.y); }
+      |                                           ~~~~~~~~~~~^
+oogabooga/tests.c:1274:22: error: request for member ‘x’ in something not a structure or union
+ 1274 |     assert(v2i_result.x == 2 && v2i_result.y == 2, "v2i_sub incorrect");
+      |                      ^
+oogabooga/base.c:21:44: note: in definition of macro ‘assert_line’
+   21 | #define assert_line(line, cond, ...) {if(!(cond)) { printf("\nAssertion failed in file " __FILE__ " on line " ASSERT_STR(line) "\n\nFailed Condition: " #cond ". Message: " __VA_ARGS__); printf("\n"); dump_stack_trace(); crash(); }}
+      |                                            ^~~~
+oogabooga/tests.c:1274:5: note: in expansion of macro ‘assert’
+ 1274 |     assert(v2i_result.x == 2 && v2i_result.y == 2, "v2i_sub incorrect");
+      |     ^~~~~~
+oogabooga/tests.c:1274:43: error: request for member ‘y’ in something not a structure or union
+ 1274 |     assert(v2i_result.x == 2 && v2i_result.y == 2, "v2i_sub incorrect");
+      |                                           ^
+oogabooga/base.c:21:44: note: in definition of macro ‘assert_line’
+   21 | #define assert_line(line, cond, ...) {if(!(cond)) { printf("\nAssertion failed in file " __FILE__ " on line " ASSERT_STR(line) "\n\nFailed Condition: " #cond ". Message: " __VA_ARGS__); printf("\n"); dump_stack_trace(); crash(); }}
+      |                                            ^~~~
+oogabooga/tests.c:1274:5: note: in expansion of macro ‘assert’
+ 1274 |     assert(v2i_result.x == 2 && v2i_result.y == 2, "v2i_sub incorrect");
+      |     ^~~~~~
+oogabooga/tests.c:1276:26: error: incompatible type for argument 1 of ‘v2s32_mul’
+ 1276 |     v2i_result = v2i_mul(v2i_a, v2i_b);
+      |                          ^~~~~
+      |                          |
+      |                          int
+oogabooga/linmath.c:279:40: note: expected ‘Vector2s32’ but argument is of type ‘int’
+  279 | inline Vector2s32 v2s32_mul(Vector2s32 a, Vector2s32 b)  { return v2s32(a.x*b.x, a.y*b.y); }
+      |                             ~~~~~~~~~~~^
+oogabooga/tests.c:1276:33: error: incompatible type for argument 2 of ‘v2s32_mul’
+ 1276 |     v2i_result = v2i_mul(v2i_a, v2i_b);
+      |                                 ^~~~~
+      |                                 |
+      |                                 int
+oogabooga/linmath.c:279:54: note: expected ‘Vector2s32’ but argument is of type ‘int’
+  279 | inline Vector2s32 v2s32_mul(Vector2s32 a, Vector2s32 b)  { return v2s32(a.x*b.x, a.y*b.y); }
+      |                                           ~~~~~~~~~~~^
+oogabooga/tests.c:1277:22: error: request for member ‘x’ in something not a structure or union
+ 1277 |     assert(v2i_result.x == 3 && v2i_result.y == 8, "v2i_mul incorrect");
+      |                      ^
+oogabooga/base.c:21:44: note: in definition of macro ‘assert_line’
+   21 | #define assert_line(line, cond, ...) {if(!(cond)) { printf("\nAssertion failed in file " __FILE__ " on line " ASSERT_STR(line) "\n\nFailed Condition: " #cond ". Message: " __VA_ARGS__); printf("\n"); dump_stack_trace(); crash(); }}
+      |                                            ^~~~
+oogabooga/tests.c:1277:5: note: in expansion of macro ‘assert’
+ 1277 |     assert(v2i_result.x == 3 && v2i_result.y == 8, "v2i_mul incorrect");
+      |     ^~~~~~
+oogabooga/tests.c:1277:43: error: request for member ‘y’ in something not a structure or union
+ 1277 |     assert(v2i_result.x == 3 && v2i_result.y == 8, "v2i_mul incorrect");
+      |                                           ^
+oogabooga/base.c:21:44: note: in definition of macro ‘assert_line’
+   21 | #define assert_line(line, cond, ...) {if(!(cond)) { printf("\nAssertion failed in file " __FILE__ " on line " ASSERT_STR(line) "\n\nFailed Condition: " #cond ". Message: " __VA_ARGS__); printf("\n"); dump_stack_trace(); crash(); }}
+      |                                            ^~~~
+oogabooga/tests.c:1277:5: note: in expansion of macro ‘assert’
+ 1277 |     assert(v2i_result.x == 3 && v2i_result.y == 8, "v2i_mul incorrect");
+      |     ^~~~~~
+oogabooga/tests.c:1279:26: error: incompatible type for argument 1 of ‘v2s32_div’
+ 1279 |     v2i_result = v2i_div(v2i_a, v2i_b);
+      |                          ^~~~~
+      |                          |
+      |                          int
+oogabooga/linmath.c:305:40: note: expected ‘Vector2s32’ but argument is of type ‘int’
+  305 | inline Vector2s32 v2s32_div(Vector2s32 a, Vector2s32 b)  { return v2s32(a.x/b.x, a.y/b.y); }
+      |                             ~~~~~~~~~~~^
+oogabooga/tests.c:1279:33: error: incompatible type for argument 2 of ‘v2s32_div’
+ 1279 |     v2i_result = v2i_div(v2i_a, v2i_b);
+      |                                 ^~~~~
+      |                                 |
+      |                                 int
+oogabooga/linmath.c:305:54: note: expected ‘Vector2s32’ but argument is of type ‘int’
+  305 | inline Vector2s32 v2s32_div(Vector2s32 a, Vector2s32 b)  { return v2s32(a.x/b.x, a.y/b.y); }
+      |                                           ~~~~~~~~~~~^
+oogabooga/tests.c:1280:22: error: request for member ‘x’ in something not a structure or union
+ 1280 |     assert(v2i_result.x == 3 && v2i_result.y == 2, "v2i_div incorrect");
+      |                      ^
+oogabooga/base.c:21:44: note: in definition of macro ‘assert_line’
+   21 | #define assert_line(line, cond, ...) {if(!(cond)) { printf("\nAssertion failed in file " __FILE__ " on line " ASSERT_STR(line) "\n\nFailed Condition: " #cond ". Message: " __VA_ARGS__); printf("\n"); dump_stack_trace(); crash(); }}
+      |                                            ^~~~
+oogabooga/tests.c:1280:5: note: in expansion of macro ‘assert’
+ 1280 |     assert(v2i_result.x == 3 && v2i_result.y == 2, "v2i_div incorrect");
+      |     ^~~~~~
+oogabooga/tests.c:1280:43: error: request for member ‘y’ in something not a structure or union
+ 1280 |     assert(v2i_result.x == 3 && v2i_result.y == 2, "v2i_div incorrect");
+      |                                           ^
+oogabooga/base.c:21:44: note: in definition of macro ‘assert_line’
+   21 | #define assert_line(line, cond, ...) {if(!(cond)) { printf("\nAssertion failed in file " __FILE__ " on line " ASSERT_STR(line) "\n\nFailed Condition: " #cond ". Message: " __VA_ARGS__); printf("\n"); dump_stack_trace(); crash(); }}
+      |                                            ^~~~
+oogabooga/tests.c:1280:5: note: in expansion of macro ‘assert’
+ 1280 |     assert(v2i_result.x == 3 && v2i_result.y == 2, "v2i_div incorrect");
+      |     ^~~~~~
+oogabooga/tests.c:1282:27: error: incompatible type for argument 1 of ‘v2s32_muls32’
+ 1282 |     v2i_result = v2i_muli(v2i_a, 2);
+      |                           ^~~~~
+      |                           |
+      |                           int
+oogabooga/linmath.c:292:43: note: expected ‘Vector2s32’ but argument is of type ‘int’
+  292 | inline Vector2s32 v2s32_muls32(Vector2s32 a, s32     s) { return v2s32_mul(a, v2s32(s, s)); }
+      |                                ~~~~~~~~~~~^
+oogabooga/tests.c:1283:22: error: request for member ‘x’ in something not a structure or union
+ 1283 |     assert(v2i_result.x == 6 && v2i_result.y == 8, "v2i_muli incorrect");
+      |                      ^
+oogabooga/base.c:21:44: note: in definition of macro ‘assert_line’
+   21 | #define assert_line(line, cond, ...) {if(!(cond)) { printf("\nAssertion failed in file " __FILE__ " on line " ASSERT_STR(line) "\n\nFailed Condition: " #cond ". Message: " __VA_ARGS__); printf("\n"); dump_stack_trace(); crash(); }}
+      |                                            ^~~~
+oogabooga/tests.c:1283:5: note: in expansion of macro ‘assert’
+ 1283 |     assert(v2i_result.x == 6 && v2i_result.y == 8, "v2i_muli incorrect");
+      |     ^~~~~~
+oogabooga/tests.c:1283:43: error: request for member ‘y’ in something not a structure or union
+ 1283 |     assert(v2i_result.x == 6 && v2i_result.y == 8, "v2i_muli incorrect");
+      |                                           ^
+oogabooga/base.c:21:44: note: in definition of macro ‘assert_line’
+   21 | #define assert_line(line, cond, ...) {if(!(cond)) { printf("\nAssertion failed in file " __FILE__ " on line " ASSERT_STR(line) "\n\nFailed Condition: " #cond ". Message: " __VA_ARGS__); printf("\n"); dump_stack_trace(); crash(); }}
+      |                                            ^~~~
+oogabooga/tests.c:1283:5: note: in expansion of macro ‘assert’
+ 1283 |     assert(v2i_result.x == 6 && v2i_result.y == 8, "v2i_muli incorrect");
+      |     ^~~~~~
+oogabooga/tests.c:1285:27: error: incompatible type for argument 1 of ‘v2s32_divs32’
+ 1285 |     v2i_result = v2i_divi(v2i_a, 2);
+      |                           ^~~~~
+      |                           |
+      |                           int
+oogabooga/linmath.c:318:43: note: expected ‘Vector2s32’ but argument is of type ‘int’
+  318 | inline Vector2s32 v2s32_divs32(Vector2s32 a, s32     s) { return v2s32_div(a, v2s32(s, s)); }
+      |                                ~~~~~~~~~~~^
+oogabooga/tests.c:1286:22: error: request for member ‘x’ in something not a structure or union
+ 1286 |     assert(v2i_result.x == 1 && v2i_result.y == 2, "v2i_divi incorrect");
+      |                      ^
+oogabooga/base.c:21:44: note: in definition of macro ‘assert_line’
+   21 | #define assert_line(line, cond, ...) {if(!(cond)) { printf("\nAssertion failed in file " __FILE__ " on line " ASSERT_STR(line) "\n\nFailed Condition: " #cond ". Message: " __VA_ARGS__); printf("\n"); dump_stack_trace(); crash(); }}
+      |                                            ^~~~
+oogabooga/tests.c:1286:5: note: in expansion of macro ‘assert’
+ 1286 |     assert(v2i_result.x == 1 && v2i_result.y == 2, "v2i_divi incorrect");
+      |     ^~~~~~
+oogabooga/tests.c:1286:43: error: request for member ‘y’ in something not a structure or union
+ 1286 |     assert(v2i_result.x == 1 && v2i_result.y == 2, "v2i_divi incorrect");
+      |                                           ^
+oogabooga/base.c:21:44: note: in definition of macro ‘assert_line’
+   21 | #define assert_line(line, cond, ...) {if(!(cond)) { printf("\nAssertion failed in file " __FILE__ " on line " ASSERT_STR(line) "\n\nFailed Condition: " #cond ". Message: " __VA_ARGS__); printf("\n"); dump_stack_trace(); crash(); }}
+      |                                            ^~~~
+oogabooga/tests.c:1286:5: note: in expansion of macro ‘assert’
+ 1286 |     assert(v2i_result.x == 1 && v2i_result.y == 2, "v2i_divi incorrect");
+      |     ^~~~~~
+oogabooga/tests.c:1289:5: error: unknown type name ‘Vector3i’; did you mean ‘Vector3’?
+ 1289 |     Vector3i v3i_a = v3i(3, 4, 6);
+      |     ^~~~~~~~
+      |     Vector3
+oogabooga/tests.c:1290:5: error: unknown type name ‘Vector3i’; did you mean ‘Vector3’?
+ 1290 |     Vector3i v3i_b = v3i(1, 2, 3);
+      |     ^~~~~~~~
+      |     Vector3
+oogabooga/tests.c:1291:5: error: unknown type name ‘Vector3i’; did you mean ‘Vector3’?
+ 1291 |     Vector3i v3i_result = v3i_add(v3i_a, v3i_b);
+      |     ^~~~~~~~
+      |     Vector3
+oogabooga/tests.c:1291:35: error: incompatible type for argument 1 of ‘v3s32_add’
+ 1291 |     Vector3i v3i_result = v3i_add(v3i_a, v3i_b);
+      |                                   ^~~~~
+      |                                   |
+      |                                   int
+oogabooga/linmath.c:254:40: note: expected ‘Vector3s32’ but argument is of type ‘int’
+  254 | inline Vector3s32 v3s32_add(Vector3s32 a, Vector3s32 b)  { return v3s32(a.x+b.x, a.y+b.y, a.z+b.z); }
+      |                             ~~~~~~~~~~~^
+oogabooga/tests.c:1291:42: error: incompatible type for argument 2 of ‘v3s32_add’
+ 1291 |     Vector3i v3i_result = v3i_add(v3i_a, v3i_b);
+      |                                          ^~~~~
+      |                                          |
+      |                                          int
+oogabooga/linmath.c:254:54: note: expected ‘Vector3s32’ but argument is of type ‘int’
+  254 | inline Vector3s32 v3s32_add(Vector3s32 a, Vector3s32 b)  { return v3s32(a.x+b.x, a.y+b.y, a.z+b.z); }
+      |                                           ~~~~~~~~~~~^
+oogabooga/tests.c:1292:22: error: request for member ‘x’ in something not a structure or union
+ 1292 |     assert(v3i_result.x == 4 && v3i_result.y == 6 && v3i_result.z == 9, "v3i_add incorrect.");
+      |                      ^
+oogabooga/base.c:21:44: note: in definition of macro ‘assert_line’
+   21 | #define assert_line(line, cond, ...) {if(!(cond)) { printf("\nAssertion failed in file " __FILE__ " on line " ASSERT_STR(line) "\n\nFailed Condition: " #cond ". Message: " __VA_ARGS__); printf("\n"); dump_stack_trace(); crash(); }}
+      |                                            ^~~~
+oogabooga/tests.c:1292:5: note: in expansion of macro ‘assert’
+ 1292 |     assert(v3i_result.x == 4 && v3i_result.y == 6 && v3i_result.z == 9, "v3i_add incorrect.");
+      |     ^~~~~~
+oogabooga/tests.c:1292:43: error: request for member ‘y’ in something not a structure or union
+ 1292 |     assert(v3i_result.x == 4 && v3i_result.y == 6 && v3i_result.z == 9, "v3i_add incorrect.");
+      |                                           ^
+oogabooga/base.c:21:44: note: in definition of macro ‘assert_line’
+   21 | #define assert_line(line, cond, ...) {if(!(cond)) { printf("\nAssertion failed in file " __FILE__ " on line " ASSERT_STR(line) "\n\nFailed Condition: " #cond ". Message: " __VA_ARGS__); printf("\n"); dump_stack_trace(); crash(); }}
+      |                                            ^~~~
+oogabooga/tests.c:1292:5: note: in expansion of macro ‘assert’
+ 1292 |     assert(v3i_result.x == 4 && v3i_result.y == 6 && v3i_result.z == 9, "v3i_add incorrect.");
+      |     ^~~~~~
+oogabooga/tests.c:1292:64: error: request for member ‘z’ in something not a structure or union
+ 1292 |     assert(v3i_result.x == 4 && v3i_result.y == 6 && v3i_result.z == 9, "v3i_add incorrect.");
+      |                                                                ^
+oogabooga/base.c:21:44: note: in definition of macro ‘assert_line’
+   21 | #define assert_line(line, cond, ...) {if(!(cond)) { printf("\nAssertion failed in file " __FILE__ " on line " ASSERT_STR(line) "\n\nFailed Condition: " #cond ". Message: " __VA_ARGS__); printf("\n"); dump_stack_trace(); crash(); }}
+      |                                            ^~~~
+oogabooga/tests.c:1292:5: note: in expansion of macro ‘assert’
+ 1292 |     assert(v3i_result.x == 4 && v3i_result.y == 6 && v3i_result.z == 9, "v3i_add incorrect.");
+      |     ^~~~~~
+oogabooga/tests.c:1294:26: error: incompatible type for argument 1 of ‘v3s32_sub’
+ 1294 |     v3i_result = v3i_sub(v3i_a, v3i_b);
+      |                          ^~~~~
+      |                          |
+      |                          int
+oogabooga/linmath.c:267:40: note: expected ‘Vector3s32’ but argument is of type ‘int’
+  267 | inline Vector3s32 v3s32_sub(Vector3s32 a, Vector3s32 b)  { return v3s32(a.x-b.x, a.y-b.y, a.z-b.z); }
+      |                             ~~~~~~~~~~~^
+oogabooga/tests.c:1294:33: error: incompatible type for argument 2 of ‘v3s32_sub’
+ 1294 |     v3i_result = v3i_sub(v3i_a, v3i_b);
+      |                                 ^~~~~
+      |                                 |
+      |                                 int
+oogabooga/linmath.c:267:54: note: expected ‘Vector3s32’ but argument is of type ‘int’
+  267 | inline Vector3s32 v3s32_sub(Vector3s32 a, Vector3s32 b)  { return v3s32(a.x-b.x, a.y-b.y, a.z-b.z); }
+      |                                           ~~~~~~~~~~~^
+oogabooga/tests.c:1295:22: error: request for member ‘x’ in something not a structure or union
+ 1295 |     assert(v3i_result.x == 2 && v3i_result.y == 2 && v3i_result.z == 3, "v3i_sub incorrect");
+      |                      ^
+oogabooga/base.c:21:44: note: in definition of macro ‘assert_line’
+   21 | #define assert_line(line, cond, ...) {if(!(cond)) { printf("\nAssertion failed in file " __FILE__ " on line " ASSERT_STR(line) "\n\nFailed Condition: " #cond ". Message: " __VA_ARGS__); printf("\n"); dump_stack_trace(); crash(); }}
+      |                                            ^~~~
+oogabooga/tests.c:1295:5: note: in expansion of macro ‘assert’
+ 1295 |     assert(v3i_result.x == 2 && v3i_result.y == 2 && v3i_result.z == 3, "v3i_sub incorrect");
+      |     ^~~~~~
+oogabooga/tests.c:1295:43: error: request for member ‘y’ in something not a structure or union
+ 1295 |     assert(v3i_result.x == 2 && v3i_result.y == 2 && v3i_result.z == 3, "v3i_sub incorrect");
+      |                                           ^
+oogabooga/base.c:21:44: note: in definition of macro ‘assert_line’
+   21 | #define assert_line(line, cond, ...) {if(!(cond)) { printf("\nAssertion failed in file " __FILE__ " on line " ASSERT_STR(line) "\n\nFailed Condition: " #cond ". Message: " __VA_ARGS__); printf("\n"); dump_stack_trace(); crash(); }}
+      |                                            ^~~~
+oogabooga/tests.c:1295:5: note: in expansion of macro ‘assert’
+ 1295 |     assert(v3i_result.x == 2 && v3i_result.y == 2 && v3i_result.z == 3, "v3i_sub incorrect");
+      |     ^~~~~~
+oogabooga/tests.c:1295:64: error: request for member ‘z’ in something not a structure or union
+ 1295 |     assert(v3i_result.x == 2 && v3i_result.y == 2 && v3i_result.z == 3, "v3i_sub incorrect");
+      |                                                                ^
+oogabooga/base.c:21:44: note: in definition of macro ‘assert_line’
+   21 | #define assert_line(line, cond, ...) {if(!(cond)) { printf("\nAssertion failed in file " __FILE__ " on line " ASSERT_STR(line) "\n\nFailed Condition: " #cond ". Message: " __VA_ARGS__); printf("\n"); dump_stack_trace(); crash(); }}
+      |                                            ^~~~
+oogabooga/tests.c:1295:5: note: in expansion of macro ‘assert’
+ 1295 |     assert(v3i_result.x == 2 && v3i_result.y == 2 && v3i_result.z == 3, "v3i_sub incorrect");
+      |     ^~~~~~
+oogabooga/tests.c:1297:26: error: incompatible type for argument 1 of ‘v3s32_mul’
+ 1297 |     v3i_result = v3i_mul(v3i_a, v3i_b);
+      |                          ^~~~~
+      |                          |
+      |                          int
+oogabooga/linmath.c:280:40: note: expected ‘Vector3s32’ but argument is of type ‘int’
+  280 | inline Vector3s32 v3s32_mul(Vector3s32 a, Vector3s32 b)  { return v3s32(a.x*b.x, a.y*b.y, a.z*b.z); }
+      |                             ~~~~~~~~~~~^
+oogabooga/tests.c:1297:33: error: incompatible type for argument 2 of ‘v3s32_mul’
+ 1297 |     v3i_result = v3i_mul(v3i_a, v3i_b);
+      |                                 ^~~~~
+      |                                 |
+      |                                 int
+oogabooga/linmath.c:280:54: note: expected ‘Vector3s32’ but argument is of type ‘int’
+  280 | inline Vector3s32 v3s32_mul(Vector3s32 a, Vector3s32 b)  { return v3s32(a.x*b.x, a.y*b.y, a.z*b.z); }
+      |                                           ~~~~~~~~~~~^
+oogabooga/tests.c:1298:22: error: request for member ‘x’ in something not a structure or union
+ 1298 |     assert(v3i_result.x == 3 && v3i_result.y == 8 && v3i_result.z == 18, "v3i_mul incorrect");
+      |                      ^
+oogabooga/base.c:21:44: note: in definition of macro ‘assert_line’
+   21 | #define assert_line(line, cond, ...) {if(!(cond)) { printf("\nAssertion failed in file " __FILE__ " on line " ASSERT_STR(line) "\n\nFailed Condition: " #cond ". Message: " __VA_ARGS__); printf("\n"); dump_stack_trace(); crash(); }}
+      |                                            ^~~~
+oogabooga/tests.c:1298:5: note: in expansion of macro ‘assert’
+ 1298 |     assert(v3i_result.x == 3 && v3i_result.y == 8 && v3i_result.z == 18, "v3i_mul incorrect");
+      |     ^~~~~~
+oogabooga/tests.c:1298:43: error: request for member ‘y’ in something not a structure or union
+ 1298 |     assert(v3i_result.x == 3 && v3i_result.y == 8 && v3i_result.z == 18, "v3i_mul incorrect");
+      |                                           ^
+oogabooga/base.c:21:44: note: in definition of macro ‘assert_line’
+   21 | #define assert_line(line, cond, ...) {if(!(cond)) { printf("\nAssertion failed in file " __FILE__ " on line " ASSERT_STR(line) "\n\nFailed Condition: " #cond ". Message: " __VA_ARGS__); printf("\n"); dump_stack_trace(); crash(); }}
+      |                                            ^~~~
+oogabooga/tests.c:1298:5: note: in expansion of macro ‘assert’
+ 1298 |     assert(v3i_result.x == 3 && v3i_result.y == 8 && v3i_result.z == 18, "v3i_mul incorrect");
+      |     ^~~~~~
+oogabooga/tests.c:1298:64: error: request for member ‘z’ in something not a structure or union
+ 1298 |     assert(v3i_result.x == 3 && v3i_result.y == 8 && v3i_result.z == 18, "v3i_mul incorrect");
+      |                                                                ^
+oogabooga/base.c:21:44: note: in definition of macro ‘assert_line’
+   21 | #define assert_line(line, cond, ...) {if(!(cond)) { printf("\nAssertion failed in file " __FILE__ " on line " ASSERT_STR(line) "\n\nFailed Condition: " #cond ". Message: " __VA_ARGS__); printf("\n"); dump_stack_trace(); crash(); }}
+      |                                            ^~~~
+oogabooga/tests.c:1298:5: note: in expansion of macro ‘assert’
+ 1298 |     assert(v3i_result.x == 3 && v3i_result.y == 8 && v3i_result.z == 18, "v3i_mul incorrect");
+      |     ^~~~~~
+oogabooga/tests.c:1300:26: error: incompatible type for argument 1 of ‘v3s32_div’
+ 1300 |     v3i_result = v3i_div(v3i_a, v3i_b);
+      |                          ^~~~~
+      |                          |
+      |                          int
+oogabooga/linmath.c:306:40: note: expected ‘Vector3s32’ but argument is of type ‘int’
+  306 | inline Vector3s32 v3s32_div(Vector3s32 a, Vector3s32 b)  { return v3s32(a.x/b.x, a.y/b.y, a.z/b.z); }
+      |                             ~~~~~~~~~~~^
+oogabooga/tests.c:1300:33: error: incompatible type for argument 2 of ‘v3s32_div’
+ 1300 |     v3i_result = v3i_div(v3i_a, v3i_b);
+      |                                 ^~~~~
+      |                                 |
+      |                                 int
+oogabooga/linmath.c:306:54: note: expected ‘Vector3s32’ but argument is of type ‘int’
+  306 | inline Vector3s32 v3s32_div(Vector3s32 a, Vector3s32 b)  { return v3s32(a.x/b.x, a.y/b.y, a.z/b.z); }
+      |                                           ~~~~~~~~~~~^
+oogabooga/tests.c:1301:22: error: request for member ‘x’ in something not a structure or union
+ 1301 |     assert(v3i_result.x == 3 && v3i_result.y == 2 && v3i_result.z == 2, "v3i_div incorrect");
+      |                      ^
+oogabooga/base.c:21:44: note: in definition of macro ‘assert_line’
+   21 | #define assert_line(line, cond, ...) {if(!(cond)) { printf("\nAssertion failed in file " __FILE__ " on line " ASSERT_STR(line) "\n\nFailed Condition: " #cond ". Message: " __VA_ARGS__); printf("\n"); dump_stack_trace(); crash(); }}
+      |                                            ^~~~
+oogabooga/tests.c:1301:5: note: in expansion of macro ‘assert’
+ 1301 |     assert(v3i_result.x == 3 && v3i_result.y == 2 && v3i_result.z == 2, "v3i_div incorrect");
+      |     ^~~~~~
+oogabooga/tests.c:1301:43: error: request for member ‘y’ in something not a structure or union
+ 1301 |     assert(v3i_result.x == 3 && v3i_result.y == 2 && v3i_result.z == 2, "v3i_div incorrect");
+      |                                           ^
+oogabooga/base.c:21:44: note: in definition of macro ‘assert_line’
+   21 | #define assert_line(line, cond, ...) {if(!(cond)) { printf("\nAssertion failed in file " __FILE__ " on line " ASSERT_STR(line) "\n\nFailed Condition: " #cond ". Message: " __VA_ARGS__); printf("\n"); dump_stack_trace(); crash(); }}
+      |                                            ^~~~
+oogabooga/tests.c:1301:5: note: in expansion of macro ‘assert’
+ 1301 |     assert(v3i_result.x == 3 && v3i_result.y == 2 && v3i_result.z == 2, "v3i_div incorrect");
+      |     ^~~~~~
+oogabooga/tests.c:1301:64: error: request for member ‘z’ in something not a structure or union
+ 1301 |     assert(v3i_result.x == 3 && v3i_result.y == 2 && v3i_result.z == 2, "v3i_div incorrect");
+      |                                                                ^
+oogabooga/base.c:21:44: note: in definition of macro ‘assert_line’
+   21 | #define assert_line(line, cond, ...) {if(!(cond)) { printf("\nAssertion failed in file " __FILE__ " on line " ASSERT_STR(line) "\n\nFailed Condition: " #cond ". Message: " __VA_ARGS__); printf("\n"); dump_stack_trace(); crash(); }}
+      |                                            ^~~~
+oogabooga/tests.c:1301:5: note: in expansion of macro ‘assert’
+ 1301 |     assert(v3i_result.x == 3 && v3i_result.y == 2 && v3i_result.z == 2, "v3i_div incorrect");
+      |     ^~~~~~
+oogabooga/tests.c:1303:27: error: incompatible type for argument 1 of ‘v3s32_muls32’
+ 1303 |     v3i_result = v3i_muli(v3i_a, 2);
+      |                           ^~~~~
+      |                           |
+      |                           int
+oogabooga/linmath.c:293:43: note: expected ‘Vector3s32’ but argument is of type ‘int’
+  293 | inline Vector3s32 v3s32_muls32(Vector3s32 a, s32     s) { return v3s32_mul(a, v3s32(s, s, s)); }
+      |                                ~~~~~~~~~~~^
+oogabooga/tests.c:1304:22: error: request for member ‘x’ in something not a structure or union
+ 1304 |     assert(v3i_result.x == 6 && v3i_result.y == 8 && v3i_result.z == 12, "v3i_muli incorrect");
+      |                      ^
+oogabooga/base.c:21:44: note: in definition of macro ‘assert_line’
+   21 | #define assert_line(line, cond, ...) {if(!(cond)) { printf("\nAssertion failed in file " __FILE__ " on line " ASSERT_STR(line) "\n\nFailed Condition: " #cond ". Message: " __VA_ARGS__); printf("\n"); dump_stack_trace(); crash(); }}
+      |                                            ^~~~
+oogabooga/tests.c:1304:5: note: in expansion of macro ‘assert’
+ 1304 |     assert(v3i_result.x == 6 && v3i_result.y == 8 && v3i_result.z == 12, "v3i_muli incorrect");
+      |     ^~~~~~
+oogabooga/tests.c:1304:43: error: request for member ‘y’ in something not a structure or union
+ 1304 |     assert(v3i_result.x == 6 && v3i_result.y == 8 && v3i_result.z == 12, "v3i_muli incorrect");
+      |                                           ^
+oogabooga/base.c:21:44: note: in definition of macro ‘assert_line’
+   21 | #define assert_line(line, cond, ...) {if(!(cond)) { printf("\nAssertion failed in file " __FILE__ " on line " ASSERT_STR(line) "\n\nFailed Condition: " #cond ". Message: " __VA_ARGS__); printf("\n"); dump_stack_trace(); crash(); }}
+      |                                            ^~~~
+oogabooga/tests.c:1304:5: note: in expansion of macro ‘assert’
+ 1304 |     assert(v3i_result.x == 6 && v3i_result.y == 8 && v3i_result.z == 12, "v3i_muli incorrect");
+      |     ^~~~~~
+oogabooga/tests.c:1304:64: error: request for member ‘z’ in something not a structure or union
+ 1304 |     assert(v3i_result.x == 6 && v3i_result.y == 8 && v3i_result.z == 12, "v3i_muli incorrect");
+      |                                                                ^
+oogabooga/base.c:21:44: note: in definition of macro ‘assert_line’
+   21 | #define assert_line(line, cond, ...) {if(!(cond)) { printf("\nAssertion failed in file " __FILE__ " on line " ASSERT_STR(line) "\n\nFailed Condition: " #cond ". Message: " __VA_ARGS__); printf("\n"); dump_stack_trace(); crash(); }}
+      |                                            ^~~~
+oogabooga/tests.c:1304:5: note: in expansion of macro ‘assert’
+ 1304 |     assert(v3i_result.x == 6 && v3i_result.y == 8 && v3i_result.z == 12, "v3i_muli incorrect");
+      |     ^~~~~~
+oogabooga/tests.c:1306:27: error: incompatible type for argument 1 of ‘v3s32_divs32’
+ 1306 |     v3i_result = v3i_divi(v3i_a, 2);
+      |                           ^~~~~
+      |                           |
+      |                           int
+oogabooga/linmath.c:319:43: note: expected ‘Vector3s32’ but argument is of type ‘int’
+  319 | inline Vector3s32 v3s32_divs32(Vector3s32 a, s32     s) { return v3s32_div(a, v3s32(s, s, s)); }
+      |                                ~~~~~~~~~~~^
+oogabooga/tests.c:1307:22: error: request for member ‘x’ in something not a structure or union
+ 1307 |     assert(v3i_result.x == 1 && v3i_result.y == 2 && v3i_result.z == 3, "v3i_divi incorrect");
+      |                      ^
+oogabooga/base.c:21:44: note: in definition of macro ‘assert_line’
+   21 | #define assert_line(line, cond, ...) {if(!(cond)) { printf("\nAssertion failed in file " __FILE__ " on line " ASSERT_STR(line) "\n\nFailed Condition: " #cond ". Message: " __VA_ARGS__); printf("\n"); dump_stack_trace(); crash(); }}
+      |                                            ^~~~
+oogabooga/tests.c:1307:5: note: in expansion of macro ‘assert’
+ 1307 |     assert(v3i_result.x == 1 && v3i_result.y == 2 && v3i_result.z == 3, "v3i_divi incorrect");
+      |     ^~~~~~
+oogabooga/tests.c:1307:43: error: request for member ‘y’ in something not a structure or union
+ 1307 |     assert(v3i_result.x == 1 && v3i_result.y == 2 && v3i_result.z == 3, "v3i_divi incorrect");
+      |                                           ^
+oogabooga/base.c:21:44: note: in definition of macro ‘assert_line’
+   21 | #define assert_line(line, cond, ...) {if(!(cond)) { printf("\nAssertion failed in file " __FILE__ " on line " ASSERT_STR(line) "\n\nFailed Condition: " #cond ". Message: " __VA_ARGS__); printf("\n"); dump_stack_trace(); crash(); }}
+      |                                            ^~~~
+oogabooga/tests.c:1307:5: note: in expansion of macro ‘assert’
+ 1307 |     assert(v3i_result.x == 1 && v3i_result.y == 2 && v3i_result.z == 3, "v3i_divi incorrect");
+      |     ^~~~~~
+oogabooga/tests.c:1307:64: error: request for member ‘z’ in something not a structure or union
+ 1307 |     assert(v3i_result.x == 1 && v3i_result.y == 2 && v3i_result.z == 3, "v3i_divi incorrect");
+      |                                                                ^
+oogabooga/base.c:21:44: note: in definition of macro ‘assert_line’
+   21 | #define assert_line(line, cond, ...) {if(!(cond)) { printf("\nAssertion failed in file " __FILE__ " on line " ASSERT_STR(line) "\n\nFailed Condition: " #cond ". Message: " __VA_ARGS__); printf("\n"); dump_stack_trace(); crash(); }}
+      |                                            ^~~~
+oogabooga/tests.c:1307:5: note: in expansion of macro ‘assert’
+ 1307 |     assert(v3i_result.x == 1 && v3i_result.y == 2 && v3i_result.z == 3, "v3i_divi incorrect");
+      |     ^~~~~~
+oogabooga/tests.c:1309:5: error: unknown type name ‘Vector4i’; did you mean ‘Vector4’?
+ 1309 |     Vector4i v4i_a = v4i(3, 4, 6, 8);
+      |     ^~~~~~~~
+      |     Vector4
+oogabooga/tests.c:1310:5: error: unknown type name ‘Vector4i’; did you mean ‘Vector4’?
+ 1310 |     Vector4i v4i_b = v4i(1, 2, 3, 4);
+      |     ^~~~~~~~
+      |     Vector4
+oogabooga/tests.c:1311:5: error: unknown type name ‘Vector4i’; did you mean ‘Vector4’?
+ 1311 |     Vector4i v4i_result = v4i_add(v4i_a, v4i_b);
+      |     ^~~~~~~~
+      |     Vector4
+oogabooga/tests.c:1311:35: error: incompatible type for argument 1 of ‘v4s32_add’
+ 1311 |     Vector4i v4i_result = v4i_add(v4i_a, v4i_b);
+      |                                   ^~~~~
+      |                                   |
+      |                                   int
+oogabooga/linmath.c:255:40: note: expected ‘Vector4s32’ but argument is of type ‘int’
+  255 | inline Vector4s32 v4s32_add(Vector4s32 a, Vector4s32 b)  { return v4s32(a.x+b.x, a.y+b.y, a.z+b.z, a.w+b.w); }
+      |                             ~~~~~~~~~~~^
+oogabooga/tests.c:1311:42: error: incompatible type for argument 2 of ‘v4s32_add’
+ 1311 |     Vector4i v4i_result = v4i_add(v4i_a, v4i_b);
+      |                                          ^~~~~
+      |                                          |
+      |                                          int
+oogabooga/linmath.c:255:54: note: expected ‘Vector4s32’ but argument is of type ‘int’
+  255 | inline Vector4s32 v4s32_add(Vector4s32 a, Vector4s32 b)  { return v4s32(a.x+b.x, a.y+b.y, a.z+b.z, a.w+b.w); }
+      |                                           ~~~~~~~~~~~^
+oogabooga/tests.c:1312:22: error: request for member ‘x’ in something not a structure or union
+ 1312 |     assert(v4i_result.x == 4 && v4i_result.y == 6 && v4i_result.z == 9 && v4i_result.w == 12, "v4i_add incorrect.");
+      |                      ^
+oogabooga/base.c:21:44: note: in definition of macro ‘assert_line’
+   21 | #define assert_line(line, cond, ...) {if(!(cond)) { printf("\nAssertion failed in file " __FILE__ " on line " ASSERT_STR(line) "\n\nFailed Condition: " #cond ". Message: " __VA_ARGS__); printf("\n"); dump_stack_trace(); crash(); }}
+      |                                            ^~~~
+oogabooga/tests.c:1312:5: note: in expansion of macro ‘assert’
+ 1312 |     assert(v4i_result.x == 4 && v4i_result.y == 6 && v4i_result.z == 9 && v4i_result.w == 12, "v4i_add incorrect.");
+      |     ^~~~~~
+oogabooga/tests.c:1312:43: error: request for member ‘y’ in something not a structure or union
+ 1312 |     assert(v4i_result.x == 4 && v4i_result.y == 6 && v4i_result.z == 9 && v4i_result.w == 12, "v4i_add incorrect.");
+      |                                           ^
+oogabooga/base.c:21:44: note: in definition of macro ‘assert_line’
+   21 | #define assert_line(line, cond, ...) {if(!(cond)) { printf("\nAssertion failed in file " __FILE__ " on line " ASSERT_STR(line) "\n\nFailed Condition: " #cond ". Message: " __VA_ARGS__); printf("\n"); dump_stack_trace(); crash(); }}
+      |                                            ^~~~
+oogabooga/tests.c:1312:5: note: in expansion of macro ‘assert’
+ 1312 |     assert(v4i_result.x == 4 && v4i_result.y == 6 && v4i_result.z == 9 && v4i_result.w == 12, "v4i_add incorrect.");
+      |     ^~~~~~
+oogabooga/tests.c:1312:64: error: request for member ‘z’ in something not a structure or union
+ 1312 |     assert(v4i_result.x == 4 && v4i_result.y == 6 && v4i_result.z == 9 && v4i_result.w == 12, "v4i_add incorrect.");
+      |                                                                ^
+oogabooga/base.c:21:44: note: in definition of macro ‘assert_line’
+   21 | #define assert_line(line, cond, ...) {if(!(cond)) { printf("\nAssertion failed in file " __FILE__ " on line " ASSERT_STR(line) "\n\nFailed Condition: " #cond ". Message: " __VA_ARGS__); printf("\n"); dump_stack_trace(); crash(); }}
+      |                                            ^~~~
+oogabooga/tests.c:1312:5: note: in expansion of macro ‘assert’
+ 1312 |     assert(v4i_result.x == 4 && v4i_result.y == 6 && v4i_result.z == 9 && v4i_result.w == 12, "v4i_add incorrect.");
+      |     ^~~~~~
+oogabooga/tests.c:1312:85: error: request for member ‘w’ in something not a structure or union
+ 1312 |     assert(v4i_result.x == 4 && v4i_result.y == 6 && v4i_result.z == 9 && v4i_result.w == 12, "v4i_add incorrect.");
+      |                                                                                     ^
+oogabooga/base.c:21:44: note: in definition of macro ‘assert_line’
+   21 | #define assert_line(line, cond, ...) {if(!(cond)) { printf("\nAssertion failed in file " __FILE__ " on line " ASSERT_STR(line) "\n\nFailed Condition: " #cond ". Message: " __VA_ARGS__); printf("\n"); dump_stack_trace(); crash(); }}
+      |                                            ^~~~
+oogabooga/tests.c:1312:5: note: in expansion of macro ‘assert’
+ 1312 |     assert(v4i_result.x == 4 && v4i_result.y == 6 && v4i_result.z == 9 && v4i_result.w == 12, "v4i_add incorrect.");
+      |     ^~~~~~
+oogabooga/tests.c:1314:26: error: incompatible type for argument 1 of ‘v4s32_sub’
+ 1314 |     v4i_result = v4i_sub(v4i_a, v4i_b);
+      |                          ^~~~~
+      |                          |
+      |                          int
+oogabooga/linmath.c:268:40: note: expected ‘Vector4s32’ but argument is of type ‘int’
+  268 | inline Vector4s32 v4s32_sub(Vector4s32 a, Vector4s32 b)  { return v4s32(a.x-b.x, a.y-b.y, a.z-b.z, a.w-b.w); }
+      |                             ~~~~~~~~~~~^
+oogabooga/tests.c:1314:33: error: incompatible type for argument 2 of ‘v4s32_sub’
+ 1314 |     v4i_result = v4i_sub(v4i_a, v4i_b);
+      |                                 ^~~~~
+      |                                 |
+      |                                 int
+oogabooga/linmath.c:268:54: note: expected ‘Vector4s32’ but argument is of type ‘int’
+  268 | inline Vector4s32 v4s32_sub(Vector4s32 a, Vector4s32 b)  { return v4s32(a.x-b.x, a.y-b.y, a.z-b.z, a.w-b.w); }
+      |                                           ~~~~~~~~~~~^
+oogabooga/tests.c:1315:22: error: request for member ‘x’ in something not a structure or union
+ 1315 |     assert(v4i_result.x == 2 && v4i_result.y == 2 && v4i_result.z == 3 && v4i_result.w == 4, "v4i_sub incorrect");
+      |                      ^
+oogabooga/base.c:21:44: note: in definition of macro ‘assert_line’
+   21 | #define assert_line(line, cond, ...) {if(!(cond)) { printf("\nAssertion failed in file " __FILE__ " on line " ASSERT_STR(line) "\n\nFailed Condition: " #cond ". Message: " __VA_ARGS__); printf("\n"); dump_stack_trace(); crash(); }}
+      |                                            ^~~~
+oogabooga/tests.c:1315:5: note: in expansion of macro ‘assert’
+ 1315 |     assert(v4i_result.x == 2 && v4i_result.y == 2 && v4i_result.z == 3 && v4i_result.w == 4, "v4i_sub incorrect");
+      |     ^~~~~~
+oogabooga/tests.c:1315:43: error: request for member ‘y’ in something not a structure or union
+ 1315 |     assert(v4i_result.x == 2 && v4i_result.y == 2 && v4i_result.z == 3 && v4i_result.w == 4, "v4i_sub incorrect");
+      |                                           ^
+oogabooga/base.c:21:44: note: in definition of macro ‘assert_line’
+   21 | #define assert_line(line, cond, ...) {if(!(cond)) { printf("\nAssertion failed in file " __FILE__ " on line " ASSERT_STR(line) "\n\nFailed Condition: " #cond ". Message: " __VA_ARGS__); printf("\n"); dump_stack_trace(); crash(); }}
+      |                                            ^~~~
+oogabooga/tests.c:1315:5: note: in expansion of macro ‘assert’
+ 1315 |     assert(v4i_result.x == 2 && v4i_result.y == 2 && v4i_result.z == 3 && v4i_result.w == 4, "v4i_sub incorrect");
+      |     ^~~~~~
+oogabooga/tests.c:1315:64: error: request for member ‘z’ in something not a structure or union
+ 1315 |     assert(v4i_result.x == 2 && v4i_result.y == 2 && v4i_result.z == 3 && v4i_result.w == 4, "v4i_sub incorrect");
+      |                                                                ^
+oogabooga/base.c:21:44: note: in definition of macro ‘assert_line’
+   21 | #define assert_line(line, cond, ...) {if(!(cond)) { printf("\nAssertion failed in file " __FILE__ " on line " ASSERT_STR(line) "\n\nFailed Condition: " #cond ". Message: " __VA_ARGS__); printf("\n"); dump_stack_trace(); crash(); }}
+      |                                            ^~~~
+oogabooga/tests.c:1315:5: note: in expansion of macro ‘assert’
+ 1315 |     assert(v4i_result.x == 2 && v4i_result.y == 2 && v4i_result.z == 3 && v4i_result.w == 4, "v4i_sub incorrect");
+      |     ^~~~~~
+oogabooga/tests.c:1315:85: error: request for member ‘w’ in something not a structure or union
+ 1315 |     assert(v4i_result.x == 2 && v4i_result.y == 2 && v4i_result.z == 3 && v4i_result.w == 4, "v4i_sub incorrect");
+      |                                                                                     ^
+oogabooga/base.c:21:44: note: in definition of macro ‘assert_line’
+   21 | #define assert_line(line, cond, ...) {if(!(cond)) { printf("\nAssertion failed in file " __FILE__ " on line " ASSERT_STR(line) "\n\nFailed Condition: " #cond ". Message: " __VA_ARGS__); printf("\n"); dump_stack_trace(); crash(); }}
+      |                                            ^~~~
+oogabooga/tests.c:1315:5: note: in expansion of macro ‘assert’
+ 1315 |     assert(v4i_result.x == 2 && v4i_result.y == 2 && v4i_result.z == 3 && v4i_result.w == 4, "v4i_sub incorrect");
+      |     ^~~~~~
+oogabooga/tests.c:1317:26: error: incompatible type for argument 1 of ‘v4s32_mul’
+ 1317 |     v4i_result = v4i_mul(v4i_a, v4i_b);
+      |                          ^~~~~
+      |                          |
+      |                          int
+oogabooga/linmath.c:281:40: note: expected ‘Vector4s32’ but argument is of type ‘int’
+  281 | inline Vector4s32 v4s32_mul(Vector4s32 a, Vector4s32 b)  { return v4s32(a.x*b.x, a.y*b.y, a.z*b.z, a.w*b.w); }
+      |                             ~~~~~~~~~~~^
+oogabooga/tests.c:1317:33: error: incompatible type for argument 2 of ‘v4s32_mul’
+ 1317 |     v4i_result = v4i_mul(v4i_a, v4i_b);
+      |                                 ^~~~~
+      |                                 |
+      |                                 int
+oogabooga/linmath.c:281:54: note: expected ‘Vector4s32’ but argument is of type ‘int’
+  281 | inline Vector4s32 v4s32_mul(Vector4s32 a, Vector4s32 b)  { return v4s32(a.x*b.x, a.y*b.y, a.z*b.z, a.w*b.w); }
+      |                                           ~~~~~~~~~~~^
+oogabooga/tests.c:1318:22: error: request for member ‘x’ in something not a structure or union
+ 1318 |     assert(v4i_result.x == 3 && v4i_result.y == 8 && v4i_result.z == 18 && v4i_result.w == 32, "v4i_mul incorrect");
+      |                      ^
+oogabooga/base.c:21:44: note: in definition of macro ‘assert_line’
+   21 | #define assert_line(line, cond, ...) {if(!(cond)) { printf("\nAssertion failed in file " __FILE__ " on line " ASSERT_STR(line) "\n\nFailed Condition: " #cond ". Message: " __VA_ARGS__); printf("\n"); dump_stack_trace(); crash(); }}
+      |                                            ^~~~
+oogabooga/tests.c:1318:5: note: in expansion of macro ‘assert’
+ 1318 |     assert(v4i_result.x == 3 && v4i_result.y == 8 && v4i_result.z == 18 && v4i_result.w == 32, "v4i_mul incorrect");
+      |     ^~~~~~
+oogabooga/tests.c:1318:43: error: request for member ‘y’ in something not a structure or union
+ 1318 |     assert(v4i_result.x == 3 && v4i_result.y == 8 && v4i_result.z == 18 && v4i_result.w == 32, "v4i_mul incorrect");
+      |                                           ^
+oogabooga/base.c:21:44: note: in definition of macro ‘assert_line’
+   21 | #define assert_line(line, cond, ...) {if(!(cond)) { printf("\nAssertion failed in file " __FILE__ " on line " ASSERT_STR(line) "\n\nFailed Condition: " #cond ". Message: " __VA_ARGS__); printf("\n"); dump_stack_trace(); crash(); }}
+      |                                            ^~~~
+oogabooga/tests.c:1318:5: note: in expansion of macro ‘assert’
+ 1318 |     assert(v4i_result.x == 3 && v4i_result.y == 8 && v4i_result.z == 18 && v4i_result.w == 32, "v4i_mul incorrect");
+      |     ^~~~~~
+oogabooga/tests.c:1318:64: error: request for member ‘z’ in something not a structure or union
+ 1318 |     assert(v4i_result.x == 3 && v4i_result.y == 8 && v4i_result.z == 18 && v4i_result.w == 32, "v4i_mul incorrect");
+      |                                                                ^
+oogabooga/base.c:21:44: note: in definition of macro ‘assert_line’
+   21 | #define assert_line(line, cond, ...) {if(!(cond)) { printf("\nAssertion failed in file " __FILE__ " on line " ASSERT_STR(line) "\n\nFailed Condition: " #cond ". Message: " __VA_ARGS__); printf("\n"); dump_stack_trace(); crash(); }}
+      |                                            ^~~~
+oogabooga/tests.c:1318:5: note: in expansion of macro ‘assert’
+ 1318 |     assert(v4i_result.x == 3 && v4i_result.y == 8 && v4i_result.z == 18 && v4i_result.w == 32, "v4i_mul incorrect");
+      |     ^~~~~~
+oogabooga/tests.c:1318:86: error: request for member ‘w’ in something not a structure or union
+ 1318 |     assert(v4i_result.x == 3 && v4i_result.y == 8 && v4i_result.z == 18 && v4i_result.w == 32, "v4i_mul incorrect");
+      |                                                                                      ^
+oogabooga/base.c:21:44: note: in definition of macro ‘assert_line’
+   21 | #define assert_line(line, cond, ...) {if(!(cond)) { printf("\nAssertion failed in file " __FILE__ " on line " ASSERT_STR(line) "\n\nFailed Condition: " #cond ". Message: " __VA_ARGS__); printf("\n"); dump_stack_trace(); crash(); }}
+      |                                            ^~~~
+oogabooga/tests.c:1318:5: note: in expansion of macro ‘assert’
+ 1318 |     assert(v4i_result.x == 3 && v4i_result.y == 8 && v4i_result.z == 18 && v4i_result.w == 32, "v4i_mul incorrect");
+      |     ^~~~~~
+oogabooga/tests.c:1320:26: error: incompatible type for argument 1 of ‘v4s32_div’
+ 1320 |     v4i_result = v4i_div(v4i_a, v4i_b);
+      |                          ^~~~~
+      |                          |
+      |                          int
+oogabooga/linmath.c:307:40: note: expected ‘Vector4s32’ but argument is of type ‘int’
+  307 | inline Vector4s32 v4s32_div(Vector4s32 a, Vector4s32 b)  { return v4s32(a.x/b.x, a.y/b.y, a.z/b.z, a.w/b.w); }
+      |                             ~~~~~~~~~~~^
+oogabooga/tests.c:1320:33: error: incompatible type for argument 2 of ‘v4s32_div’
+ 1320 |     v4i_result = v4i_div(v4i_a, v4i_b);
+      |                                 ^~~~~
+      |                                 |
+      |                                 int
+oogabooga/linmath.c:307:54: note: expected ‘Vector4s32’ but argument is of type ‘int’
+  307 | inline Vector4s32 v4s32_div(Vector4s32 a, Vector4s32 b)  { return v4s32(a.x/b.x, a.y/b.y, a.z/b.z, a.w/b.w); }
+      |                                           ~~~~~~~~~~~^
+oogabooga/tests.c:1321:22: error: request for member ‘x’ in something not a structure or union
+ 1321 |     assert(v4i_result.x == 3 && v4i_result.y == 2 && v4i_result.z == 2 && v4i_result.w == 2, "v4i_div incorrect");
+      |                      ^
+oogabooga/base.c:21:44: note: in definition of macro ‘assert_line’
+   21 | #define assert_line(line, cond, ...) {if(!(cond)) { printf("\nAssertion failed in file " __FILE__ " on line " ASSERT_STR(line) "\n\nFailed Condition: " #cond ". Message: " __VA_ARGS__); printf("\n"); dump_stack_trace(); crash(); }}
+      |                                            ^~~~
+oogabooga/tests.c:1321:5: note: in expansion of macro ‘assert’
+ 1321 |     assert(v4i_result.x == 3 && v4i_result.y == 2 && v4i_result.z == 2 && v4i_result.w == 2, "v4i_div incorrect");
+      |     ^~~~~~
+oogabooga/tests.c:1321:43: error: request for member ‘y’ in something not a structure or union
+ 1321 |     assert(v4i_result.x == 3 && v4i_result.y == 2 && v4i_result.z == 2 && v4i_result.w == 2, "v4i_div incorrect");
+      |                                           ^
+oogabooga/base.c:21:44: note: in definition of macro ‘assert_line’
+   21 | #define assert_line(line, cond, ...) {if(!(cond)) { printf("\nAssertion failed in file " __FILE__ " on line " ASSERT_STR(line) "\n\nFailed Condition: " #cond ". Message: " __VA_ARGS__); printf("\n"); dump_stack_trace(); crash(); }}
+      |                                            ^~~~
+oogabooga/tests.c:1321:5: note: in expansion of macro ‘assert’
+ 1321 |     assert(v4i_result.x == 3 && v4i_result.y == 2 && v4i_result.z == 2 && v4i_result.w == 2, "v4i_div incorrect");
+      |     ^~~~~~
+oogabooga/tests.c:1321:64: error: request for member ‘z’ in something not a structure or union
+ 1321 |     assert(v4i_result.x == 3 && v4i_result.y == 2 && v4i_result.z == 2 && v4i_result.w == 2, "v4i_div incorrect");
+      |                                                                ^
+oogabooga/base.c:21:44: note: in definition of macro ‘assert_line’
+   21 | #define assert_line(line, cond, ...) {if(!(cond)) { printf("\nAssertion failed in file " __FILE__ " on line " ASSERT_STR(line) "\n\nFailed Condition: " #cond ". Message: " __VA_ARGS__); printf("\n"); dump_stack_trace(); crash(); }}
+      |                                            ^~~~
+oogabooga/tests.c:1321:5: note: in expansion of macro ‘assert’
+ 1321 |     assert(v4i_result.x == 3 && v4i_result.y == 2 && v4i_result.z == 2 && v4i_result.w == 2, "v4i_div incorrect");
+      |     ^~~~~~
+oogabooga/tests.c:1321:85: error: request for member ‘w’ in something not a structure or union
+ 1321 |     assert(v4i_result.x == 3 && v4i_result.y == 2 && v4i_result.z == 2 && v4i_result.w == 2, "v4i_div incorrect");
+      |                                                                                     ^
+oogabooga/base.c:21:44: note: in definition of macro ‘assert_line’
+   21 | #define assert_line(line, cond, ...) {if(!(cond)) { printf("\nAssertion failed in file " __FILE__ " on line " ASSERT_STR(line) "\n\nFailed Condition: " #cond ". Message: " __VA_ARGS__); printf("\n"); dump_stack_trace(); crash(); }}
+      |                                            ^~~~
+oogabooga/tests.c:1321:5: note: in expansion of macro ‘assert’
+ 1321 |     assert(v4i_result.x == 3 && v4i_result.y == 2 && v4i_result.z == 2 && v4i_result.w == 2, "v4i_div incorrect");
+      |     ^~~~~~
+oogabooga/tests.c:1323:27: error: incompatible type for argument 1 of ‘v4s32_muls32’
+ 1323 |     v4i_result = v4i_muli(v4i_a, 2);
+      |                           ^~~~~
+      |                           |
+      |                           int
+oogabooga/linmath.c:294:43: note: expected ‘Vector4s32’ but argument is of type ‘int’
+  294 | inline Vector4s32 v4s32_muls32(Vector4s32 a, s32     s) { return v4s32_mul(a, v4s32(s, s, s, s)); }
+      |                                ~~~~~~~~~~~^
+oogabooga/tests.c:1324:22: error: request for member ‘x’ in something not a structure or union
+ 1324 |     assert(v4i_result.x == 6 && v4i_result.y == 8 && v4i_result.z == 12 && v4i_result.w == 16, "v4i_muli incorrect");
+      |                      ^
+oogabooga/base.c:21:44: note: in definition of macro ‘assert_line’
+   21 | #define assert_line(line, cond, ...) {if(!(cond)) { printf("\nAssertion failed in file " __FILE__ " on line " ASSERT_STR(line) "\n\nFailed Condition: " #cond ". Message: " __VA_ARGS__); printf("\n"); dump_stack_trace(); crash(); }}
+      |                                            ^~~~
+oogabooga/tests.c:1324:5: note: in expansion of macro ‘assert’
+ 1324 |     assert(v4i_result.x == 6 && v4i_result.y == 8 && v4i_result.z == 12 && v4i_result.w == 16, "v4i_muli incorrect");
+      |     ^~~~~~
+oogabooga/tests.c:1324:43: error: request for member ‘y’ in something not a structure or union
+ 1324 |     assert(v4i_result.x == 6 && v4i_result.y == 8 && v4i_result.z == 12 && v4i_result.w == 16, "v4i_muli incorrect");
+      |                                           ^
+oogabooga/base.c:21:44: note: in definition of macro ‘assert_line’
+   21 | #define assert_line(line, cond, ...) {if(!(cond)) { printf("\nAssertion failed in file " __FILE__ " on line " ASSERT_STR(line) "\n\nFailed Condition: " #cond ". Message: " __VA_ARGS__); printf("\n"); dump_stack_trace(); crash(); }}
+      |                                            ^~~~
+oogabooga/tests.c:1324:5: note: in expansion of macro ‘assert’
+ 1324 |     assert(v4i_result.x == 6 && v4i_result.y == 8 && v4i_result.z == 12 && v4i_result.w == 16, "v4i_muli incorrect");
+      |     ^~~~~~
+oogabooga/tests.c:1324:64: error: request for member ‘z’ in something not a structure or union
+ 1324 |     assert(v4i_result.x == 6 && v4i_result.y == 8 && v4i_result.z == 12 && v4i_result.w == 16, "v4i_muli incorrect");
+      |                                                                ^
+oogabooga/base.c:21:44: note: in definition of macro ‘assert_line’
+   21 | #define assert_line(line, cond, ...) {if(!(cond)) { printf("\nAssertion failed in file " __FILE__ " on line " ASSERT_STR(line) "\n\nFailed Condition: " #cond ". Message: " __VA_ARGS__); printf("\n"); dump_stack_trace(); crash(); }}
+      |                                            ^~~~
+oogabooga/tests.c:1324:5: note: in expansion of macro ‘assert’
+ 1324 |     assert(v4i_result.x == 6 && v4i_result.y == 8 && v4i_result.z == 12 && v4i_result.w == 16, "v4i_muli incorrect");
+      |     ^~~~~~
+oogabooga/tests.c:1324:86: error: request for member ‘w’ in something not a structure or union
+ 1324 |     assert(v4i_result.x == 6 && v4i_result.y == 8 && v4i_result.z == 12 && v4i_result.w == 16, "v4i_muli incorrect");
+      |                                                                                      ^
+oogabooga/base.c:21:44: note: in definition of macro ‘assert_line’
+   21 | #define assert_line(line, cond, ...) {if(!(cond)) { printf("\nAssertion failed in file " __FILE__ " on line " ASSERT_STR(line) "\n\nFailed Condition: " #cond ". Message: " __VA_ARGS__); printf("\n"); dump_stack_trace(); crash(); }}
+      |                                            ^~~~
+oogabooga/tests.c:1324:5: note: in expansion of macro ‘assert’
+ 1324 |     assert(v4i_result.x == 6 && v4i_result.y == 8 && v4i_result.z == 12 && v4i_result.w == 16, "v4i_muli incorrect");
+      |     ^~~~~~
+oogabooga/tests.c:1326:27: error: incompatible type for argument 1 of ‘v4s32_divs32’
+ 1326 |     v4i_result = v4i_divi(v4i_a, 2);
+      |                           ^~~~~
+      |                           |
+      |                           int
+oogabooga/linmath.c:320:43: note: expected ‘Vector4s32’ but argument is of type ‘int’
+  320 | inline Vector4s32 v4s32_divs32(Vector4s32 a, s32     s) { return v4s32_div(a, v4s32(s, s, s, s)); }
+      |                                ~~~~~~~~~~~^
+oogabooga/tests.c:1327:22: error: request for member ‘x’ in something not a structure or union
+ 1327 |     assert(v4i_result.x == 1 && v4i_result.y == 2 && v4i_result.z == 3 && v4i_result.w == 4, "v4i_divi incorrect");
+      |                      ^
+oogabooga/base.c:21:44: note: in definition of macro ‘assert_line’
+   21 | #define assert_line(line, cond, ...) {if(!(cond)) { printf("\nAssertion failed in file " __FILE__ " on line " ASSERT_STR(line) "\n\nFailed Condition: " #cond ". Message: " __VA_ARGS__); printf("\n"); dump_stack_trace(); crash(); }}
+      |                                            ^~~~
+oogabooga/tests.c:1327:5: note: in expansion of macro ‘assert’
+ 1327 |     assert(v4i_result.x == 1 && v4i_result.y == 2 && v4i_result.z == 3 && v4i_result.w == 4, "v4i_divi incorrect");
+      |     ^~~~~~
+oogabooga/tests.c:1327:43: error: request for member ‘y’ in something not a structure or union
+ 1327 |     assert(v4i_result.x == 1 && v4i_result.y == 2 && v4i_result.z == 3 && v4i_result.w == 4, "v4i_divi incorrect");
+      |                                           ^
+oogabooga/base.c:21:44: note: in definition of macro ‘assert_line’
+   21 | #define assert_line(line, cond, ...) {if(!(cond)) { printf("\nAssertion failed in file " __FILE__ " on line " ASSERT_STR(line) "\n\nFailed Condition: " #cond ". Message: " __VA_ARGS__); printf("\n"); dump_stack_trace(); crash(); }}
+      |                                            ^~~~
+oogabooga/tests.c:1327:5: note: in expansion of macro ‘assert’
+ 1327 |     assert(v4i_result.x == 1 && v4i_result.y == 2 && v4i_result.z == 3 && v4i_result.w == 4, "v4i_divi incorrect");
+      |     ^~~~~~
+oogabooga/tests.c:1327:64: error: request for member ‘z’ in something not a structure or union
+ 1327 |     assert(v4i_result.x == 1 && v4i_result.y == 2 && v4i_result.z == 3 && v4i_result.w == 4, "v4i_divi incorrect");
+      |                                                                ^
+oogabooga/base.c:21:44: note: in definition of macro ‘assert_line’
+   21 | #define assert_line(line, cond, ...) {if(!(cond)) { printf("\nAssertion failed in file " __FILE__ " on line " ASSERT_STR(line) "\n\nFailed Condition: " #cond ". Message: " __VA_ARGS__); printf("\n"); dump_stack_trace(); crash(); }}
+      |                                            ^~~~
+oogabooga/tests.c:1327:5: note: in expansion of macro ‘assert’
+ 1327 |     assert(v4i_result.x == 1 && v4i_result.y == 2 && v4i_result.z == 3 && v4i_result.w == 4, "v4i_divi incorrect");
+      |     ^~~~~~
+oogabooga/tests.c:1327:85: error: request for member ‘w’ in something not a structure or union
+ 1327 |     assert(v4i_result.x == 1 && v4i_result.y == 2 && v4i_result.z == 3 && v4i_result.w == 4, "v4i_divi incorrect");
+      |                                                                                     ^
+oogabooga/base.c:21:44: note: in definition of macro ‘assert_line’
+   21 | #define assert_line(line, cond, ...) {if(!(cond)) { printf("\nAssertion failed in file " __FILE__ " on line " ASSERT_STR(line) "\n\nFailed Condition: " #cond ". Message: " __VA_ARGS__); printf("\n"); dump_stack_trace(); crash(); }}
+      |                                            ^~~~
+oogabooga/tests.c:1327:5: note: in expansion of macro ‘assert’
+ 1327 |     assert(v4i_result.x == 1 && v4i_result.y == 2 && v4i_result.z == 3 && v4i_result.w == 4, "v4i_divi incorrect");
+      |     ^~~~~~
+oogabooga/tests.c:1311:14: warning: variable ‘v4i_result’ set but not used [-Wunused-but-set-variable]
+ 1311 |     Vector4i v4i_result = v4i_add(v4i_a, v4i_b);
+      |              ^~~~~~~~~~
+oogabooga/tests.c:1291:14: warning: variable ‘v3i_result’ set but not used [-Wunused-but-set-variable]
+ 1291 |     Vector3i v3i_result = v3i_add(v3i_a, v3i_b);
+      |              ^~~~~~~~~~
+oogabooga/tests.c:1270:14: warning: variable ‘v2i_result’ set but not used [-Wunused-but-set-variable]
+ 1270 |     Vector2i v2i_result = v2i_add(v2i_a, v2i_b);
+      |              ^~~~~~~~~~
+oogabooga/tests.c:1264:14: warning: variable ‘v4i_test’ set but not used [-Wunused-but-set-variable]
+ 1264 |     Vector4i v4i_test = v4i(1, 2, 3, 4);
+      |              ^~~~~~~~
+oogabooga/tests.c:1261:14: warning: variable ‘v3i_test’ set but not used [-Wunused-but-set-variable]
+ 1261 |     Vector3i v3i_test = v3i(1, 2, 3);
+      |              ^~~~~~~~
+oogabooga/tests.c:1258:14: warning: variable ‘v2i_test’ set but not used [-Wunused-but-set-variable]
+ 1258 |     Vector2i v2i_test = v2i(1, 2);
+      |              ^~~~~~~~
+oogabooga/tests.c: In function ‘test_mutex’:
+oogabooga/tests.c:1436:27: warning: comparison of integer expressions of different signedness: ‘u64’ {aka ‘long unsigned int’} and ‘int’ [-Wsign-compare]
+ 1436 |         for (u64 i = 0; i < num_threads; i++) {
+      |                           ^
+oogabooga/tests.c:1440:27: warning: comparison of integer expressions of different signedness: ‘u64’ {aka ‘long unsigned int’} and ‘int’ [-Wsign-compare]
+ 1440 |         for (u64 i = 0; i < num_threads; i++) {
+      |                           ^
+oogabooga/tests.c:1443:27: warning: comparison of integer expressions of different signedness: ‘u64’ {aka ‘long unsigned int’} and ‘int’ [-Wsign-compare]
+ 1443 |         for (u64 i = 0; i < num_threads; i++) {
+      |                           ^
+oogabooga/tests.c: In function ‘test_sort’:
+oogabooga/tests.c:1504:13: warning: unused variable ‘sort_value_offset_in_item’ [-Wunused-variable]
+ 1504 |         u64 sort_value_offset_in_item = offsetof(Draw_Quad, z);
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~
+oogabooga/tests.c: At top level:
+oogabooga/tests.c:1593:14: error: unknown type name ‘LONG’
+ 1593 |     volatile LONG *counter;
+      |              ^~~~
+oogabooga/tests.c: In function ‘increment_thread_proc’:
+oogabooga/tests.c:1601:9: error: implicit declaration of function ‘InterlockedIncrement’ [-Wimplicit-function-declaration]
+ 1601 |         InterlockedIncrement(test_args->counter);
+      |         ^~~~~~~~~~~~~~~~~~~~
+oogabooga/tests.c: In function ‘test_os_binary_semaphore’:
+oogabooga/tests.c:1614:9: error: unknown type name ‘LONG’
+ 1614 |         LONG counter = 0;
+      |         ^~~~
+oogabooga/tests.c:1639:9: error: unknown type name ‘LONG’
+ 1639 |         LONG counter = 0;
+      |         ^~~~
+oogabooga/tests.c:1648:9: error: implicit declaration of function ‘Sleep’; did you mean ‘sleep’? [-Wimplicit-function-declaration]
+ 1648 |         Sleep(100);
+      |         ^~~~~
+      |         sleep
+oogabooga/tests.c:1667:9: error: unknown type name ‘LONG’
+ 1667 |         LONG counter = 0;
+      |         ^~~~
+oogabooga/tests.c:1692:9: error: unknown type name ‘LONG’
+ 1692 |         LONG counter = 0;
+      |         ^~~~
+oogabooga/oogabooga.c: At top level:
+oogabooga/oogabooga.c:572:19: error: conflicting types for ‘oogabooga_init’; have ‘void(u64)’ {aka ‘void(long unsigned int)’}
+  572 | ogb_instance void oogabooga_init(u64 program_memory_size);
+      |                   ^~~~~~~~~~~~~~
+oogabooga/oogabooga.h:322:6: note: previous declaration of ‘oogabooga_init’ with type ‘_Bool(void)’
+  322 | bool oogabooga_init(void);
+      |      ^~~~~~~~~~~~~~
+oogabooga/oogabooga.c:575:6: error: conflicting types for ‘oogabooga_init’; have ‘void(u64)’ {aka ‘void(long unsigned int)’}
+  575 | void oogabooga_init(u64 program_memory_size) {
+      |      ^~~~~~~~~~~~~~
+oogabooga/oogabooga.h:322:6: note: previous declaration of ‘oogabooga_init’ with type ‘_Bool(void)’
+  322 | bool oogabooga_init(void);
+      |      ^~~~~~~~~~~~~~
+In file included from build.c:52:
+entry_cube_flop.c:15:20: warning: missing braces around initializer [-Wmissing-braces]
+   15 | static Cube cube = { {2,2}, {0,0,0,1} };
+      |                    ^
+      |                              {      }
+entry_cube_flop.c:15:20: warning: missing braces around initializer [-Wmissing-braces]
+   15 | static Cube cube = { {2,2}, {0,0,0,1} };
+      |                    ^
+      |                              {      }
+entry_cube_flop.c: In function ‘entry’:
+oogabooga/drawing.c:531:22: warning: missing braces around initializer [-Wmissing-braces]
+  531 | #define COLOR_GREEN ((Vector4){0.0, 1.0, 0.0, 1.0})
+      |                      ^
+entry_cube_flop.c:169:34: note: in expansion of macro ‘COLOR_GREEN’
+  169 |         draw_cube(cubeTransform, COLOR_GREEN);
+      |                                  ^~~~~~~~~~~
+oogabooga/string_format.c: At top level:
+oogabooga/string_format.c:32:12: warning: inline function ‘crt_sprintf’ declared but never defined
+   32 | inline int crt_sprintf(char *str, const char *format, ...);
+      |            ^~~~~~~~~~~
+Oogabooga Build Tool
+====================
+Building for Linux...
+Using GCC with Vulkan...
+Creating build directory...
+Compiling...
+Build failed with exit code: 256
+
+Possible issues:
+  - GCC not installed
+  - Vulkan SDK/drivers not installed
+  - Missing system libraries (libX11-dev, libvulkan-dev)
+  - Try: sudo apt install build-essential libx11-dev libvulkan-dev vulkan-tools

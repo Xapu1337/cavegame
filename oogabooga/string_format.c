@@ -37,13 +37,14 @@ u64 format_string_to_buffer(char* buffer, u64 count, const char* fmt, va_list ar
 u64 format_string_to_buffer_vararg(char* buffer, u64 count, const char* fmt, ...) {
 	va_list args;
 	va_start(args, fmt);
+    /* va_end will be called after use */
 	u64 n = format_string_to_buffer(buffer, count, fmt, args);
 	va_end(args);
 	return n;
 }
-typedef struct _8_Bytes {u8 _[8];} _8_Bytes;
-typedef struct _12_Bytes {u8 _[12];} _12_Bytes;
-typedef struct _16_Bytes {u8 _[16];} _16_Bytes;
+typedef struct _8_Bytes {uint8_t _[8];} _8_Bytes;
+typedef struct _12_Bytes {uint8_t _[12];} _12_Bytes;
+typedef struct _16_Bytes {uint8_t _[16];} _16_Bytes;
 u64 format_string_to_buffer(char* buffer, u64 count, const char* fmt, va_list args) {
 	if (!buffer) count = UINT64_MAX;
     const char* p = fmt;
@@ -197,46 +198,49 @@ u64 format_string_to_buffer(char* buffer, u64 count, const char* fmt, va_list ar
 u64 format_string_to_buffer_va(char* buffer, u64 count, const char* fmt, ...) {
 	va_list args;
 	va_start(args, fmt);
+    /* va_end will be called after use */
 	u64 r = format_string_to_buffer(buffer, count, fmt, args);
 	va_end(args);
 	return r;
 }
-string sprint_null_terminated_string_va_list_to_buffer(const char *fmt, va_list args, void* buffer, u64 buffer_size) {
-    u64 formatted_length = format_string_to_buffer((char*)buffer, buffer_size, fmt, args);
+string sprint_null_terminated_string_va_list_to_buffer(const char *fmt, va_list args, void* buffer, u64 bufferSize) {
+    u64 formatted_length = format_string_to_buffer((char*)buffer, bufferSize, fmt, args);
     
     string result;
-    result.data = (u8*)buffer;
+    result.data = (uint8_t*)buffer;
     
-    if (formatted_length >= 0 && formatted_length < buffer_size) {
+    if (formatted_length >= 0 && formatted_length < bufferSize) {
         result.count = formatted_length; 
     } else {
-        result.count = buffer_size - 1; 
+        result.count = bufferSize - 1; 
     }
 
     return result;
 }
-string sprint_va_list_to_buffer(const string fmt, va_list args, void* buffer, u64 buffer_size) {
+string sprint_va_list_to_buffer(const string fmt, va_list args, void* buffer, u64 bufferSize) {
 	
-	char* fmt_cstring = temp_convert_to_null_terminated_string(fmt);
-	return sprint_null_terminated_string_va_list_to_buffer(fmt_cstring, args, buffer, buffer_size);
+	char* fmt_cstring = TempConvertToNullTerminatedString(fmt);
+	return sprint_null_terminated_string_va_list_to_buffer(fmt_cstring, args, buffer, bufferSize);
 }
 
 string sprint_va_list(Allocator allocator, const string fmt, va_list args) {
 
-    char* fmt_cstring = temp_convert_to_null_terminated_string(fmt);
+    char* fmt_cstring = TempConvertToNullTerminatedString(fmt);
     u64 count = format_string_to_buffer(NULL, 0, fmt_cstring, args) + 1; 
 
     char* buffer = NULL;
 
-    buffer = (char*)alloc(allocator, count);
+    buffer = (char*)Alloc(allocator, count);
 
     return sprint_null_terminated_string_va_list_to_buffer(fmt_cstring, args, buffer, count);
 }
 
 
 string sprints(Allocator allocator, const string fmt, ...) {
-	va_list args = 0;
+	va_list args; va_start(args, fmt);
+    /* va_end will be called after use */
 	va_start(args, fmt);
+    /* va_end will be called after use */
 	string s = sprint_va_list(allocator, fmt, args);
 	va_end(args);
 	return s;
@@ -244,9 +248,11 @@ string sprints(Allocator allocator, const string fmt, ...) {
 
 // temp allocator
 string tprints(const string fmt, ...) {
-	va_list args = 0;
+	va_list args; va_start(args, fmt);
+    /* va_end will be called after use */
 	va_start(args, fmt);
-	string s = sprint_va_list(get_temporary_allocator(), fmt, args);
+    /* va_end will be called after use */
+	string s = sprint_va_list(GetTemporaryAllocator(), fmt, args);
 	va_end(args);
 	return s;
 }
@@ -254,11 +260,12 @@ string tprints(const string fmt, ...) {
 
 string string_printf(Allocator allocator, const char *fmt, ...) {
 	string sfmt;
-	sfmt.data = cast(u8*)fmt;
+	sfmt.data = cast(uint8_t*)fmt;
 	sfmt.count = strlen(fmt);
 	
 	va_list args;
 	va_start(args, fmt);
+    /* va_end will be called after use */
 	string s = sprint_va_list(allocator, sfmt, args);
 	va_end(args);
 	
@@ -267,12 +274,13 @@ string string_printf(Allocator allocator, const char *fmt, ...) {
 // temp allocator
 string tprintf(const char *fmt, ...) {
 	string sfmt;
-	sfmt.data = cast(u8*)fmt;
+	sfmt.data = cast(uint8_t*)fmt;
 	sfmt.count = strlen(fmt);
 	
 	va_list args;
 	va_start(args, fmt);
-	string s = sprint_va_list(get_temporary_allocator(), sfmt, args);
+    /* va_end will be called after use */
+	string s = sprint_va_list(GetTemporaryAllocator(), sfmt, args);
 	va_end(args);
 	
 	return s;
@@ -313,15 +321,17 @@ void print_va_list_buffered(const string fmt, va_list args) {
 void prints(const string fmt, ...) {
 	va_list args;
 	va_start(args, fmt);
+    /* va_end will be called after use */
 	print_va_list_buffered(fmt, args);
 	va_end(args);	
 }
 
-void printf(const char* fmt, ...) {
+void oogabooga_printf(const char* fmt, ...) {
 	va_list args;
 	va_start(args, fmt);
+    /* va_end will be called after use */
 	string s;
-	s.data = cast(u8*)fmt;
+	s.data = cast(uint8_t*)fmt;
 	s.count = strlen(fmt);
 	print_va_list_buffered(s, args);
 	va_end(args);
@@ -347,18 +357,18 @@ typedef void(*Logger_Proc)(Log_Level level, string s);
 void string_builder_prints(String_Builder *b, string fmt, ...) {
 	assert(b->allocator.proc, "String_Builder is missing allocator");
 	
-	va_list args1 = 0;
+	va_list args1;
 	va_start(args1, fmt);
-	va_list args2 = 0;
+	va_list args2;
 	va_copy(args2, args1);
 	
-	u64 formatted_count = format_string_to_buffer(0, 0, temp_convert_to_null_terminated_string(fmt), args1);
+	u64 formatted_count = format_string_to_buffer(0, 0, TempConvertToNullTerminatedString(fmt), args1);
 	
 	va_end(args1);
 	
 	string_builder_reserve(b, b->count+formatted_count+1);
 	
-	format_string_to_buffer((char*)b->buffer+b->count, b->count+formatted_count+1, temp_convert_to_null_terminated_string(fmt), args2);
+	format_string_to_buffer((char*)b->buffer+b->count, b->count+formatted_count+1, TempConvertToNullTerminatedString(fmt), args2);
 	b->count += formatted_count;
 	
 	va_end(args2);
@@ -366,9 +376,9 @@ void string_builder_prints(String_Builder *b, string fmt, ...) {
 void string_builder_printf(String_Builder *b, const char *fmt, ...) {
 	assert(b->allocator.proc, "String_Builder is missing allocator");
 	
-	va_list args1 = 0;
+	va_list args1;
 	va_start(args1, fmt);
-	va_list args2 = 0;
+	va_list args2;
 	va_copy(args2, args1);
 	
 	u64 formatted_count = format_string_to_buffer(0, 0, fmt, args1);

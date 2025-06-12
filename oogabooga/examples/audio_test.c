@@ -19,9 +19,9 @@ int entry(int argc, char **argv) {
 	window.point_height = 720; 
 	window.x = 200;
 	window.y = 90;
-	window.clear_color = hex_to_rgba(0x6495EDff);
+	window.clearColor = hex_to_rgba(0x6495EDff);
 	
-	Allocator heap = get_heap_allocator();
+	Allocator heap = GetHeapAllocator();
 	
 	font = load_font_from_disk(STR("C:/windows/fonts/arial.ttf"), heap);
 	assert(font, "Failed loading arial.ttf");
@@ -65,11 +65,11 @@ int entry(int argc, char **argv) {
 	u64 song_index = 0;
 	
 	while (!window.should_close) {
-		reset_temporary_storage();
+		ResetTemporaryStorage();
 		
-		draw_frame.projection = m4_make_orthographic_projection(window.pixel_width * -0.5, window.pixel_width * 0.5, window.pixel_height * -0.5, window.pixel_height * 0.5, -1, 10);
+		drawFrame.projection = m4_make_orthographic_projection(window.pixel_width * -0.5, window.pixel_width * 0.5, window.pixel_height * -0.5, window.pixel_height * 0.5, -1, 10);
 		
-		if (is_key_just_pressed(MOUSE_BUTTON_RIGHT)) {
+		if (IsKeyJustPressed(MOUSE_BUTTON_RIGHT)) {
 			// Easy mode (when you don't care and just want to play a clip)
 			play_one_audio_clip(STR("oogabooga/examples/block.wav"));
 		}
@@ -108,8 +108,8 @@ int entry(int argc, char **argv) {
 			);
 			config.spacial_distance_min = 400;
 			config.spacial_distance_max = 600;
-			config.spacial_projection     = draw_frame.projection;
-			config.spacial_listener_xform = draw_frame.camera_xform;
+			config.spacial_projection     = drawFrame.projection;
+			config.spacial_listener_xform = drawFrame.cameraXform;
 			play_one_audio_clip_with_config(STR("oogabooga/examples/bruh.wav"), config);
 		}
 		rect.y -= FONT_HEIGHT*3;
@@ -128,7 +128,7 @@ int entry(int argc, char **argv) {
 		}
 		song_player->config.volume = clamp(song_player->config.volume, 0, 20);
 		rect.x += rect.z + FONT_HEIGHT;
-		draw_text(font, tprint("Song volume: %d%%", (s64)round(song_player->config.volume*100)), FONT_HEIGHT, v2_sub(rect.xy, v2(2, -2)), v2(1, 1), COLOR_BLACK);
+		draw_text(font, tprint("Song volume: %d%%", (s64)round(song_player->config.volume*100)), FONT_HEIGHT, V2Sub(rect.xy, v2(2, -2)), v2(1, 1), COLOR_BLACK);
 		draw_text(font, tprint("Song volume: %d%%", (s64)round(song_player->config.volume*100)), FONT_HEIGHT, rect.xy, v2(1, 1), COLOR_WHITE);
 		rect.x -= rect.z + FONT_HEIGHT;
 		
@@ -148,17 +148,17 @@ int entry(int argc, char **argv) {
 		}
 		song_player->config.playback_speed = clamp(song_player->config.playback_speed, 0, 20);
 		rect.x += rect.z + FONT_HEIGHT;
-		draw_text(font, tprint("Speed: %d%%", (s64)round(song_player->config.playback_speed*100)), FONT_HEIGHT, v2_sub(rect.xy, v2(2, -2)), v2(1, 1), COLOR_BLACK);
+		draw_text(font, tprint("Speed: %d%%", (s64)round(song_player->config.playback_speed*100)), FONT_HEIGHT, V2Sub(rect.xy, v2(2, -2)), v2(1, 1), COLOR_BLACK);
 		draw_text(font, tprint("Speed: %d%%", (s64)round(song_player->config.playback_speed*100)), FONT_HEIGHT, rect.xy, v2(1, 1), COLOR_WHITE);
 		
 		
 		rect.y -= FONT_HEIGHT*3;
 		
-		draw_text(font, STR("Right-click for thing"), FONT_HEIGHT, v2_sub(rect.xy, v2(2, -2)), v2(1, 1), COLOR_BLACK);
+		draw_text(font, STR("Right-click for thing"), FONT_HEIGHT, V2Sub(rect.xy, v2(2, -2)), v2(1, 1), COLOR_BLACK);
 		draw_text(font, STR("Right-click for thing"), FONT_HEIGHT, rect.xy, v2(1, 1), COLOR_WHITE);
 		
-		os_update(); 
-		gfx_update();
+		OsUpdate(); 
+		GfxUpdate();
 	}
 	
 	// Don't actually do this on exit!!
@@ -181,14 +181,14 @@ bool button(string label, Vector2 pos, Vector2 size, bool enabled) {
 	float B = pos.y;
 	float T = B + size.y;
 	
-	float mx = input_frame.mouse_x - window.width/2;
-	float my = input_frame.mouse_y - window.height/2;
+	float mx = inputFrame.mouse_x - window.width/2;
+	float my = inputFrame.mouse_y - window.height/2;
 
 	bool pressed = false;
 
 	if (mx >= L && mx < R && my >= B && my < T) {
 		color = v4(.15, .15, .15, 1);
-		if (is_key_down(MOUSE_BUTTON_LEFT)) {
+		if (IsKeyDown(MOUSE_BUTTON_LEFT)) {
 			color = v4(.05, .05, .05, 1);
 		}
 		
@@ -196,14 +196,14 @@ bool button(string label, Vector2 pos, Vector2 size, bool enabled) {
 	}
 	
 	if (enabled) {
-		color = v4_add(color, v4(.1, .1, .1, 0));
+		color = V4Add(color, v4(.1, .1, .1, 0));
 	}
 
 	draw_rect(pos, size, color);
 	
 	Gfx_Text_Metrics m = measure_text(font, label, FONT_HEIGHT, v2(1, 1));
 	
-	Vector2 bottom_left = v2_sub(pos, m.functional_pos_min);
+	Vector2 bottom_left = V2Sub(pos, m.functional_pos_min);
 	bottom_left.x += size.x/2;
 	bottom_left.x -= m.functional_size.x/2;
 	

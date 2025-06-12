@@ -1,15 +1,43 @@
+#include <stdint.h>
+#include <stdbool.h>
+#include <string.h>
+#include <math.h>
 
-#define PI32 3.14159265359f
-#define PI64 3.14159265358979323846
+// Type definitions (if not already available)
+#ifndef _COMMON_TYPES_DEFINED
+#define _COMMON_TYPES_DEFINED
+typedef uint64_t u64;
+typedef int64_t s64;
+typedef uint32_t u32;
+typedef int32_t s32;
+typedef float f32;
+typedef double f64;
+typedef float float32;
+typedef double float64;
+#endif
+
+// Missing macros
+#ifndef local_persist
+#define local_persist static
+#endif
+
 #define TAU32 (2.0f * PI32)
-#define TAU64 (2.0 * PI64)
-#define RAD_PER_DEG (PI64 / 180.0)
-#define DEG_PER_RAD (180.0 / PI64)
+#define TAU64 (2.0 * PI32)
+#define RAD_PER_DEG (PI32 / 180.0)
+#define DEG_PER_RAD (180.0 / PI32)
 
 #define to_radians(degrees) ((degrees)*RAD_PER_DEG)
 #define to_degrees(radians) ((radians)*DEG_PER_RAD)
 
-
+// Basic math utility functions
+u64 max(u64 a, u64 b) { return a > b ? a : b; }
+u64 min(u64 a, u64 b) { return a < b ? a : b; }
+s64 max_s64(s64 a, s64 b) { return a > b ? a : b; }
+s64 min_s64(s64 a, s64 b) { return a < b ? a : b; }
+f32 max_f32(f32 a, f32 b) { return a > b ? a : b; }
+f32 min_f32(f32 a, f32 b) { return a < b ? a : b; }
+f64 max_f64(f64 a, f64 b) { return a > b ? a : b; }
+f64 min_f64(f64 a, f64 b) { return a < b ? a : b; }
 
 // This is a very niche sort algorithm.
 // I use it for Z sorting quads.
@@ -36,7 +64,7 @@ void radix_sort(void *collection, void *help_buffer, u64 item_count, u64 item_si
         memset(count, 0, sizeof(count));
 
         for (u64 i = 0; i < item_count; ++i) {
-        	u8 *item = (u8*)collection + i * item_size;
+        	uint8_t *item = (uint8_t*)collection + i * item_size;
         	
             u64 sort_value = *(u64*)(item + sort_value_offset_in_item);
             sort_value += HALF_RANGE_OF_VALUE_BITS; // We treat the value as a signed integer
@@ -51,13 +79,13 @@ void radix_sort(void *collection, void *help_buffer, u64 item_count, u64 item_si
         }
 
         for (u64 i = 0; i < item_count; ++i) {
-        	u8 *item = (u8*)collection + i * item_size;
+        	uint8_t *item = (uint8_t*)collection + i * item_size;
         	
             u64 sort_value = *(u64*)(item + sort_value_offset_in_item);
             sort_value += HALF_RANGE_OF_VALUE_BITS; // We treat the value as a signed integer
             
             u32 digit = (sort_value >> shift) & (RADIX-1);
-            memcpy((u8*)help_buffer + prefix_sum[digit] * item_size, item, item_size);
+            memcpy((uint8_t*)help_buffer + prefix_sum[digit] * item_size, item, item_size);
             ++prefix_sum[digit];
         }
 
@@ -66,8 +94,8 @@ void radix_sort(void *collection, void *help_buffer, u64 item_count, u64 item_si
 }
 
 void merge_sort(void *collection, void *help_buffer, u64 item_count, u64 item_size, int (*compare)(const void *, const void *)) {
-    u8 *items = (u8 *)collection;
-    u8 *buffer = (u8 *)help_buffer;
+    uint8_t *items = (uint8_t *)collection;
+    uint8_t *buffer = (uint8_t *)help_buffer;
 
     for (u64 width = 1; width < item_count; width *= 2) {
         for (u64 i = 0; i < item_count; i += 2 * width) {

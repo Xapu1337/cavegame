@@ -6,7 +6,7 @@ u32 font_height = 28;
 
 int entry(int argc, char **argv) {
 
-	font = load_font_from_disk(STR("C:/windows/fonts/arial.ttf"), get_heap_allocator());
+	font = load_font_from_disk(STR("C:/windows/fonts/arial.ttf"), GetHeapAllocator());
 	
 	window.title = STR("Minimal Game Example");
 	window.point_width = 900;
@@ -14,18 +14,18 @@ int entry(int argc, char **argv) {
 	window.point_x = 100;
 	window.point_y = 150;
 	
-	float64 last_time = os_get_elapsed_seconds();
+	float64 last_time = OsGetElapsedSeconds();
 	while (!window.should_close) {
-		reset_temporary_storage();
+		ResetTemporaryStorage();
 		
-		float64 now = os_get_elapsed_seconds();
+		float64 now = OsGetElapsedSeconds();
 		float64 delta_time = now - last_time;
 		last_time = now;
 		
-		Matrix4 rect_xform = m4_scalar(1.0);
-		rect_xform         = m4_rotate_z(rect_xform, (f32)now);
-		rect_xform         = m4_translate(rect_xform, v3(-125, -125, 0));
-		draw_rect_xform(rect_xform, v2(250, 250), COLOR_GREEN);
+		Matrix4 rect_xform = M4Scalar(1.0);
+		rect_xform         = M4RotateZ(rect_xform, (f32)now);
+		rect_xform         = M4Translate(rect_xform, v3(-125, -125, 0));
+		DrawRectXform(rect_xform, v2(250, 250), COLOR_GREEN);
 		
 		draw_rect(v2(sin(now)*window.width*0.4-60, -60), v2(120, 120), COLOR_RED);
 		
@@ -52,7 +52,7 @@ int entry(int argc, char **argv) {
 		y -= font_height*1.5;
 		draw_text(font, tprint("Fullscreen: %b", window.fullscreen), font_height, v2(x, y), v2(1, 1), v4(.9, .9, .9, 1.0));
 		y -= font_height*1.2;
-		draw_text(font, tprint("Mouse: %v2", v2(input_frame.mouse_x, input_frame.mouse_y)), font_height, v2(x, y), v2(1, 1), v4(.9, .9, .9, 1.0));
+		draw_text(font, tprint("Mouse: %v2", v2(inputFrame.mouse_x, inputFrame.mouse_y)), font_height, v2(x, y), v2(1, 1), v4(.9, .9, .9, 1.0));
 		y -= font_height*1.2;
 		draw_text(font, tprint("DPI: %d", window.dpi), font_height, v2(x, y), v2(1, 1), v4(.9, .9, .9, 1.0));
 		y -= font_height*1.2;
@@ -90,8 +90,8 @@ int entry(int argc, char **argv) {
 		if (button(STR("- height"), v2(x-w/2, y-h/2), v2(w, h), false)) window.point_height -= 20;
 		y -= h*1.3;
 		
-		os_update(); 
-		gfx_update();
+		OsUpdate(); 
+		GfxUpdate();
 	}
 
 	return 0;
@@ -107,14 +107,14 @@ bool button(string label, Vector2 pos, Vector2 size, bool enabled) {
 	float B = pos.y;
 	float T = B + size.y;
 	
-	float mx = input_frame.mouse_x - window.width/2;
-	float my = input_frame.mouse_y - window.height/2;
+	float mx = inputFrame.mouse_x - window.width/2;
+	float my = inputFrame.mouse_y - window.height/2;
 
 	bool pressed = false;
 
 	if (mx >= L && mx < R && my >= B && my < T) {
 		color = v4(.15, .15, .15, 1);
-		if (is_key_down(MOUSE_BUTTON_LEFT)) {
+		if (IsKeyDown(MOUSE_BUTTON_LEFT)) {
 			color = v4(.05, .05, .05, 1);
 		}
 		
@@ -122,14 +122,14 @@ bool button(string label, Vector2 pos, Vector2 size, bool enabled) {
 	}
 	
 	if (enabled) {
-		color = v4_sub(color, v4(.2, .2, .2, 0));
+		color = V4Sub(color, v4(.2, .2, .2, 0));
 	}
 
 	draw_rect(pos, size, color);
 	
 	Gfx_Text_Metrics m = measure_text(font, label, font_height, v2(1, 1));
 	
-	Vector2 bottom_left = v2_sub(pos, m.functional_pos_min);
+	Vector2 bottom_left = V2Sub(pos, m.functional_pos_min);
 	bottom_left.x += size.x/2;
 	bottom_left.x -= m.functional_size.x/2;
 	

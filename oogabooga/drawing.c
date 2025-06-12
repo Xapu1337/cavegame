@@ -1,9 +1,10 @@
 
+
 /*
 
 	NOTES: 
 		- For creating, loading, managing Gfx_Image's see gfx_interface.c.
-		- For clearing and rendering a draw_frame to offscreen render target or to
+		- For clearing and rendering a drawFrame to offscreen render target or to
 			the window, see gfx_render_draw_frame and gfx_render_draw_frame_to_window
 			in gfx_interface.c.
 		- A practical example for offscreen drawing can be found in examples/offscreen_drawing.c
@@ -16,8 +17,8 @@
 	
 		EZ mode let's you just draw your things right away without caring about anything else.
 		
-		These functions will draw to the global draw_frame, which is always rendered, reset, and cleared in each
-		call to gfx_update().
+		These functions will draw to the global drawFrame, which is always rendered, reset, and cleared in each
+		call to GfxUpdate().
 		
 		- To draw a rectangle:
 		
@@ -26,7 +27,7 @@
 		- Or, for more advanced transformation:
 	
 			Matrix4 xform = ....;
-			draw_rect_xform(xform, v2(x, y), v2(width, height), v4(r, g, b, a));
+			DrawRectXform(xform, v2(x, y), v2(width, height), v4(r, g, b, a));
 	
 		This is the full API of EZ mode:
 			
@@ -35,7 +36,7 @@
 			See "- Retroactively modifying quads" for more info about the Draw_Quad*
 		
 			Draw_Quad *draw_rect(Vector2 position, Vector2 size, Vector4 color);
-			Draw_Quad *draw_rect_xform(Matrix4 xform, Vector2 size, Vector4 color);
+			Draw_Quad *DrawRectXform(Matrix4 xform, Vector2 size, Vector4 color);
 			
 			Draw_Quad *draw_circle(Vector2 position, Vector2 size, Vector4 color);
 			Draw_Quad *draw_circle_xform(Matrix4 xform, Vector2 size, Vector4 color);
@@ -76,16 +77,16 @@
 			
 		- Draw_Frame context stuff:
 			
-			Matrix4 draw_frame.projection
-			Matrix4 draw_frame.camera_xform
-			void   *draw_frame.cbuffer
+			Matrix4 drawFrame.projection
+			Matrix4 drawFrame.cameraXform
+			void   *drawFrame.cbuffer
 			
-			Since draw_frame is completely reset each gfx_update, the projection and camera_xform
+			Since drawFrame is completely reset each GfxUpdate, the projection and cameraXform
 			needs to be set each frame (immediate mode).
 			
-			The draw_frame.projection is a typical graphics programming projection, which we usually set to
-			m4_make_orthographic_projecttion(...), and the draw_frame.camera_xform is the inverse of the
-			typical "view". So; when transforming camera_xform for example to x += 40, then it's
+			The drawFrame.projection is a typical graphics programming projection, which we usually set to
+			m4_make_orthographic_projecttion(...), and the drawFrame.cameraXform is the inverse of the
+			typical "view". So; when transforming cameraXform for example to x += 40, then it's
 			conceptually the camera that moves to the right, rather than the whole world moving to
 			the right. Same for scaling; we change the size of the camera lens, which means that the
 			world will appear smaller with a larger camera.
@@ -107,13 +108,13 @@
 		
 			void draw_frame_init(Draw_Frame *frame);
 			void draw_frame_init_reserve(Draw_Frame *frame, u64 number_of_quads_to_reserve);
-			void draw_frame_reset(Draw_Frame *frame);
+			void DrawFrameReset(Draw_Frame *frame);
 			
 			- draw_frame_init needs to be called once to set up some initial stuff. I don't like this so it
 				might change.
 			- draw_frame_init_reserve does the same as draw_frame_init, but you can pre-allocate for a certain
 				amount of quads.
-			- draw_frame_reset will, in short, clear the array of computed Draw_Quad's and zero everything
+			- DrawFrameReset will, in short, clear the array of computed Draw_Quad's and zero everything
 				out.	
 				
 			- A practical example for using Draw_Frame's can be found in examples/threaded_drawing.c	
@@ -121,13 +122,13 @@
 		- The rest of the advanced API, similar to EZ mode:
 		
 			Draw_Quad *draw_quad_projected_in_frame(Draw_Quad quad, Matrix4 world_to_clip, Draw_Frame *frame);
-			Draw_Quad *draw_quad_in_frame(Draw_Quad quad, Draw_Frame *frame);
+			Draw_Quad *DrawQuadInFrame(Draw_Quad quad, Draw_Frame *frame);
 			Draw_Quad *draw_quad_xform_in_frame(Draw_Quad quad, Matrix4 xform, Draw_Frame *frame);
 			
-			Draw_Quad *draw_rect_in_frame(Vector2 position, Vector2 size, Vector4 color, Draw_Frame *frame);
+			Draw_Quad *DrawRectInFrame(Vector2 position, Vector2 size, Vector4 color, Draw_Frame *frame);
 			Draw_Quad *draw_rect_xform_in_frame(Matrix4 xform, Vector2 size, Vector4 color, Draw_Frame *frame);
 			
-			Draw_Quad *draw_circle_in_frame(Vector2 position, Vector2 size, Vector4 color, Draw_Frame *frame);
+			Draw_Quad *DrawCircleInFrame(Vector2 position, Vector2 size, Vector4 color, Draw_Frame *frame);
 			Draw_Quad *draw_circle_xform_in_frame(Matrix4 xform, Vector2 size, Vector4 color, Draw_Frame *frame);
 			
 			Draw_Quad *draw_image_in_frame(Gfx_Image *image, Vector2 position, Vector2 size, Vector4 color, Draw_Frame *frame);
@@ -154,7 +155,7 @@
 											will be v4(0.0, 0.0, 1.0, 1.0) which means the whole image will be
 											sampled.
 			- s32             Draw_Quad.z: A value used for sorting. To enable this you must set 
-										   draw_frame.enable_z_sorting to true each frame.
+										   drawFrame.enable_z_sorting to true each frame.
 			- Gfx_Filter_Mode Draw_Quad.image_min_filter
 			- Gfx_Filter_Mode Draw_Quad.image_mag_filter
 				
@@ -176,7 +177,7 @@ typedef struct Draw_Quad {
 	Gfx_Filter_Mode image_min_filter;
 	Gfx_Filter_Mode image_mag_filter;
 	s32 z;
-	u8 type;
+	uint8_t type;
 	bool has_scissor;
 	// x1, y1, x2, y2
 	Vector4 uv;
@@ -186,44 +187,18 @@ typedef struct Draw_Quad {
 	
 } Draw_Quad;
 
-typedef struct Draw_Frame {
-	Matrix4 projection;
-	// #Cleanup
-	union {
-		DEPRECATED(Matrix4 view, "Use Draw_Frame.camera_xform instead");
-		Matrix4 camera_xform;
-	};
-	
-	void *cbuffer;
-	
-	u64 scissor_count;
-	Vector4 scissor_stack[SCISSOR_STACK_MAX];
-	
-	Draw_Quad *quad_buffer;
-	
-	u64 z_count;
-	s32 z_stack[Z_STACK_MAX];
-	bool enable_z_sorting;
-	
-	Gfx_Shader_Extension shader_extension;
-	
-	Gfx_Image *bound_images[MAX_BOUND_IMAGES];
-	int highest_bound_slot_index;
-	
-} Draw_Frame;
-
 void draw_frame_init(Draw_Frame *frame) {
 	*frame = ZERO(Draw_Frame);
 	
-	growing_array_init((void**)&frame->quad_buffer, sizeof(Draw_Quad), get_heap_allocator());
+	growing_array_init((void**)&frame->quad_buffer, sizeof(Draw_Quad), GetHeapAllocator());
 }
 void draw_frame_init_reserve(Draw_Frame *frame, u64 number_of_quads_to_reserve) {
 	*frame = ZERO(Draw_Frame);
 	
-	growing_array_init_reserve((void**)&frame->quad_buffer, sizeof(Draw_Quad), number_of_quads_to_reserve, get_heap_allocator());
+	growing_array_init_reserve((void**)&frame->quad_buffer, sizeof(Draw_Quad), number_of_quads_to_reserve, GetHeapAllocator());
 }
 
-void draw_frame_reset(Draw_Frame *frame) {
+void DrawFrameReset(Draw_Frame *frame) {
 
 	// #Memory
 	// I would like to try to have the quad buffer to be allocated in a growing arena
@@ -240,7 +215,7 @@ void draw_frame_reset(Draw_Frame *frame) {
 	
 	frame->projection 
 		= m4_make_orthographic_projection(-window.width/2, window.width/2, -window.height/2, window.height/2, -1, 10);
-	frame->camera_xform = m4_scalar(1.0);
+	frame->cameraXform = M4Scalar(1.0);
 	
 	frame->highest_bound_slot_index = -1;
 }
@@ -254,12 +229,12 @@ void draw_frame_bind_image_to_shader(Draw_Frame *frame, Gfx_Image *image, int sl
 	frame->highest_bound_slot_index = max(slot_index, frame->highest_bound_slot_index);
 }
 
-// This is the global draw frame which is rendered and reset each time you call gfx_update();
-ogb_instance Draw_Frame draw_frame;
+// This is the global draw frame which is rendered and reset each time you call GfxUpdate();
+ogb_instance Draw_Frame drawFrame;
 
 #if !OOGABOOGA_LINK_EXTERNAL_INSTANCE
 // #Global
-Draw_Frame draw_frame;
+Draw_Frame drawFrame;
 #endif // NOT OOGABOOGA_LINK_EXTERNAL_INSTANCE
 
 Draw_Quad _nil_quad = {0};
@@ -321,19 +296,19 @@ Draw_Quad *draw_quad_projected_in_frame(Draw_Quad quad, Matrix4 world_to_clip, D
 	
 	return q;
 }
-Draw_Quad *draw_quad_in_frame(Draw_Quad quad, Draw_Frame *frame) {
-	return draw_quad_projected_in_frame(quad, m4_mul(frame->projection, m4_inverse(frame->camera_xform)), frame);
+Draw_Quad *DrawQuadInFrame(Draw_Quad quad, Draw_Frame *frame) {
+	return draw_quad_projected_in_frame(quad, m4_mul(frame->projection, m4_inverse(frame->cameraXform)), frame);
 }
 
 Draw_Quad *draw_quad_xform_in_frame(Draw_Quad quad, Matrix4 xform, Draw_Frame *frame) {
-	Matrix4 world_to_clip = m4_scalar(1.0);
+	Matrix4 world_to_clip = M4Scalar(1.0);
 	world_to_clip         = m4_mul(world_to_clip, frame->projection);
-	world_to_clip         = m4_mul(world_to_clip, m4_inverse(frame->camera_xform));
+	world_to_clip         = m4_mul(world_to_clip, m4_inverse(frame->cameraXform));
 	world_to_clip         = m4_mul(world_to_clip, xform);
 	return draw_quad_projected_in_frame(quad, world_to_clip, frame);
 }
 
-Draw_Quad *draw_rect_in_frame(Vector2 position, Vector2 size, Vector4 color, Draw_Frame *frame) {
+Draw_Quad *DrawRectInFrame(Vector2 position, Vector2 size, Vector4 color, Draw_Frame *frame) {
 	// #Copypaste #Volatile	
 	const float32 left   = position.x;
 	const float32 right  = position.x + size.x;
@@ -349,7 +324,7 @@ Draw_Quad *draw_rect_in_frame(Vector2 position, Vector2 size, Vector4 color, Dra
 	q.image = 0;
 	q.type = QUAD_TYPE_REGULAR;
 	
-	return draw_quad_in_frame(q, frame);
+	return DrawQuadInFrame(q, frame);
 }
 Draw_Quad *draw_rect_xform_in_frame(Matrix4 xform, Vector2 size, Vector4 color, Draw_Frame *frame) {
 	// #Copypaste #Volatile	
@@ -364,7 +339,7 @@ Draw_Quad *draw_rect_xform_in_frame(Matrix4 xform, Vector2 size, Vector4 color, 
 	
 	return draw_quad_xform_in_frame(q, xform, frame);
 }
-Draw_Quad *draw_circle_in_frame(Vector2 position, Vector2 size, Vector4 color, Draw_Frame *frame) {
+Draw_Quad *DrawCircleInFrame(Vector2 position, Vector2 size, Vector4 color, Draw_Frame *frame) {
 	// #Copypaste #Volatile	
 	const float32 left   = position.x;
 	const float32 right  = position.x + size.x;
@@ -380,7 +355,7 @@ Draw_Quad *draw_circle_in_frame(Vector2 position, Vector2 size, Vector4 color, D
 	q.image = 0;
 	q.type = QUAD_TYPE_CIRCLE;
 	
-	return draw_quad_in_frame(q, frame);
+	return DrawQuadInFrame(q, frame);
 }
 Draw_Quad *draw_circle_xform_in_frame(Matrix4 xform, Vector2 size, Vector4 color, Draw_Frame *frame) {
 	// #Copypaste #Volatile	
@@ -396,7 +371,7 @@ Draw_Quad *draw_circle_xform_in_frame(Matrix4 xform, Vector2 size, Vector4 color
 	return draw_quad_xform_in_frame(q, xform, frame);
 }
 Draw_Quad *draw_image_in_frame(Gfx_Image *image, Vector2 position, Vector2 size, Vector4 color, Draw_Frame *frame) {
-	Draw_Quad *q = draw_rect_in_frame(position, size, color, frame);
+	Draw_Quad *q = DrawRectInFrame(position, size, color, frame);
 	
 	q->image = image;
 	q->uv = v4(0, 0, 1, 1);
@@ -429,7 +404,7 @@ bool draw_text_callback(Gfx_Glyph glyph, Gfx_Font_Atlas *atlas, float glyph_x, f
 	
 	Vector2 size = v2(glyph.width*params->scale.x, glyph.height*params->scale.y);
 	
-	Matrix4 glyph_xform = m4_translate(params->xform, v3(glyph_x, glyph_y, 0));
+	Matrix4 glyph_xform = M4Translate(params->xform, v3(glyph_x, glyph_y, 0));
 	
 	Draw_Quad *q = draw_image_xform_in_frame(atlas->image, glyph_xform, size, params->color, params->frame);
 	q->uv = glyph.uv;
@@ -451,10 +426,10 @@ void draw_line_in_frame(Vector2 p0, Vector2 p1, float line_width, Vector4 color,
 	Vector2 dir = v2(p1.x - p0.x, p1.y - p0.y);
 	float length = sqrt(dir.x * dir.x + dir.y * dir.y);
 	float r = atan2(-dir.y, dir.x);
-	Matrix4 line_xform = m4_scalar(1);
-	line_xform = m4_translate(line_xform, v3(p0.x, p0.y, 0));
-	line_xform = m4_rotate_z(line_xform, r);
-	line_xform = m4_translate(line_xform, v3(0, -line_width/2, 0));
+	Matrix4 line_xform = M4Scalar(1);
+	line_xform = M4Translate(line_xform, v3(p0.x, p0.y, 0));
+	line_xform = M4RotateZ(line_xform, r);
+	line_xform = M4Translate(line_xform, v3(0, -line_width/2, 0));
 	draw_rect_xform_in_frame(line_xform, v2(length, line_width), color, frame);
 }
 
@@ -482,74 +457,74 @@ void pop_window_scissor_in_frame(Draw_Frame *frame) {
 
 
 ///
-// Global draw api (draw to global draw_frame)
+// Global draw api (draw to global drawFrame)
 //
 
 inline
 Draw_Quad *draw_quad_projected(Draw_Quad quad, Matrix4 world_to_clip) { 
-	return draw_quad_projected_in_frame(quad, world_to_clip, &draw_frame); 
+	return draw_quad_projected_in_frame(quad, world_to_clip, &drawFrame); 
 }
 inline
 Draw_Quad *draw_quad(Draw_Quad quad) {
-	return draw_quad_in_frame(quad, &draw_frame);
+	return DrawQuadInFrame(quad, &drawFrame);
 }
 
 inline
 Draw_Quad *draw_quad_xform(Draw_Quad quad, Matrix4 xform) {
-	return draw_quad_xform_in_frame(quad, xform, &draw_frame);
+	return draw_quad_xform_in_frame(quad, xform, &drawFrame);
 }
 
 inline
 Draw_Quad *draw_rect(Vector2 position, Vector2 size, Vector4 color) {
-	return draw_rect_in_frame(position, size, color, &draw_frame);
+	return DrawRectInFrame(position, size, color, &drawFrame);
 }
 inline
-Draw_Quad *draw_rect_xform(Matrix4 xform, Vector2 size, Vector4 color) {
-	return draw_rect_xform_in_frame(xform, size, color, &draw_frame);
+Draw_Quad *DrawRectXform(Matrix4 xform, Vector2 size, Vector4 color) {
+	return draw_rect_xform_in_frame(xform, size, color, &drawFrame);
 }
 inline
 Draw_Quad *draw_circle(Vector2 position, Vector2 size, Vector4 color) {
-	return draw_circle_in_frame(position, size, color, &draw_frame);
+	return DrawCircleInFrame(position, size, color, &drawFrame);
 }
 inline
 Draw_Quad *draw_circle_xform(Matrix4 xform, Vector2 size, Vector4 color) {
-	return draw_circle_xform_in_frame(xform, size, color, &draw_frame);
+	return draw_circle_xform_in_frame(xform, size, color, &drawFrame);
 }
 inline
 Draw_Quad *draw_image(Gfx_Image *image, Vector2 position, Vector2 size, Vector4 color) {
-	return draw_image_in_frame(image, position, size, color, &draw_frame);
+	return draw_image_in_frame(image, position, size, color, &drawFrame);
 }
 inline
 Draw_Quad *draw_image_xform(Gfx_Image *image, Matrix4 xform, Vector2 size, Vector4 color) {
-	return draw_image_xform_in_frame(image, xform, size, color, &draw_frame);
+	return draw_image_xform_in_frame(image, xform, size, color, &drawFrame);
 }
 
 inline
 void draw_text_xform(Gfx_Font *font, string text, u32 raster_height, Matrix4 xform, Vector2 scale, Vector4 color) {
-	draw_text_xform_in_frame(font, text, raster_height, xform, scale, color, &draw_frame);
+	draw_text_xform_in_frame(font, text, raster_height, xform, scale, color, &drawFrame);
 }
 inline
 void draw_text(Gfx_Font *font, string text, u32 raster_height, Vector2 position, Vector2 scale, Vector4 color) {
-	draw_text_in_frame(font, text, raster_height, position, scale, color, &draw_frame);
+	draw_text_in_frame(font, text, raster_height, position, scale, color, &drawFrame);
 }
 Gfx_Text_Metrics draw_text_and_measure(Gfx_Font *font, string text, u32 raster_height, Vector2 position, Vector2 scale, Vector4 color) {
-	return draw_text_and_measure_in_frame(font, text, raster_height, position, scale, color, &draw_frame);
+	return draw_text_and_measure_in_frame(font, text, raster_height, position, scale, color, &drawFrame);
 }
 
 inline
 void draw_line(Vector2 p0, Vector2 p1, float line_width, Vector4 color) {
-	draw_line_in_frame(p0, p1, line_width, color, &draw_frame);
+	draw_line_in_frame(p0, p1, line_width, color, &drawFrame);
 }
 
 inline
-void push_z_layer(s32 z) { push_z_layer_in_frame(z, &draw_frame); }
+void push_z_layer(s32 z) { push_z_layer_in_frame(z, &drawFrame); }
 inline
-void pop_z_layer() { pop_z_layer_in_frame(&draw_frame); }
+void pop_z_layer() { pop_z_layer_in_frame(&drawFrame); }
 
 inline
-void push_window_scissor(Vector2 min, Vector2 max) { push_window_scissor_in_frame(min, max, &draw_frame); }
+void push_window_scissor(Vector2 min, Vector2 max) { push_window_scissor_in_frame(min, max, &drawFrame); }
 inline
-void pop_window_scissor() { pop_window_scissor_in_frame(&draw_frame); }
+void pop_window_scissor() { pop_window_scissor_in_frame(&drawFrame); }
 
 
 #define COLOR_RED   ((Vector4){1.0, 0.0, 0.0, 1.0})

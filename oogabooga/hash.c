@@ -71,7 +71,7 @@ u64 float32_get_hash(float32 x) {
 #define get_hash(x) _Generic((x), \
 		    string: string_get_hash, \
 		    s8: xx_hash, \
-		    u8: xx_hash, \
+		    uint8_t: xx_hash, \
 		    s16: xx_hash, \
 		    u16: xx_hash, \
 		    s32: xx_hash, \

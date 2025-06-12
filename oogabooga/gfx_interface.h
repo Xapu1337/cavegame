@@ -14,7 +14,7 @@ typedef struct Gfx_Shader_Extension {
 } Gfx_Shader_Extension;
 
 void gfx_init(void);
-void gfx_update(void);
+void GfxUpdate(void);
 void gfx_render_draw_frame(Draw_Frame *frame, Gfx_Image *target);
 void gfx_render_draw_frame_to_window(Draw_Frame *frame);
 

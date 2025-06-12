@@ -8,14 +8,14 @@
 
 // All we do with the launcher is to launch the engine
 // We need to be careful to use oogabooga things because it has not yet been initialized.
-// We can use get_temporary_allocator() because that actually gives us the initialization allocator.
+// We can use GetTemporaryAllocator() because that actually gives us the initialization allocator.
 // We cannot use log() but we can use print()
 int main(int argc, char **argv) {
     string exe_path = STR(argv[0]);
     string exe_dir = get_directory_of(exe_path);
     
     Allocator a = get_initialization_allocator();
-    string dll_path = string_concat(exe_dir, STR("/engine.dll"), a);
+    string dll_path = StringConcat(exe_dir, STR("/engine.dll"), a);
     
     Dynamic_Library_Handle dll = os_load_dynamic_library(dll_path);
     if (!dll) {
