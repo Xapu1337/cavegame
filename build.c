@@ -28,6 +28,9 @@ typedef struct Context_Extra {
 // This defaults to "entry", but we can set it to anything (except "main" or other existing proc names"
 #define ENTRY_PROC entry
 
+// Force the built-in renderer to D3D11 so the engine compiles on all platforms
+#define GFX_RENDERER GFX_RENDERER_D3D11
+
 // Ooga booga needs to be included AFTER configuration and BEFORE the program code
 #include "oogabooga/oogabooga.c"
 
@@ -50,7 +53,7 @@ typedef struct Context_Extra {
 // #include "oogabooga/examples/window_test.c"
 // #include "oogabooga/examples/offscreen_drawing.c"
 // #include "oogabooga/examples/threaded_drawing.c"
-#include "entry_cube_flop.c"
+#include "app/main.c"
 
 // These examples require some extensions to be enabled. See top respective files for more info.
 // #include "oogabooga/examples/particles_example.c" // Requires OOGABOOGA_EXTENSION_PARTICLES

@@ -97,8 +97,8 @@ typedef struct Input_Frame {
     uint64_t number_of_events;
     float mouse_x;
     float mouse_y;
-    Vector2 left_stick;
-    Vector2 right_stick;
+    Vector2f32 left_stick;
+    Vector2f32 right_stick;
     float left_trigger;
     float right_trigger;
     Input_State_Flags key_states[INPUT_KEY_CODE_COUNT];

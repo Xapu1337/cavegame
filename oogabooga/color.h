@@ -3,6 +3,6 @@
 
 #include "linmath.h"
 
-Vector4 hex_to_rgba(int64_t hex);
+Vector4f32 hex_to_rgba(int64_t hex);
 
 #endif

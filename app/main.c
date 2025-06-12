@@ -1,4 +1,5 @@
 #include "oogabooga/linmath.h"
+#include <math.h>
 
 // Simple 3D cube flop game example
 

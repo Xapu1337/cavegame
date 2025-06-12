@@ -1,8 +1,13 @@
 
 
 
-#include <stdio.h>
 #include <string.h>
+
+#if defined(_MSC_VER)
+#define thread_local __declspec(thread)
+#else
+#define thread_local __thread
+#endif
 #define local_persist static
 
 #define forward_global extern
@@ -60,12 +65,6 @@ typedef struct Nothing {int nothing;} Nothing;
 	#define CONTEXT_EXTRA Nothing
 #endif
 
-typedef enum Allocator_Message {
-	ALLOCATOR_ALLOCATE,
-	ALLOCATOR_DEALLOCATE,
-	ALLOCATOR_REALLOCATE,
-} Allocator_Message;
-typedef void*(*Allocator_Proc)(u64, void*, Allocator_Message, void*);
 
 typedef enum Log_Level {
 	LOG_ERROR,
@@ -78,24 +77,8 @@ typedef enum Log_Level {
 
 
 
-typedef struct Allocator {
-	Allocator_Proc proc;
-	void *data;	
-} Allocator;
-
-Allocator
-get_heap_allocator();
-
-ogb_instance Allocator
-get_temporary_allocator();
-
-typedef struct Context {
-	void *logger; // void(*Logger_Proc)(Log_Level level, string fmt, ...)
-	
-	u64 thread_id;
-	
-	CONTEXT_EXTRA extra;
-} Context;
+Allocator get_heap_allocator();
+ogb_instance Allocator get_temporary_allocator();
 
 #define CONTEXT_STACK_MAX 512
 

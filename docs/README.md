@@ -86,8 +86,8 @@ int entry(int argc, char **argv) {
 7. profit
 
 ### Linux Quickstart
-1. Run `./install_deps.sh` to install the required SDL2, GL and GLU development libraries.
-2. Use `./run.sh` to build the native SDL/OpenGL version. If no display server is present, the script only builds the binary.
+1. Ensure `gcc` is installed. `./install_deps.sh` can be used to install it on common distros.
+2. Run `./run.sh` to build and run the game.
 
 In general, we try to leave a nice chunk of documentation in a comment at the top of the source code files when needed.
 An example would be: If you want to understand how to draw things, go to drawing.c and read the comment at the top of the file.

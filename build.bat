@@ -1,10 +1,10 @@
 @echo off
 if not exist build (
-	mkdir build
+    mkdir build
 )
 
 pushd build
 
-clang -g -fuse-ld=lld  -o cgame.exe ../build.c -O0 -std=c11 -D_CRT_SECURE_NO_WARNINGS -Wextra -Wno-incompatible-library-redeclaration -Wno-sign-compare -Wno-unused-parameter -Wno-builtin-requires-header -lkernel32 -lgdi32 -luser32 -lruntimeobject -lwinmm -ld3d11 -ldxguid -ld3dcompiler -lshlwapi -lole32 -lshcore -lavrt -lksuser -ldbghelp -femit-all-decls
+cl /nologo /std:c11 /EHsc /D_CRT_SECURE_NO_WARNINGS ..\build.c /link d3d11.lib dxguid.lib d3dcompiler.lib user32.lib gdi32.lib kernel32.lib winmm.lib ole32.lib shlwapi.lib shcore.lib dbghelp.lib runtimeobject.lib /OUT:cgame.exe
 
 popd
