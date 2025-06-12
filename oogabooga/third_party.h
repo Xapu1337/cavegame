@@ -1,0 +1,3 @@
+#ifndef OOGABOOGA_THIRD_PARTY_H
+#define OOGABOOGA_THIRD_PARTY_H
+#endif

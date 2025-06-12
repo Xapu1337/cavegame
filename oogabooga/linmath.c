@@ -14,6 +14,7 @@ typedef union Vector4s32 Vector4s32;
 typedef union Vector2s64 Vector2s64;
 typedef union Vector3s64 Vector3s64;
 typedef union Vector4s64 Vector4s64;
+typedef union Quaternion Quaternion;
 
 /*
 	There are abbreviated versions for f32 and s32
@@ -204,15 +205,21 @@ typedef union Vector3f64 {
 	struct  {float64  _x; Vector2f64 yz;};
 } Vector3f64;
 typedef union Vector4f64 {
-	float64 data[4];
-	struct {float64  x, y, z, w;};
-	struct {Vector2f64  xy; Vector2f64 zw;};
-	struct {float64  x1, y1, x2, y2;};
-	struct {float64  r, g, b, a;};
-	struct {float64  left, bottom, right, top;};
-	struct {Vector3f64  xyz;};
-	struct {float64  _x; Vector3f64 yzw;};
+        float64 data[4];
+        struct {float64  x, y, z, w;};
+        struct {Vector2f64  xy; Vector2f64 zw;};
+        struct {float64  x1, y1, x2, y2;};
+        struct {float64  r, g, b, a;};
+        struct {float64  left, bottom, right, top;};
+        struct {Vector3f64  xyz;};
+        struct {float64  _x; Vector3f64 yzw;};
 } Vector4f64;
+
+typedef union Quaternion {
+        float32 data[4];
+        struct {float32 x, y, z, w;};
+        struct {Vector3f32 xyz; float32 w_;};
+} Quaternion;
 
 typedef union Vector2s32 {
 	s32 data[2];
@@ -560,6 +567,50 @@ Vector2f32 v2_rotate_point_around_pivot(Vector2f32 point, Vector2f32 pivot, floa
 
 
 //
+// Quaternion
+//
+
+inline Quaternion quat(float32 x, float32 y, float32 z, float32 w) {
+    Quaternion q = { .x = x, .y = y, .z = z, .w = w };
+    return q;
+}
+
+inline Quaternion quat_identity() { return quat(0,0,0,1); }
+
+Quaternion quat_from_axis_angle(Vector3f32 axis, float32 radians) {
+    float32 h = radians * 0.5f;
+    float32 s = sinf(h);
+    return quat(axis.x*s, axis.y*s, axis.z*s, cosf(h));
+}
+
+Quaternion quat_mul(Quaternion a, Quaternion b) {
+    Quaternion q;
+    q.w = a.w*b.w - a.x*b.x - a.y*b.y - a.z*b.z;
+    q.x = a.w*b.x + a.x*b.w + a.y*b.z - a.z*b.y;
+    q.y = a.w*b.y - a.x*b.z + a.y*b.w + a.z*b.x;
+    q.z = a.w*b.z + a.x*b.y - a.y*b.x + a.z*b.w;
+    return q;
+}
+
+Matrix4 m4_from_quat_pos(Quaternion q, Vector3f32 pos) {
+    Matrix4 m = m4_scalar(1.0f);
+    float32 x = q.x, y = q.y, z = q.z, w = q.w;
+    m.m[0][0] = 1 - 2*y*y - 2*z*z;
+    m.m[0][1] = 2*x*y + 2*w*z;
+    m.m[0][2] = 2*x*z - 2*w*y;
+    m.m[1][0] = 2*x*y - 2*w*z;
+    m.m[1][1] = 1 - 2*x*x - 2*z*z;
+    m.m[1][2] = 2*y*z + 2*w*x;
+    m.m[2][0] = 2*x*z + 2*w*y;
+    m.m[2][1] = 2*y*z - 2*w*x;
+    m.m[2][2] = 1 - 2*x*x - 2*y*y;
+    m.m[0][3] = pos.x;
+    m.m[1][3] = pos.y;
+    m.m[2][3] = pos.z;
+    return m;
+}
+
+//
 // Matrix4
 //
 
@@ -676,6 +727,14 @@ inline Matrix4 m4_rotate_z(Matrix4 m, float32 radians) {
     Matrix4 rotation_matrix = m4_make_rotation(v3f32(0, 0, 1), radians);
     return m4_mul(m, rotation_matrix);
 }
+inline Matrix4 m4_rotate_x(Matrix4 m, float32 radians) {
+    Matrix4 rotation_matrix = m4_make_rotation(v3f32(1, 0, 0), radians);
+    return m4_mul(m, rotation_matrix);
+}
+inline Matrix4 m4_rotate_y(Matrix4 m, float32 radians) {
+    Matrix4 rotation_matrix = m4_make_rotation(v3f32(0, 1, 0), radians);
+    return m4_mul(m, rotation_matrix);
+}
 
 inline Matrix4 m4_scale(Matrix4 m, Vector3f32 scale) {
     Matrix4 scale_matrix = m4_make_scale(scale);
@@ -692,6 +751,30 @@ Matrix4 m4_make_orthographic_projection(float32 left, float32 right, float32 bot
     m.m[0][3] = -(right + left) / (right - left);
     m.m[1][3] = -(top + bottom) / (top - bottom);
     m.m[2][3] = -(_far + _near) / (_far - _near);
+    m.m[3][3] = 1.0f;
+    return m;
+}
+
+Matrix4 m4_make_perspective_projection(float32 fov_y, float32 aspect, float32 _near, float32 _far) {
+    Matrix4 m = ZERO(Matrix4);
+    float32 f = 1.0f / tanf(fov_y * 0.5f);
+    m.m[0][0] = f / aspect;
+    m.m[1][1] = f;
+    m.m[2][2] = (_far + _near) / (_near - _far);
+    m.m[2][3] = (2.0f * _far * _near) / (_near - _far);
+    m.m[3][2] = -1.0f;
+    return m;
+}
+
+Matrix4 m4_make_look_at(Vector3f32 eye, Vector3f32 target, Vector3f32 up) {
+    Vector3f32 f = v3_normalize(v3_sub(target, eye));
+    Vector3f32 s = v3_normalize(v3_cross(f, up));
+    Vector3f32 u = v3_cross(s, f);
+
+    Matrix4 m = m4_scalar(1.0f);
+    m.m[0][0] = s.x; m.m[0][1] = s.y; m.m[0][2] = s.z; m.m[0][3] = -v3_dot(s, eye);
+    m.m[1][0] = u.x; m.m[1][1] = u.y; m.m[1][2] = u.z; m.m[1][3] = -v3_dot(u, eye);
+    m.m[2][0] = -f.x; m.m[2][1] = -f.y; m.m[2][2] = -f.z; m.m[2][3] = v3_dot(f, eye);
     m.m[3][3] = 1.0f;
     return m;
 }

@@ -440,32 +440,11 @@ bool draw_text_callback(Gfx_Glyph glyph, Gfx_Font_Atlas *atlas, float glyph_x, f
 	return true;
 }
 
-void draw_text_xform_in_frame(Gfx_Font *font, string text, u32 raster_height, Matrix4 xform, Vector2 scale, Vector4 color, Draw_Frame *frame) {
-	
-	Draw_Text_Callback_Params p;
-	p.font = font;
-	p.text = text;
-	p.raster_height = raster_height;
-	p.xform = xform;
-	p.scale = scale;
-	p.color = color;
-	p.frame = frame;
-	
-	walk_glyphs((Walk_Glyphs_Spec){font, text, raster_height, scale, true, &p}, draw_text_callback);
-}
-void draw_text_in_frame(Gfx_Font *font, string text, u32 raster_height, Vector2 position, Vector2 scale, Vector4 color, Draw_Frame *frame) {
-	Matrix4 xform = m4_scalar(1.0);
-	xform         = m4_translate(xform, v3(position.x, position.y, 0));
-	
-	draw_text_xform_in_frame(font, text, raster_height, xform, scale, color, frame);
-}
+// Font rendering temporarily disabled
+void draw_text_xform_in_frame(Gfx_Font *font, string text, u32 raster_height, Matrix4 xform, Vector2 scale, Vector4 color, Draw_Frame *frame) {}
+void draw_text_in_frame(Gfx_Font *font, string text, u32 raster_height, Vector2 position, Vector2 scale, Vector4 color, Draw_Frame *frame) {}
 Gfx_Text_Metrics draw_text_and_measure_in_frame(Gfx_Font *font, string text, u32 raster_height, Vector2 position, Vector2 scale, Vector4 color, Draw_Frame *frame) {
-	Matrix4 xform = m4_scalar(1.0);
-	xform         = m4_translate(xform, v3(position.x, position.y, 0));
-	
-	draw_text_xform_in_frame(font, text, raster_height, xform, scale, color, frame);
-	
-	return measure_text(font, text, raster_height, scale);
+        return (Gfx_Text_Metrics){0};
 }
 
 void draw_line_in_frame(Vector2 p0, Vector2 p1, float line_width, Vector4 color, Draw_Frame *frame) {

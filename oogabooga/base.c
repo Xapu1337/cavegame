@@ -1,6 +1,8 @@
 
 
 
+#include <stdio.h>
+#include <string.h>
 #define local_persist static
 
 #define forward_global extern
@@ -45,7 +47,7 @@ dump_stack_trace();
                           )(__VA_ARGS__)
 #define sprint(...) _Generic((SECOND_ARG(__VA_ARGS__)), \
                            string:  sprints, \
-                           default: sprintf \
+                           default: string_printf \
                           )(__VA_ARGS__)
 #define tprint(...) _Generic((FIRST_ARG(__VA_ARGS__)), \
                            string:  tprints, \

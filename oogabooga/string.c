@@ -1,16 +1,7 @@
 
-/*
-
-	
-	
-*/
+#include "string.h"
 
 ogb_instance void* talloc(u64);
-
-typedef struct string {
-	u64 count;
-	u8 *data;
-} string;
 
 const string null_string = {0, 0};
 

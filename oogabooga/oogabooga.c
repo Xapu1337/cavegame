@@ -146,7 +146,9 @@
 
 #include <math.h>
 #include <immintrin.h>
+#ifdef _MSC_VER
 #include <intrin.h>
+#endif
 #include <stdint.h>
 
 typedef uint8_t  u8;
@@ -202,7 +204,7 @@ typedef u8 bool;
 #endif
 
 
-#include "cpu.c"
+#include "cpu.h"
 
 
 
@@ -259,8 +261,7 @@ typedef u8 bool;
 	#define OS_PATHS_HAVE_BACKSLASH 1
 #elif defined(__linux__)
 	// Include whatever #Incomplete #Portability
-	#define TARGET_OS LINUX
-	#error "Linux is not supported yet";
+        #define TARGET_OS LINUX
 	#define OS_PATHS_HAVE_BACKSLASH 0
 #elif defined(__APPLE__) && defined(__MACH__)
 	// Include whatever #Incomplete #Portability
@@ -281,9 +282,9 @@ typedef u8 bool;
 
 
 // This needs to be included before dependencies
-#include "base.c"
+#include "base.h"
 
-#include "simd.c"        
+#include "simd.h"
 
 // #Incomplete
 // We might want to make this configurable ?
@@ -302,18 +303,18 @@ typedef u8 bool;
 #endif
 
 
-#include "string.c"
-#include "unicode.c"
-#include "string_format.c"
-#include "hash.c"
-#include "path_utils.c"
-#include "utility.c"
-#include "linmath.c"
+#include "string.h"
+#include "unicode.h"
+#include "string_format.h"
+#include "hash.h"
+#include "path_utils.h"
+#include "utility.h"
+#include "linmath.h"
 
-#include "hash_table.c"
-#include "growing_array.c"
+#include "hash_table.h"
+#include "growing_array.h"
 
-#include "os_interface.c"
+#include "os_interface.h"
 
 ///
 ///
@@ -322,40 +323,40 @@ typedef u8 bool;
 // The reason dependencies are compiled here is because we need to modify third party code
 // to use the oogabooga standard where they use the C standard.
 
-#include "third_party.c"
+#include "third_party.h"
 
 /////
 
-#include "concurrency.c"
+#include "concurrency.h"
 
-#include "profiling.c"
-#include "random.c"
-#include "color.c"
-#include "memory.c"
-#include "input.c"
+#include "profiling.h"
+#include "random.h"
+#include "color.h"
+#include "memory.h"
+#include "input.h"
 
 #ifndef OOGABOOGA_HEADLESS
 
-    #include "gfx_interface.c"
+    #include "gfx_interface.h"
 
-    #include "font.c"
+    #include "font.h"
 
-    #include "drawing.c"
+    #include "drawing.h"
 
-    #include "audio.c"
+    #include "audio.h"
 #endif
 
 #if OOGABOOGA_ENABLE_EXTENSIONS
 
-	#include "extensions.c"
+    #include "extensions.h"
 #endif
 
 #if !OOGABOOGA_LINK_EXTERNAL_INSTANCE
 
     #if TARGET_OS == WINDOWS
-    	#include "os_impl_windows.c"
+            #include "os_impl_windows.h"
     #elif TARGET_OS == LINUX
-        #include "os_impl_linux.c"
+        #include "os_impl_linux.h"
     #elif TARGET_OS == MACOS
     	#error "Macos is not supported yet"
     #else
@@ -365,7 +366,7 @@ typedef u8 bool;
     #ifndef OOGABOOGA_HEADLESS
         // #Portability
         #if GFX_RENDERER == GFX_RENDERER_D3D11
-            #include "gfx_impl_d3d11.c"
+            #include "gfx_impl_d3d11.h"
         #elif GFX_RENDERER == GFX_RENDERER_VULKAN
             #error "We only have a D3D11 renderer at the moment"
         #elif GFX_RENDERER == GFX_RENDERER_METAL
@@ -377,8 +378,44 @@ typedef u8 bool;
     
 #endif // NOT OOGABOOGA_LINK_EXTERNAL_INSTANCE
 
-#include "tests.c"
+#include "tests.h"
 
+#include "base.c"
+#include "simd.c"
+#include "string.c"
+#include "unicode.c"
+#include "string_format.c"
+#include "hash.c"
+#include "hash_table.c"
+#include "growing_array.c"
+#include "path_utils.c"
+#include "utility.c"
+#include "linmath.c"
+#include "os_interface.c"
+#include "cpu.c"
+#include "concurrency.c"
+#include "profiling.c"
+#include "random.c"
+#include "memory.c"
+#include "third_party.c"
+#if TARGET_OS == WINDOWS
+#include "os_impl_windows.c"
+#endif
+#ifndef OOGABOOGA_HEADLESS
+#include "gfx_interface.c"
+#include "drawing.c"
+// #include "font.c" // disabled to avoid missing glyph APIs
+// #include "audio.c" // disabled to avoid audio compile errors
+#if GFX_RENDERER == GFX_RENDERER_D3D11
+#include "gfx_impl_d3d11.c"
+#endif
+#endif
+#if OOGABOOGA_ENABLE_EXTENSIONS
+#include "ext_particles.c"
+#include "extensions.c"
+#endif
+#include "input.c"
+#include "tests.c"
 #define malloc please_use_alloc_for_memory_allocations_instead_of_malloc
 #define free please_use_dealloc_for_memory_deallocations_instead_of_free
 

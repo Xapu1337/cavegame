@@ -1,0 +1,3 @@
+#ifndef OOGABOOGA_OS_IMPL_LINUX_H
+#define OOGABOOGA_OS_IMPL_LINUX_H
+#endif

@@ -50,7 +50,9 @@ inline void basic_rsqrt_float32_512(float32 *a, float32 *result);
 #endif
 
 #include <immintrin.h>
+#ifdef _MSC_VER
 #include <intrin.h>
+#endif
 
 
 // SSE

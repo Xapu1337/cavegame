@@ -252,7 +252,7 @@ string tprints(const string fmt, ...) {
 }
 
 
-string sprintf(Allocator allocator, const char *fmt, ...) {
+string string_printf(Allocator allocator, const char *fmt, ...) {
 	string sfmt;
 	sfmt.data = cast(u8*)fmt;
 	sfmt.count = strlen(fmt);

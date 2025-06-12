@@ -1,5 +1,5 @@
 
-
+#include <windows.h>
 
 #define D3D11Release(x) x->lpVtbl->Release(x)
 
@@ -62,6 +62,12 @@ Draw_Quad *d3d11_sort_quad_buffer = 0;
 u64 d3d11_sort_quad_buffer_size = 0;
 
 u64 d3d11_thread_id = 0;
+
+static bool
+running_on_wine(void) {
+    HMODULE ntdll = GetModuleHandleA("ntdll.dll");
+    return GetProcAddress(ntdll, "wine_get_version") != NULL;
+}
 
 const char* d3d11_stringify_category(D3D11_MESSAGE_CATEGORY category) {
     switch (category) {
@@ -911,8 +917,11 @@ void gfx_update() {
 	gfx_render_draw_frame_to_window(&draw_frame);
 	draw_frame_reset(&draw_frame);
 
-	IDXGISwapChain1_Present(d3d11_swap_chain, window.enable_vsync, window.enable_vsync ? 0 : DXGI_PRESENT_ALLOW_TEARING);
-	ID3D11DeviceContext_ClearRenderTargetView(d3d11_context, d3d11_window_render_target_view, (float*)&window.clear_color);
+        u32 flags = 0;
+        if (!window.enable_vsync && !running_on_wine())
+                flags = DXGI_PRESENT_ALLOW_TEARING;
+        IDXGISwapChain1_Present(d3d11_swap_chain, window.enable_vsync, flags);
+        ID3D11DeviceContext_ClearRenderTargetView(d3d11_context, d3d11_window_render_target_view, (float*)&window.clear_color);
 	
 #if CONFIGURATION == DEBUG
 	d3d11_output_debug_messages();

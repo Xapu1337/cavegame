@@ -1,0 +1,3 @@
+#ifndef OOGABOOGA_EXTENSIONS_H
+#define OOGABOOGA_EXTENSIONS_H
+#endif

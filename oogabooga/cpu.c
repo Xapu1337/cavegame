@@ -38,8 +38,10 @@ typedef struct Cpu_Capabilities {
 		a = (volatile int*)0xDEADBEEF;
     	*a = 5;
 	}
+    #ifdef _MSC_VER
     #include <intrin.h>
     #pragma intrinsic(__rdtsc)
+    #endif
     inline u64 
     rdtsc() {
         return __rdtsc();
