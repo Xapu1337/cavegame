@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/wait.h>
 
 #ifdef _WIN32
     #define IS_WINDOWS 1
@@ -63,26 +64,43 @@ int main(int argc, char **argv) {
     
     #if IS_WINDOWS
         printf("Building for Windows...\n");
-        
+
+        const char *files = "oogabooga/oogabooga.c app/cube_flip.c";
+
         if (opts.use_mingw_on_windows) {
             printf("Using MinGW/GCC...\n");
-            
+
             // MinGW build command with GCC
-            cmd = "gcc -g -o build/game.exe build.c "
+            cmd = "gcc -g -I. -DENTRY_PROC=Entry "
+                  "-DINITIAL_PROGRAM_MEMORY_SIZE=64*1024*1024 "
+                  "-DTEMPORARY_STORAGE_SIZE=2*1024*1024 "
+                  "-o build/game.exe "
+                  "%s "
                   "-std=c11 -Wall -Wextra -Wno-unused-parameter "
                   "-lkernel32 -lgdi32 -luser32 -lruntimeobject -lwinmm "
                   "-ld3d11 -ldxguid -ld3dcompiler -lshlwapi -lole32 "
                   "-lshcore -lavrt -lksuser -ldbghelp";
-                  
+
+            static char cmd_buffer[1024];
+            snprintf(cmd_buffer, sizeof(cmd_buffer), cmd, files);
+            cmd = cmd_buffer;
+
         } else {
             printf("Using MSVC (clang-cl)...\n");
-            
+
             // MSVC build command using clang-cl (or cl.exe)
-            cmd = "clang-cl /Fe:build/game.exe build.c /std:c11 /Zi /Od "
+            cmd = "clang-cl /Fe:build/game.exe %s /std:c11 /Zi /Od "
+                  "/DENTRY_PROC=Entry "
+                  "/DINITIAL_PROGRAM_MEMORY_SIZE=64*1024*1024 "
+                  "/DTEMPORARY_STORAGE_SIZE=2*1024*1024 "
                   "/D_CRT_SECURE_NO_WARNINGS "
                   "kernel32.lib gdi32.lib user32.lib runtimeobject.lib winmm.lib "
                   "d3d11.lib dxguid.lib d3dcompiler.lib shlwapi.lib ole32.lib "
                   "shcore.lib avrt.lib ksuser.lib dbghelp.lib";
+
+            static char cmd_buffer[1024];
+            snprintf(cmd_buffer, sizeof(cmd_buffer), cmd, files);
+            cmd = cmd_buffer;
         }
         
         // Create build directory
@@ -95,16 +113,25 @@ int main(int argc, char **argv) {
         
         // Linux build command using gcc with Vulkan (NO SDL2)
         const char* optimization = opts.release_build ? "-O3 -DNDEBUG" : "-g -O0";
-        
+
+        const char *files = "oogabooga/oogabooga.c app/cube_flip.c";
+
         // Note: This is a simplified command. In practice you'd want to check
         // for Vulkan SDK installation and proper linking
-        cmd = "gcc build.c -std=c11 -Wall -Wextra -Wno-unused-parameter "
+        cmd = "gcc -I. "
+              "-DENTRY_PROC=Entry "
+              "-D_POSIX_C_SOURCE=200809L -D_GNU_SOURCE "
+              "-DINITIAL_PROGRAM_MEMORY_SIZE=64*1024*1024 "
+              "-DTEMPORARY_STORAGE_SIZE=2*1024*1024 "
+              "%s "
+              "%s "
+              "-std=c11 -Wall -Wextra -Wno-unused-parameter "
               "-lm -lpthread -ldl -lX11 -lvulkan "
               "-o build/game";
-              
-        // Alternative if Vulkan SDK is not in standard paths:
-        // cmd = "gcc build.c -std=c11 -I$VULKAN_SDK/include -L$VULKAN_SDK/lib "
-        //       "-lm -lpthread -ldl -lX11 -lvulkan -o build/game";
+
+        static char cmd_buffer[1024];
+        snprintf(cmd_buffer, sizeof(cmd_buffer), cmd, files, optimization);
+        cmd = cmd_buffer;
         
         // Create build directory
         printf("Creating build directory...\n");
@@ -123,8 +150,12 @@ int main(int argc, char **argv) {
     
     printf("Compiling...\n");
     int result = system(cmd);
-    
-    if (result == 0) {
+    int exit_code = -1;
+    if (result != -1) {
+        exit_code = WEXITSTATUS(result);
+    }
+
+    if (exit_code == 0) {
         printf("Build successful!\n");
         printf("Executable: ");
         #if IS_WINDOWS
@@ -148,7 +179,7 @@ int main(int argc, char **argv) {
         #endif
         
     } else {
-        printf("Build failed with exit code: %d\n", result);
+        printf("Build failed with exit code: %d\n", exit_code);
         printf("\nPossible issues:\n");
         #if IS_WINDOWS
             if (!opts.use_mingw_on_windows) {

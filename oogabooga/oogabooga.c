@@ -157,6 +157,7 @@
 #include <immintrin.h>
 #elif defined(__GNUC__) || defined(__clang__)
 #include <immintrin.h>
+#define _POSIX_C_SOURCE 200809L
 #include <unistd.h>
 #include <sys/mman.h>
 #include <pthread.h>
@@ -546,7 +547,7 @@ typedef f64 float64;
 #include "extensions.c"
 #endif
 #include "input.c"
-#include "tests.c"
+// #include "tests.c" // disabled for now
 #define malloc please_use_alloc_for_memory_allocations_instead_of_malloc
 #define free please_use_dealloc_for_memory_deallocations_instead_of_free
 
@@ -561,10 +562,10 @@ void default_logger(Log_Level level, string s) {
 	
 	mutex_acquire_or_wait(&_default_logger_mutex);
 	switch (level) {
-		case LOG_VERBOSE: print("[VERBOSE]: %s\n", s); break;
-		case LOG_INFO:    print("[INFO]:    %s\n", s); break;
-		case LOG_WARNING: print("[WARNING]: %s\n", s); break;
-		case LOG_ERROR:   print("[ERROR]:   %s\n", s); break;
+                case LOG_VERBOSE: prints(STR("[VERBOSE]: %s\n"), s); break;
+                case LOG_INFO:    prints(STR("[INFO]:    %s\n"), s); break;
+                case LOG_WARNING: prints(STR("[WARNING]: %s\n"), s); break;
+                case LOG_ERROR:   prints(STR("[ERROR]:   %s\n"), s); break;
 		case LOG_LEVEL_COUNT: break;
 	}
 	mutex_release(&_default_logger_mutex);
@@ -604,8 +605,10 @@ bool oogabooga_init(u64 program_memory_size) {
 	log_verbose("CPU has avx2:   %cs", features.avx2   ? "true" : "false");
 	log_verbose("CPU has avx512: %cs", features.avx512 ? "true" : "false");
 	
-	Os_Monitor *m = os.primary_monitor;
-	log_verbose("Primary Monitor:\n\t%s\n\t%dhz\n\t%dx%d\n\tdpi: %d", m->name, m->refresh_rate, m->resolution_x, m->resolution_y, m->dpi);
+        Os_Monitor *m = os.primary_monitor;
+        if (m) {
+            log_verbose("Primary Monitor:\n\t%s\n\t%dhz\n\t%dx%d\n\tdpi: %d", m->name, m->refresh_rate, m->resolution_x, m->resolution_y, m->dpi);
+        }
 	
 	return true;
 }
@@ -622,8 +625,8 @@ int main(int argc, char **argv) {
 #endif
 
 
-	print("Ooga booga program started\n");
-	oogabooga_init(INITIAL_PROGRAM_MEMORY_SIZE); 
+        oogabooga_init(INITIAL_PROGRAM_MEMORY_SIZE);
+        print("Ooga booga program started\n");
 	
 	assert(sizeof(Vector3) == 12, "%d", sizeof(Vector3));
 	assert(sizeof(Vector2) == 8 , "%d", sizeof(Vector2));

@@ -161,11 +161,6 @@ inline void check_meta(Heap_Allocation_Metadata *meta) {
 	assert((u64)meta >= (u64)meta->block->start && (u64)meta < (u64)meta->block->start+meta->block->size, "Heap error: Pointer is not in it's metadata block. This could be heap corruption but it's more likely an internal error. That's not good.");
 }
 
-typedef struct {
-	Heap_Free_Node *best_fit;
-	Heap_Free_Node *previous;
-	u64 delta;
-} Heap_Search_Result;
 Heap_Search_Result search_heap_block(Heap_Block *block, u64 size) {
 	
 	if (block->free_head == 0)  return (Heap_Search_Result){0, 0, 0};

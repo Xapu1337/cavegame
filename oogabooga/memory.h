@@ -9,7 +9,12 @@ typedef struct Allocator Allocator;
 typedef struct Arena Arena;
 typedef struct Heap_Block Heap_Block;
 typedef struct Heap_Allocation_Metadata Heap_Allocation_Metadata;
-typedef struct Heap_Search_Result Heap_Search_Result;
+typedef struct Heap_Free_Node Heap_Free_Node;
+typedef struct Heap_Search_Result {
+    Heap_Free_Node *best_fit;
+    Heap_Free_Node *previous;
+    uint64_t delta;
+} Heap_Search_Result;
 
 // Initialization allocator
 Allocator get_initialization_allocator(void);

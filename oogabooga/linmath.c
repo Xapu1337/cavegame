@@ -121,21 +121,26 @@
 
 ///
 ///
+// Basic vector constructors
+///
+Vector2f32 V2(float32 x, float32 y) { Vector2f32 v = {x, y}; return v; }
+Vector3f32 V3(float32 x, float32 y, float32 z) { Vector3f32 v = {x, y, z}; return v; }
+Vector4f32 V4(float32 x, float32 y, float32 z, float32 w) { Vector4f32 v = {x, y, z, w}; return v; }
+Vector2f64 v2f64(double x, double y) { Vector2f64 v = {x, y}; return v; }
+Vector3f64 v3f64(double x, double y, double z) { Vector3f64 v = {x, y, z}; return v; }
+Vector4f64 v4f64(double x, double y, double z, double w) { Vector4f64 v = {x, y, z, w}; return v; }
+Vector2s32 v2s32(s32 x, s32 y) { Vector2s32 v = {x, y}; return v; }
+Vector3s32 v3s32(s32 x, s32 y, s32 z) { Vector3s32 v = {x, y, z}; return v; }
+Vector4s32 v4s32(s32 x, s32 y, s32 z, s32 w) { Vector4s32 v = {x, y, z, w}; return v; }
+Vector2s64 v2s64(s64 x, s64 y) { Vector2s64 v = {x, y}; return v; }
+Vector3s64 v3s64(s64 x, s64 y, s64 z) { Vector3s64 v = {x, y, z}; return v; }
+Vector4s64 v4s64(s64 x, s64 y, s64 z, s64 w) { Vector4s64 v = {x, y, z, w}; return v; }
+
+///
+///
 // Vectors - Function implementations
 ///
 
-inline Vector2f32 V2(float32 x, float32 y)                       { return (Vector2f32){x, y}; }
-inline Vector3f32 V3(float32 x, float32 y, float32 z)            { return (Vector3f32){x, y, z}; }
-inline Vector4f32 V4(float32 x, float32 y, float32 z, float32 w) { return (Vector4f32){x, y, z, w}; }
-inline Vector2f64 v2f64(float64 x, float64 y)                       { return (Vector2f64){x, y}; }
-inline Vector3f64 v3f64(float64 x, float64 y, float64 z)            { return (Vector3f64){x, y, z}; }
-inline Vector4f64 v4f64(float64 x, float64 y, float64 z, float64 w) { return (Vector4f64){x, y, z, w}; }
-inline Vector2s32 v2s32(s32     x, s32     y)                       { return (Vector2s32){x, y}; }
-inline Vector3s32 v3s32(s32     x, s32     y, s32     z)            { return (Vector3s32){x, y, z}; }
-inline Vector4s32 v4s32(s32     x, s32     y, s32     z, s32     w) { return (Vector4s32){x, y, z, w}; }
-inline Vector2s64 v2s64(s64     x, s64     y)                       { return (Vector2s64){x, y}; }
-inline Vector3s64 v3s64(s64     x, s64     y, s64     z)            { return (Vector3s64){x, y, z}; }
-inline Vector4s64 v4s64(s64     x, s64     y, s64     z, s64     w) { return (Vector4s64){x, y, z, w}; }
 
 inline Vector2f32 v2f32_scalar(float32 a) { return (Vector2f32){a, a}; }
 inline Vector3f32 v3f32_scalar(float32 a) { return (Vector3f32){a, a, a}; }
@@ -429,12 +434,12 @@ Vector2f32 v2_rotate_point_around_pivot(Vector2f32 point, Vector2f32 pivot, floa
 // Quaternion
 //
 
-inline Quaternion quat(float32 x, float32 y, float32 z, float32 w) {
+Quaternion quat(float32 x, float32 y, float32 z, float32 w) {
     Quaternion q = { .x = x, .y = y, .z = z, .w = w };
     return q;
 }
 
-inline Quaternion QuatIdentity() { return quat(0,0,0,1); }
+Quaternion QuatIdentity() { return quat(0,0,0,1); }
 
 Quaternion QuatFromAxisAngle(Vector3f32 axis, float32 radians) {
     float32 h = radians * 0.5f;

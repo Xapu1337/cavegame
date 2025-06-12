@@ -124,7 +124,7 @@ void os_sleep(uint32_t ms);
 void os_yield_thread(void);
 void os_high_precision_sleep(double ms);
 
-typedef struct File File;
+typedef void* File;
 void os_write_string_to_stdout(string s);
 bool os_write_entire_file_s(string path, string data);
 bool os_read_entire_file_s(string path, string *result, Allocator allocator);

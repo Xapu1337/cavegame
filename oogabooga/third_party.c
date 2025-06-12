@@ -153,8 +153,8 @@ size_t stbtt_strlen(const char* str) {
 #define STBI_FREE(p)              third_party_free(p)
 #include "third_party/stb_image.h"
 
-#define STB_VORBIS_NO_CRT
-#include "third_party/stb_vorbis.c"
+// #define STB_VORBIS_NO_CRT
+// #include "third_party/stb_vorbis.c" // disabled
 // Why Sean ?????
 #undef R
 #undef C

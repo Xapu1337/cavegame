@@ -5,18 +5,16 @@
 	#include <d3dcompiler.h>
 	#include <dxgidebug.h>
 	#include <d3dcommon.h>
-	typedef ID3D11ShaderResourceView * Gfx_Handle;
-	typedef ID3D11RenderTargetView * Gfx_Render_Target_Handle;
-	
-	typedef struct { ID3D11PixelShader *ps; ID3D11Buffer *cbuffer; u64 cbuffer_size; } Gfx_Shader_Extension;
+        typedef ID3D11ShaderResourceView * Gfx_Handle;
+        typedef ID3D11RenderTargetView * Gfx_Render_Target_Handle;
+
 	
 #elif GFX_RENDERER == GFX_RENDERER_VULKAN
 	// Vulkan renderer for Linux
 	#if PLATFORM_LINUX
 		// Forward declarations for Vulkan types (actual headers included in gfx_impl_vulkan.c)
-		typedef void* Gfx_Handle;
-		typedef void* Gfx_Render_Target_Handle;
-		typedef struct { void *ps; void *cbuffer; u64 cbuffer_size; } Gfx_Shader_Extension;
+                typedef void* Gfx_Handle;
+                typedef void* Gfx_Render_Target_Handle;
 	#else
 		#error "Vulkan renderer is only supported on Linux"
 	#endif

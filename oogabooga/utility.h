@@ -12,6 +12,8 @@ typedef uint32_t u32;
 typedef int32_t s32;
 typedef float f32;
 typedef double f64;
+typedef float float32;
+typedef double float64;
 
 // Function declarations (definitions are in utility.c)
 u64 max(u64 a, u64 b);

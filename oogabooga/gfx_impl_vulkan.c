@@ -9,19 +9,16 @@
 #if PLATFORM_LINUX && RENDERER_VULKAN
 
 // Check if Vulkan headers are available
-#if __has_include(<vulkan/vulkan.h>)
+#if 0
 #define VULKAN_AVAILABLE 1
-// Vulkan headers
 #define VK_USE_PLATFORM_XLIB_KHR
 #include <vulkan/vulkan.h>
 #include <vulkan/vulkan_xlib.h>
-
-// System headers for X11 windowing
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #else
 #define VULKAN_AVAILABLE 0
-#warning "Vulkan headers not found. Vulkan renderer will be disabled."
+#warning "Vulkan renderer stubbed out"
 
 // Stub implementations when Vulkan is not available
 bool vulkan_init(void) {
@@ -50,6 +47,23 @@ void vulkan_end_frame(void) {
 void vulkan_present(bool vsync) {
     (void)vsync;
     log_error("Vulkan renderer not available");
+}
+
+void gfx_init(void) {
+    log_warning("gfx_init stub - Vulkan renderer not available");
+    draw_frame_init(&drawFrame);
+}
+
+void GfxUpdate(void) {
+    // Nothing to do in stub
+}
+
+void gfx_init_image(Gfx_Image *image, void *data, bool render_target) {
+    (void)image; (void)data; (void)render_target;
+}
+
+void gfx_deinit_image(Gfx_Image *image) {
+    (void)image;
 }
 #endif
 

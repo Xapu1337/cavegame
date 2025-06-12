@@ -30,8 +30,10 @@
 
 ogb_instance void os_write_string_to_stdout(string s);
 inline int crt_sprintf(char *str, const char *format, ...);
-int vsnprintf(char* buffer, size_t n, const char* fmt, va_list args);
+int os_vsnprintf(char* buffer, size_t n, const char* fmt, va_list args);
 bool is_pointer_valid(void *p);
+
+#include "utility.h"
 
 u64 format_string_to_buffer(char* buffer, u64 count, const char* fmt, va_list args);
 u64 format_string_to_buffer_vararg(char* buffer, u64 count, const char* fmt, ...) {
@@ -226,7 +228,10 @@ string sprint_va_list_to_buffer(const string fmt, va_list args, void* buffer, u6
 string sprint_va_list(Allocator allocator, const string fmt, va_list args) {
 
     char* fmt_cstring = TempConvertToNullTerminatedString(fmt);
-    u64 count = format_string_to_buffer(NULL, 0, fmt_cstring, args) + 1; 
+    va_list args_copy;
+    va_copy(args_copy, args);
+    u64 count = format_string_to_buffer(NULL, 0, fmt_cstring, args_copy) + 1;
+    va_end(args_copy);
 
     char* buffer = NULL;
 

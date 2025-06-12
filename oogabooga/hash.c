@@ -80,5 +80,5 @@ u64 float32_get_hash(float32 x) {
 		    u64: xx_hash, \
 		    f32: float32_get_hash, \
 		    f64: float64_get_hash, \
-		    default: pointer_get_hash \
-		    )(x)
+                    default: pointer_get_hash \
+                    )(x)

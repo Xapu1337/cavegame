@@ -168,6 +168,30 @@
 #define SCISSOR_STACK_MAX 4096
 #define MAX_BOUND_IMAGES 16
 
+// Stub font types to allow building without font.c
+typedef struct Gfx_Font Gfx_Font;
+typedef struct Gfx_Glyph Gfx_Glyph;
+typedef struct Gfx_Font_Atlas {
+        Gfx_Image *image;
+        u32 first_codepoint;
+        Gfx_Glyph *glyphs;
+} Gfx_Font_Atlas;
+typedef struct Gfx_Glyph {
+        u32 codepoint;
+        float xoffset, yoffset;
+        float advance;
+        float width, height;
+        Vector4 uv;
+} Gfx_Glyph;
+typedef struct Gfx_Text_Metrics {
+        Vector2 functional_pos_min;
+        Vector2 functional_pos_max;
+        Vector2 functional_size;
+        Vector2 visual_pos_min;
+        Vector2 visual_pos_max;
+        Vector2 visual_size;
+} Gfx_Text_Metrics;
+
 typedef struct Draw_Quad {
 	// BEWARE !! These are in ndc
 	Vector2 bottom_left, top_left, top_right, bottom_right;
