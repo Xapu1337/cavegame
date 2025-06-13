@@ -9,8 +9,7 @@
 #if PLATFORM_LINUX && RENDERER_VULKAN
 #include "gfx_impl_vulkan.h"
 
-// Check if Vulkan headers are available
-#if 1
+#if __has_include(<vulkan/vulkan.h>)
 #define VULKAN_AVAILABLE 1
 #define VK_USE_PLATFORM_XLIB_KHR
 // Avoid conflicts with engine macros before including system headers

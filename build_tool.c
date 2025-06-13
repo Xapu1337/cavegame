@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/wait.h>
+#include <unistd.h>
 
 #ifdef _WIN32
     #define IS_WINDOWS 1
@@ -116,8 +117,9 @@ int main(int argc, char **argv) {
 
         const char *files = "oogabooga/oogabooga.c app/cube_flip.c";
 
-        // Note: This is a simplified command. In practice you'd want to check
-        // for Vulkan SDK installation and proper linking
+        int have_vulkan_headers = access("/usr/include/vulkan/vulkan.h", F_OK) == 0;
+        const char *vulkan_flags = have_vulkan_headers ? "-DVULKAN_AVAILABLE=1 -lvulkan" : "-DVULKAN_AVAILABLE=0";
+
         cmd = "gcc -I. "
               "-DENTRY_PROC=Entry "
               "-D_POSIX_C_SOURCE=200809L -D_GNU_SOURCE "
@@ -126,11 +128,11 @@ int main(int argc, char **argv) {
               "%s "
               "%s "
               "-std=c11 -Wall -Wextra -Wno-unused-parameter "
-              "-lm -lpthread -ldl -lX11 -lvulkan "
+              "-lm -lpthread -ldl -lX11 %s "
               "-o build/game";
 
         static char cmd_buffer[1024];
-        snprintf(cmd_buffer, sizeof(cmd_buffer), cmd, files, optimization);
+        snprintf(cmd_buffer, sizeof(cmd_buffer), cmd, files, optimization, vulkan_flags);
         cmd = cmd_buffer;
         
         // Create build directory
@@ -175,7 +177,11 @@ int main(int argc, char **argv) {
             }
         #elif IS_LINUX
             printf("  Compiler: GCC\n");
-            printf("  Renderer: Vulkan\n");
+            if (have_vulkan_headers) {
+                printf("  Renderer: Vulkan\n");
+            } else {
+                printf("  Renderer: Vulkan (stubbed - headers missing)\n");
+            }
         #endif
         
     } else {
