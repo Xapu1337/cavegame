@@ -110,19 +110,29 @@ int main(int argc, char **argv) {
         
     #elif IS_LINUX
         printf("Building for Linux...\n");
-        printf("Using GCC with Vulkan...\n");
+
+        int have_vulkan_headers = access("/usr/include/vulkan/vulkan.h", F_OK) == 0;
+        int have_gl_headers = access("/usr/include/GL/gl.h", F_OK) == 0;
+        const char *renderer_flags = NULL;
+        const char *renderer_name = NULL;
+
+        if (have_vulkan_headers) {
+            renderer_flags = "-DGFX_RENDERER=GFX_RENDERER_VULKAN -lvulkan";
+            renderer_name = "Vulkan";
+        } else if (have_gl_headers) {
+            renderer_flags = "-DGFX_RENDERER=GFX_RENDERER_OPENGL -lGL";
+            renderer_name = "OpenGL";
+        } else {
+            renderer_flags = "-DGFX_RENDERER=GFX_RENDERER_SOFTWARE";
+            renderer_name = "Software";
+        }
+
+        printf("Using GCC with %s...\n", renderer_name);
         
         // Linux build command using gcc with Vulkan (NO SDL2)
         const char* optimization = opts.release_build ? "-O3 -DNDEBUG" : "-g -O0";
 
         const char *files = "oogabooga/oogabooga.c app/cube_flip.c";
-
-        int have_vulkan_headers = access("/usr/include/vulkan/vulkan.h", F_OK) == 0;
-        if (!have_vulkan_headers) {
-            printf("Error: Vulkan headers not found. Please install the Vulkan SDK (libvulkan-dev).\n");
-            return 1;
-        }
-        const char *vulkan_flags = "-DVULKAN_AVAILABLE=1 -lvulkan";
 
         cmd = "gcc -I. "
               "-DENTRY_PROC=Entry "
@@ -136,7 +146,7 @@ int main(int argc, char **argv) {
               "-o build/game";
 
         static char cmd_buffer[1024];
-        snprintf(cmd_buffer, sizeof(cmd_buffer), cmd, files, optimization, vulkan_flags);
+        snprintf(cmd_buffer, sizeof(cmd_buffer), cmd, files, optimization, renderer_flags);
         cmd = cmd_buffer;
         
         // Create build directory
@@ -181,7 +191,7 @@ int main(int argc, char **argv) {
             }
         #elif IS_LINUX
             printf("  Compiler: GCC\n");
-            printf("  Renderer: Vulkan\n");
+            printf("  Renderer: %s\n", renderer_name);
         #endif
         
     } else {

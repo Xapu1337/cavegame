@@ -416,18 +416,20 @@ typedef f64 float64;
 
 // #Incomplete
 // We might want to make this configurable ?
-#define GFX_RENDERER_D3D11  0
-#define GFX_RENDERER_VULKAN 1
-#define GFX_RENDERER_METAL  2
+#define GFX_RENDERER_D3D11   0
+#define GFX_RENDERER_VULKAN  1
+#define GFX_RENDERER_OPENGL  2
+#define GFX_RENDERER_METAL   3
+#define GFX_RENDERER_SOFTWARE 4
 #ifndef GFX_RENDERER
 // #Portability
-	#if TARGET_OS == WINDOWS
-		#define GFX_RENDERER GFX_RENDERER_D3D11
-	#elif TARGET_OS == LINUX
-		#define GFX_RENDERER GFX_RENDERER_VULKAN
-	#elif TARGET_OS == MACOS
-		#define GFX_RENDERER GFX_RENDERER_METAL
-	#endif
+        #if TARGET_OS == WINDOWS
+                #define GFX_RENDERER GFX_RENDERER_D3D11
+        #elif TARGET_OS == LINUX
+                #define GFX_RENDERER GFX_RENDERER_VULKAN
+        #elif TARGET_OS == MACOS
+                #define GFX_RENDERER GFX_RENDERER_METAL
+        #endif
 #endif
 
 
@@ -496,7 +498,11 @@ typedef f64 float64;
         #if GFX_RENDERER == GFX_RENDERER_D3D11
             #include "gfx_impl_d3d11.h"
         #elif GFX_RENDERER == GFX_RENDERER_VULKAN
-            // #error "D3D11 renderer disabled for Linux build"
+            // Vulkan headers included later
+        #elif GFX_RENDERER == GFX_RENDERER_OPENGL
+            // OpenGL headers would go here
+        #elif GFX_RENDERER == GFX_RENDERER_SOFTWARE
+            // Software renderer uses no external headers
         #elif GFX_RENDERER == GFX_RENDERER_METAL
             // #error "D3D11 renderer disabled for Linux build"
         #else
@@ -540,6 +546,14 @@ typedef f64 float64;
 #include "gfx_impl_d3d11.c"
 #elif GFX_RENDERER == GFX_RENDERER_VULKAN
 #include "gfx_impl_vulkan.c"
+#elif GFX_RENDERER == GFX_RENDERER_OPENGL
+#error "OpenGL renderer not implemented"
+#elif GFX_RENDERER == GFX_RENDERER_SOFTWARE
+#include "gfx_impl_software.c"
+#elif GFX_RENDERER == GFX_RENDERER_METAL
+#error "Metal renderer not implemented"
+#else
+#error "Unknown renderer GFX_RENDERER defined"
 #endif
 #endif
 #if OOGABOOGA_ENABLE_EXTENSIONS

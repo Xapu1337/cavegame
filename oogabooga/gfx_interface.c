@@ -10,17 +10,26 @@
 
 	
 #elif GFX_RENDERER == GFX_RENDERER_VULKAN
-	// Vulkan renderer for Linux
-	#if PLATFORM_LINUX
-		// Forward declarations for Vulkan types (actual headers included in gfx_impl_vulkan.c)
+        // Vulkan renderer for Linux
+        #if PLATFORM_LINUX
+                // Forward declarations for Vulkan types (actual headers included in gfx_impl_vulkan.c)
                 typedef void* Gfx_Handle;
                 typedef void* Gfx_Render_Target_Handle;
-	#else
-		#error "Vulkan renderer is only supported on Linux"
-	#endif
-	
+        #else
+                #error "Vulkan renderer is only supported on Linux"
+        #endif
+
+#elif GFX_RENDERER == GFX_RENDERER_OPENGL
+        // Temporary fallback to software implementation
+        typedef void* Gfx_Handle;
+        typedef void* Gfx_Render_Target_Handle;
+
+#elif GFX_RENDERER == GFX_RENDERER_SOFTWARE
+        typedef void* Gfx_Handle;
+        typedef void* Gfx_Render_Target_Handle;
+
 #elif GFX_RENDERER == GFX_RENDERER_METAL
-	#error "Metal renderer not implemented yet"
+        #error "Metal renderer not implemented yet"
 #else
 	#error "Unknown renderer GFX_RENDERER defined"
 #endif
