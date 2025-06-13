@@ -154,7 +154,7 @@ void OsBinarySemaphoreSignal(Binary_Semaphore *sem) {
 }
 
 // Sleep and timing
-void OsSleep(uint32_t ms) {
+void OsSleep(u32 ms) {
     struct timespec ts;
     ts.tv_sec = ms / 1000;
     ts.tv_nsec = (ms % 1000) * 1000000;

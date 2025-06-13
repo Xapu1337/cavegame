@@ -156,26 +156,7 @@
 // BASIC TYPES
 //=============================================================================
 
-typedef uint8_t  uint8_t;
-typedef uint16_t uint16_t;
-typedef uint32_t uint32_t;
-typedef uint64_t uint64_t;
-typedef int8_t   int8_t;
-typedef int16_t  int16_t;
-typedef int32_t  int32_t;
-typedef int64_t  int64_t;
-
-typedef uint8_t uint8;
-typedef int8_t int8;
-typedef uint16_t uint16;
-typedef int16_t int16;
-typedef uint32_t uint32;
-typedef int32_t int32;
-typedef uint64_t uint64;
-typedef int64_t int64;
-
-typedef float f32;
-typedef double f64;
+#include "utility.h"
 
 typedef size_t usize;
 typedef ptrdiff_t ssize;
@@ -271,7 +252,6 @@ void oogabooga_assert_fail(const char* expr, const char* file, int line, const c
 
 // Utilities
 #include "random.h"
-#include "utility.h"
 #include "unicode.h"
 #include "path_utils.h"
 #include "string_format.h"

@@ -5,16 +5,7 @@
 #include <stdbool.h>
 
 // Basic types
-typedef uint8_t  uint8_t;
-typedef uint16_t uint16_t;
-typedef uint32_t uint32_t;
-typedef uint64_t uint64_t;
-typedef int8_t   int8_t;
-typedef int16_t  int16_t;
-typedef int32_t  int32_t;
-typedef int64_t  int64_t;
-typedef float    f32;
-typedef double   f64;
+#include "utility.h"
 
 // Forward declare vector types (defined in linmath.h)
 typedef union Vector2f32 Vector2;
@@ -79,7 +70,7 @@ typedef struct Os_Window {
     bool fullscreen;
     bool allow_resize;
     bool force_topmost;
-    uint32_t dpi;
+    u32 dpi;
     double point_size_in_pixels;
     
     bool should_close;
@@ -120,7 +111,7 @@ void OsBinarySemaphoreDestroy(Binary_Semaphore *sem);
 void OsBinarySemaphoreWait(Binary_Semaphore *sem);
 void OsBinarySemaphoreSignal(Binary_Semaphore *sem);
 
-void OsSleep(uint32_t ms);
+void OsSleep(u32 ms);
 void OsYieldThread(void);
 void OsHighPrecisionSleep(double ms);
 

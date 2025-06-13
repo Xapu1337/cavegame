@@ -22,14 +22,7 @@
 #endif
 
 // Basic types
-typedef uint8_t  uint8_t;
-typedef uint16_t uint16_t;
-typedef uint32_t uint32_t;
-typedef uint64_t uint64_t;
-typedef int8_t   int8_t;
-typedef int16_t  int16_t;
-typedef int32_t  int32_t;
-typedef int64_t  int64_t;
+#include "utility.h"
 
 typedef struct Draw_Frame {
 	Matrix4 projection;
@@ -59,7 +52,7 @@ typedef struct Draw_Frame {
 
 Draw_Quad* draw_rect(Vector2 position, Vector2 size, Vector4 color);
 Draw_Quad* DrawRectXform(Matrix4 xform, Vector2 size, Vector4 color);
-void draw_text(Gfx_Font *font, string text, uint32_t raster_height, Vector2 position, Vector2 scale, Vector4 color);
+void draw_text(Gfx_Font *font, string text, u32 rasterHeight, Vector2 position, Vector2 scale, Vector4 color);
 void DrawFrameReset(Draw_Frame *frame);
 
 #endif
