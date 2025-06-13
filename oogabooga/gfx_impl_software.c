@@ -5,10 +5,13 @@
 
 void gfx_init(void) {
     printf("[INFO]: Software renderer initialized.\n");
+    draw_frame_init(&drawFrame);
+    DrawFrameReset(&drawFrame);
 }
 
 void GfxUpdate(void) {
-    // No-op for software renderer
+    gfx_render_draw_frame_to_window(&drawFrame);
+    DrawFrameReset(&drawFrame);
 }
 
 void gfx_render_draw_frame(Draw_Frame *frame, Gfx_Image *target) {
