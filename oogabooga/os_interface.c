@@ -401,12 +401,12 @@ os_get_number_of_logical_processors();
 // Debug
 ///
 ogb_instance string*
-os_get_stack_trace(u64 *trace_count, Allocator allocator);
+OsGetStackTrace(u64 *traceCount, Allocator allocator);
 
-inline void 
-dump_stack_trace() {
-	u64 count;
-	string *strings = os_get_stack_trace(&count, GetTemporaryAllocator());
+inline void
+DumpStackTrace(void) {
+        u64 count;
+        string *strings = OsGetStackTrace(&count, GetTemporaryAllocator());
 	
 	for (u64 i = 0; i < count; i++) {
 		string s = strings[i];

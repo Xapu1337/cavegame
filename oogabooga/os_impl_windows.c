@@ -1291,7 +1291,7 @@ os_get_number_of_logical_processors() {
 #define WIN32_MAX_STACK_FRAMES 64
 #define WIN32_MAX_SYMBOL_NAME_LENGTH 256
 string *
-os_get_stack_trace(u64 *trace_count, Allocator allocator) {
+OsGetStackTrace(u64 *traceCount, Allocator allocator) {
 #if CONFIGURATION == DEBUG
     HANDLE process = GetCurrentProcess();
     HANDLE thread = GetCurrentThread();
@@ -1333,7 +1333,7 @@ os_get_stack_trace(u64 *trace_count, Allocator allocator) {
 #endif
 
     string *stack_strings = (string *)Alloc(allocator, WIN32_MAX_STACK_FRAMES * sizeof(string));
-    *trace_count = 0;
+    *traceCount = 0;
 
     for (int i = 0; i < WIN32_MAX_STACK_FRAMES; i++) {
         if (!StackWalk64(machineType, process, thread, &stack, &context, NULL, SymFunctionTableAccess64, SymGetModuleBase64, NULL)) {
@@ -1361,20 +1361,20 @@ os_get_stack_trace(u64 *trace_count, Allocator allocator) {
                 result = (char *)Alloc(allocator, length);
                 memcpy(result, symbol->Name, symbol->NameLen + 1);
             }
-            stack_strings[*trace_count].data = (uint8_t *)result;
-            stack_strings[*trace_count].count = strlen(result);
-            (*trace_count)++;
+            stack_strings[*traceCount].data = (uint8_t *)result;
+            stack_strings[*traceCount].count = strlen(result);
+            (*traceCount)++;
         } else {
-            stack_strings[*trace_count].data = (uint8_t *)Alloc(allocator, 32);
-            stack_strings[*trace_count].count = format_string_to_buffer_va((char *)stack_strings[*trace_count].data, 32, "0x%llx", stack.AddrPC.Offset);
-            (*trace_count)++;
+            stack_strings[*traceCount].data = (uint8_t *)Alloc(allocator, 32);
+            stack_strings[*traceCount].count = format_string_to_buffer_va((char *)stack_strings[*traceCount].data, 32, "0x%llx", stack.AddrPC.Offset);
+            (*traceCount)++;
         }
     }
 
     return stack_strings;
 #else // DEBUG
 	
-	*trace_count = 1;
+        *traceCount = 1;
 	string *result = Alloc(allocator, 3+sizeof(string));
 	result->count = 3;
 	result->data = (uint8_t*)result+sizeof(string);

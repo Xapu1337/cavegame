@@ -302,7 +302,7 @@ void os_file_close(File f) {
 // Stack traces using glibc backtrace API
 #include <execinfo.h>
 
-string *os_get_stack_trace(u64 *trace_count, Allocator allocator) {
+string *OsGetStackTrace(u64 *traceCount, Allocator allocator) {
     const int max_frames = 64;
     void *frames[max_frames];
     int captured = backtrace(frames, max_frames);
@@ -316,7 +316,7 @@ string *os_get_stack_trace(u64 *trace_count, Allocator allocator) {
         result[i].count = len;
     }
     free(symbols);
-    *trace_count = captured;
+    *traceCount = captured;
     return result;
 }
 

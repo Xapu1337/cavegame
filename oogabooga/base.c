@@ -12,11 +12,11 @@
 	
 // printf declared in stdio.h
 
-void dump_stack_trace();
+void DumpStackTrace(void);
 
 #define ASSERT_STR_HELPER(x) #x
 #define ASSERT_STR(x) ASSERT_STR_HELPER(x)
-#define assert_line(line, cond, ...) {if(!(cond)) { printf("\nAssertion failed in file " __FILE__ " on line " ASSERT_STR(line) "\n\nFailed Condition: " #cond ". Message: " __VA_ARGS__); printf("\n"); dump_stack_trace(); crash(); }}
+#define assert_line(line, cond, ...) {if(!(cond)) { printf("\nAssertion failed in file " __FILE__ " on line " ASSERT_STR(line) "\n\nFailed Condition: " #cond ". Message: " __VA_ARGS__); printf("\n"); DumpStackTrace(); crash(); }}
 #define assert(cond, ...) {assert_line(__LINE__, cond, __VA_ARGS__)}
 
 #define DEFER(start, end) for(int _i_ = ((start), 0); _i_ == 0; _i_ += 1, (end))

@@ -120,4 +120,8 @@ void OsWriteStringToStdout(string s);
 bool OsWriteEntireFileS(string path, string data);
 bool OsReadEntireFileS(string path, string *result, Allocator allocator);
 
+// Debug utilities
+string *OsGetStackTrace(u64 *traceCount, Allocator allocator);
+void DumpStackTrace(void);
+
 #endif
