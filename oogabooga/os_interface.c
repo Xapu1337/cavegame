@@ -87,7 +87,7 @@ typedef struct Thread Thread;
 typedef void(*Thread_Proc)(Thread*);
 
 typedef struct Thread {
-	u64 id; // This is valid after os_thread_start
+	u64 id; // This is valid after OsThreadStart
 	Context initial_context;
 	void* data;
 	u64 temporary_storage_size; // Defaults to KB(10)
@@ -100,22 +100,22 @@ typedef struct Thread {
 
 ///
 // Thread primitive #Cleanup
-DEPRECATED(Thread* os_make_thread(Thread_Proc proc, Allocator allocator), "Use os_thread_init instead");
-DEPRECATED(void os_destroy_thread(Thread *t), "Use os_thread_destroy instead");
-DEPRECATED(void os_start_thread(Thread* t), "Use os_thread_start instead");
-DEPRECATED(void os_join_thread(Thread* t), "Use os_thread_join instead");
+DEPRECATED(Thread* os_make_thread(Thread_Proc proc, Allocator allocator), "Use OsThreadInit instead");
+DEPRECATED(void os_destroy_thread(Thread *t), "Use OsThreadDestroy instead");
+DEPRECATED(void os_start_thread(Thread* t), "Use OsThreadStart instead");
+DEPRECATED(void os_join_thread(Thread* t), "Use OsThreadJoin instead");
 
 void ogb_instance
-os_thread_init(Thread *t, Thread_Proc proc);
+OsThreadInit(Thread *t, Thread_Proc proc);
 
 void ogb_instance
-os_thread_destroy(Thread *t);
+OsThreadDestroy(Thread *t);
 
 void ogb_instance
-os_thread_start(Thread *t);
+OsThreadStart(Thread *t);
 
 void ogb_instance
-os_thread_join(Thread *t);
+OsThreadJoin(Thread *t);
 
 
 
@@ -125,7 +125,7 @@ Mutex_Handle ogb_instance
 OsMakeMutex();
 
 void ogb_instance
-os_destroy_mutex(Mutex_Handle m);
+OsDestroyMutex(Mutex_Handle m);
 
 void ogb_instance
 OsLockMutex(Mutex_Handle m);
@@ -140,28 +140,28 @@ typedef struct Binary_Semaphore {
 } Binary_Semaphore;
 
 void ogb_instance
-os_binary_semaphore_init(Binary_Semaphore *sem, bool initial_state);
+OsBinarySemaphoreInit(Binary_Semaphore *sem, bool initial_state);
 
 void ogb_instance
-os_binary_semaphore_destroy(Binary_Semaphore *sem);
+OsBinarySemaphoreDestroy(Binary_Semaphore *sem);
 
 void ogb_instance
-os_binary_semaphore_wait(Binary_Semaphore *sem);
+OsBinarySemaphoreWait(Binary_Semaphore *sem);
 
 void ogb_instance
-os_binary_semaphore_signal(Binary_Semaphore *sem);
+OsBinarySemaphoreSignal(Binary_Semaphore *sem);
 
 ///
 // Threading utilities
 
 void ogb_instance
-os_sleep(u32 ms);
+OsSleep(u32 ms);
 
 void ogb_instance
-os_yield_thread();
+OsYieldThread();
 
 void ogb_instance
-os_high_precision_sleep(f64 ms);
+OsHighPrecisionSleep(f64 ms);
 
 
 ///
@@ -200,19 +200,19 @@ os_unload_dynamic_library(Dynamic_Library_Handle l);
 ogb_instance const File OS_INVALID_FILE;
 
 void ogb_instance
-os_write_string_to_stdout(string s);
+OsWriteStringToStdout(string s);
 
 bool ogb_instance
 os_write_entire_file_handle(File f, string data);
 
 bool ogb_instance
-os_write_entire_file_s(string path, string data);
+OsWriteEntireFileS(string path, string data);
 
 bool ogb_instance
 os_read_entire_file_handle(File f, string *result, Allocator allocator);
 
 bool ogb_instance
-os_read_entire_file_s(string path, string *result, Allocator allocator);
+OsReadEntireFileS(string path, string *result, Allocator allocator);
 
 typedef enum Os_Io_Open_Flags {
 	O_READ   = 0,
@@ -321,15 +321,15 @@ static inline bool os_delete_directory_f(const char *path, bool recursive) { ret
                            default: os_delete_directory_f \
                           )(__VA_ARGS__)
 
-static inline bool os_write_entire_file_f(const char *path, string data) {return os_write_entire_file_s(STR(path), data);}
+static inline bool os_write_entire_file_f(const char *path, string data) {return OsWriteEntireFileS(STR(path), data);}
 #define os_write_entire_file(...) _Generic((FIRST_ARG(__VA_ARGS__)), \
-                           string:  os_write_entire_file_s, \
+                           string:  OsWriteEntireFileS, \
                            default: os_write_entire_file_f \
                           )(__VA_ARGS__)
                           
-static inline bool os_read_entire_file_f(const char *path, string *result, Allocator allocator) {return os_read_entire_file_s(STR(path), result, allocator);}
+static inline bool os_read_entire_file_f(const char *path, string *result, Allocator allocator) {return OsReadEntireFileS(STR(path), result, allocator);}
 #define os_read_entire_file(...) _Generic((FIRST_ARG(__VA_ARGS__)), \
-                           string:  os_read_entire_file_s, \
+                           string:  OsReadEntireFileS, \
                            default: os_read_entire_file_f \
                           )(__VA_ARGS__)
                           

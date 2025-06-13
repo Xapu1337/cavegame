@@ -107,7 +107,7 @@ void mutex_init(Mutex *m) {
 	m->acquiring_thread = 0;
 }
 void mutex_destroy(Mutex *m) {
-	os_destroy_mutex(m->os_handle);
+	OsDestroyMutex(m->os_handle);
 }
 void mutex_acquire_or_wait(Mutex *m) {
 	if (spinlock_acquire_or_wait_timeout(&m->spinlock, m->spin_time_microseconds / 1000000.0)) {

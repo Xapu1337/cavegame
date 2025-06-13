@@ -19,15 +19,15 @@ int main(int argc, char **argv) {
     
     Dynamic_Library_Handle dll = os_load_dynamic_library(dll_path);
     if (!dll) {
-        os_write_string_to_stdout(STR("Failed loading engine dll from "));
-        os_write_string_to_stdout(dll_path);
-        os_write_string_to_stdout(STR("\n"));
+        OsWriteStringToStdout(STR("Failed loading engine dll from "));
+        OsWriteStringToStdout(dll_path);
+        OsWriteStringToStdout(STR("\n"));
         return -1;
     }
     
     int (*engine_main)(int, char**) = os_dynamic_library_load_symbol(dll, STR("main"));
     if (!engine_main) {
-        os_write_string_to_stdout(STR("Failed loading engine main\n"));
+        OsWriteStringToStdout(STR("Failed loading engine main\n"));
         return -1;
     }
     

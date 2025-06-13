@@ -28,7 +28,7 @@
 	https://www.geeksforgeeks.org/format-specifiers-in-c/
 */
 
-ogb_instance void os_write_string_to_stdout(string s);
+ogb_instance void OsWriteStringToStdout(string s);
 inline int crt_sprintf(char *str, const char *format, ...);
 int os_vsnprintf(char* buffer, size_t n, const char* fmt, va_list args);
 bool is_pointer_valid(void *p);
@@ -314,7 +314,7 @@ void print_va_list_buffered(const string fmt, va_list args) {
 		fmt_cstring[size] = 0;
 		
 		string s = sprint_null_terminated_string_va_list_to_buffer(fmt_cstring, args, buffer, PRINT_BUFFER_SIZE);
-		os_write_string_to_stdout(s);
+		OsWriteStringToStdout(s);
 		
 		current.count -= size;
 		current.data += size;

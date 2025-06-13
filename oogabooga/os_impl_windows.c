@@ -518,13 +518,13 @@ void os_init(u64 program_memory_capacity) {
     
     local_persist Thread audio_thread, audio_poll_default_device_thread;
     
-    os_thread_init(&audio_thread, win32_audio_thread);
-    os_thread_init(&audio_poll_default_device_thread, win32_audio_poll_default_device_thread);
+    OsThreadInit(&audio_thread, win32_audio_thread);
+    OsThreadInit(&audio_poll_default_device_thread, win32_audio_poll_default_device_thread);
     
-    os_thread_start(&audio_thread);
-    os_thread_start(&audio_poll_default_device_thread);
+    OsThreadStart(&audio_thread);
+    OsThreadStart(&audio_poll_default_device_thread);
     
-    while (!win32_has_audio_thread_started) { os_yield_thread(); }
+    while (!win32_has_audio_thread_started) { OsYieldThread(); }
 #endif /* NOT OOGABOOGA_HEADLESS */
 
 
@@ -711,18 +711,18 @@ void os_join_thread(Thread *t) {
 
 
 
-void os_thread_init(Thread *t, Thread_Proc proc) {
+void OsThreadInit(Thread *t, Thread_Proc proc) {
 	memset(t, 0, sizeof(Thread));
 	t->id = 0;
 	t->proc = proc;
 	t->initial_context = context;
 	t->temporary_storage_size = KB(10);
 }
-void os_thread_destroy(Thread *t) {
-	os_thread_join(t);
+void OsThreadDestroy(Thread *t) {
+	OsThreadJoin(t);
 	CloseHandle(t->os_handle);
 }
-void os_thread_start(Thread *t) {
+void OsThreadStart(Thread *t) {
 	t->os_handle = CreateThread(
         0,
         0,
@@ -734,7 +734,7 @@ void os_thread_start(Thread *t) {
     
     assert(t->os_handle, "Failed creating thread");
 }
-void os_thread_join(Thread *t) {
+void OsThreadJoin(Thread *t) {
 	WaitForSingleObject(t->os_handle, INFINITE);
 }
 
@@ -755,7 +755,7 @@ Mutex_Handle OsMakeMutex() {
 	
 	return m;
 }
-void os_destroy_mutex(Mutex_Handle m) {
+void OsDestroyMutex(Mutex_Handle m) {
 	CloseHandle(m);
 }
 void OsLockMutex(Mutex_Handle m) {
@@ -778,33 +778,33 @@ void OsUnlockMutex(Mutex_Handle m) {
 	assert(result, "Unlock mutex 0x%x failed with error %d", m, GetLastError());
 }
 
-void os_binary_semaphore_init(Binary_Semaphore *sem, bool initial_state) {
+void OsBinarySemaphoreInit(Binary_Semaphore *sem, bool initial_state) {
 	sem->os_event = CreateEvent(NULL, TRUE, initial_state ? TRUE : FALSE, NULL);
 }
 
-void os_binary_semaphore_destroy(Binary_Semaphore *sem) {
+void OsBinarySemaphoreDestroy(Binary_Semaphore *sem) {
 	CloseHandle(sem->os_event);
 }
 
-void os_binary_semaphore_wait(Binary_Semaphore *sem) {
+void OsBinarySemaphoreWait(Binary_Semaphore *sem) {
 	WaitForSingleObject(sem->os_event, INFINITE);
 	ResetEvent(sem->os_event);
 }
 
-void os_binary_semaphore_signal(Binary_Semaphore *sem) {
+void OsBinarySemaphoreSignal(Binary_Semaphore *sem) {
 	SetEvent(sem->os_event);
 }
 
 
-void os_sleep(u32 ms) {
+void OsSleep(u32 ms) {
     Sleep(ms);
 }
 
-void os_yield_thread() {
+void OsYieldThread() {
     SwitchToThread();
 }
 
-void os_high_precision_sleep(f64 ms) {
+void OsHighPrecisionSleep(f64 ms) {
 	
 	const f64 s = ms/1000.0;
 	
@@ -815,10 +815,10 @@ void os_high_precision_sleep(f64 ms) {
 	
 	timeBeginPeriod(1);
 	
-	if (do_sleep)  os_sleep(sleep_time);
+	if (do_sleep)  OsSleep(sleep_time);
 	
 	while (OsGetElapsedSeconds() < end) {
-		os_yield_thread();
+		OsYieldThread();
 	}
 	
 	timeEndPeriod(1);
@@ -875,7 +875,7 @@ void os_unload_dynamic_library(Dynamic_Library_Handle l) {
 
 // #Global
 const File OS_INVALID_FILE = INVALID_HANDLE_VALUE;
-void os_write_string_to_stdout(string s) {
+void OsWriteStringToStdout(string s) {
 	HANDLE win32_stdout = GetStdHandle(STD_OUTPUT_HANDLE);
 	if (win32_stdout == INVALID_HANDLE_VALUE) return;
 	
@@ -1065,7 +1065,7 @@ bool os_write_entire_file_handle(File f, string data) {
     return os_file_write_string(f, data);
 }
 
-bool os_write_entire_file_s(string path, string data) {
+bool OsWriteEntireFileS(string path, string data) {
     File file = os_file_open_s(path, O_WRITE | O_CREATE);
     if (file == OS_INVALID_FILE) {
         return false;
@@ -1095,7 +1095,7 @@ bool os_read_entire_file_handle(File f, string *result, Allocator allocator) {
     return actual_read == file_size.QuadPart;
 }
 
-bool os_read_entire_file_s(string path, string *result, Allocator allocator) {
+bool OsReadEntireFileS(string path, string *result, Allocator allocator) {
     File file = os_file_open_s(path, O_READ);
     if (file == OS_INVALID_FILE) {
         return false;
@@ -1445,9 +1445,9 @@ bool os_grow_program_memory(u64 new_size) {
 	char size_str[32];
 	s64_to_null_terminated_string(program_memory_capacity/1024, size_str, 10);
 	
-	os_write_string_to_stdout(STR("Program memory grew to "));
-	os_write_string_to_stdout(STR(size_str));
-	os_write_string_to_stdout(STR(" kb\n"));
+	OsWriteStringToStdout(STR("Program memory grew to "));
+	OsWriteStringToStdout(STR(size_str));
+	OsWriteStringToStdout(STR(" kb\n"));
 	OsUnlockMutex(program_memory_mutex); // #Sync
 	return true;
 }
@@ -1784,12 +1784,12 @@ win32_audio_init() {
 void
 win32_audio_poll_default_device_thread(Thread *t) {
 	while (!win32_has_audio_thread_started) {
-		os_yield_thread();
+		OsYieldThread();
 	}
 
 	while (!window.should_close) {
 		while (win32_audio_deactivated) {
-			os_sleep(100);
+			OsSleep(100);
 		}
 		
 		mutex_acquire_or_wait(&audio_init_mutex);
@@ -1817,7 +1817,7 @@ win32_audio_poll_default_device_thread(Thread *t) {
 	
 	    IMMDevice_Release(now_default);
 	    
-		os_sleep(100);
+		OsSleep(100);
 		
 	}
 
@@ -1840,7 +1840,7 @@ win32_audio_thread(Thread *t) {
     
 	while (!window.should_close) tm_scope("Audio update") {
 		if (win32_audio_deactivated) tm_scope("Retry audio device") {
-			os_sleep(100);
+			OsSleep(100);
 			mutex_acquire_or_wait(&audio_init_mutex);
 			win32_audio_init();
 			mutex_release(&audio_init_mutex);
@@ -1872,8 +1872,8 @@ win32_audio_thread(Thread *t) {
     	
     	while (num_frames_to_write == 0) tm_scope("Chill") {
     		// We yield & sleep until we have any work to do
-    		os_yield_thread();
-    		os_sleep(1);
+    		OsYieldThread();
+    		OsSleep(1);
 			
 	    	hr = IAudioClient_GetCurrentPadding(win32_audio_client, &num_frames_available);
 			if (FAILED(hr)) {

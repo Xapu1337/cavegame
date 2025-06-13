@@ -103,30 +103,30 @@ void OsUpdate(void);
 
 typedef struct Thread Thread;
 typedef void (*Thread_Proc)(Thread*);
-void os_thread_init(Thread *t, Thread_Proc proc);
-void os_thread_destroy(Thread *t);
-void os_thread_start(Thread *t);
-void os_thread_join(Thread *t);
+void OsThreadInit(Thread *t, Thread_Proc proc);
+void OsThreadDestroy(Thread *t);
+void OsThreadStart(Thread *t);
+void OsThreadJoin(Thread *t);
 
 typedef void* Mutex_Handle;
 Mutex_Handle OsMakeMutex(void);
-void os_destroy_mutex(Mutex_Handle m);
+void OsDestroyMutex(Mutex_Handle m);
 void OsLockMutex(Mutex_Handle m);
 void OsUnlockMutex(Mutex_Handle m);
 
 typedef struct Binary_Semaphore Binary_Semaphore;
-void os_binary_semaphore_init(Binary_Semaphore *sem, bool initial_state);
-void os_binary_semaphore_destroy(Binary_Semaphore *sem);
-void os_binary_semaphore_wait(Binary_Semaphore *sem);
-void os_binary_semaphore_signal(Binary_Semaphore *sem);
+void OsBinarySemaphoreInit(Binary_Semaphore *sem, bool initial_state);
+void OsBinarySemaphoreDestroy(Binary_Semaphore *sem);
+void OsBinarySemaphoreWait(Binary_Semaphore *sem);
+void OsBinarySemaphoreSignal(Binary_Semaphore *sem);
 
-void os_sleep(uint32_t ms);
-void os_yield_thread(void);
-void os_high_precision_sleep(double ms);
+void OsSleep(uint32_t ms);
+void OsYieldThread(void);
+void OsHighPrecisionSleep(double ms);
 
 typedef void* File;
-void os_write_string_to_stdout(string s);
-bool os_write_entire_file_s(string path, string data);
-bool os_read_entire_file_s(string path, string *result, Allocator allocator);
+void OsWriteStringToStdout(string s);
+bool OsWriteEntireFileS(string path, string data);
+bool OsReadEntireFileS(string path, string *result, Allocator allocator);
 
 #endif

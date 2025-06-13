@@ -198,26 +198,26 @@ void test_allocator(bool do_log_heap) {
 }
 
 void test_thread_proc1(Thread* t) {
-	os_sleep(5);
+	OsSleep(5);
 	print("Hello from thread %llu\n", t->id);
-	os_sleep(5);
+	OsSleep(5);
 	print("Hello from thread %llu\n", t->id);
-	os_sleep(5);
+	OsSleep(5);
 	print("Hello from thread %llu\n", t->id);
-	os_sleep(5);
+	OsSleep(5);
 	print("Hello from thread %llu\n", t->id);
-	os_sleep(5);
+	OsSleep(5);
 	print("Hello from thread %llu\n", t->id);
 }
 
 void test_threads() {
 	
 	Thread t;
-	os_thread_init(&t, test_thread_proc1);
-	os_thread_start(&t);
-	os_sleep(20);
+	OsThreadInit(&t, test_thread_proc1);
+	OsThreadStart(&t);
+	OsSleep(20);
 	print("This should be printed in middle of thread execution\n");
-	os_thread_join(&t);
+	OsThreadJoin(&t);
 	print("Thread is joined\n");
 	
 	Mutex_Handle m = OsMakeMutex();
@@ -1434,14 +1434,14 @@ void test_mutex() {
 
 	Thread *threads = Alloc(allocator, sizeof(Thread)*num_threads);
 	for (u64 i = 0; i < num_threads; i++) {
-		os_thread_init(&threads[i], mutex_test_increment_counter);
+		OsThreadInit(&threads[i], mutex_test_increment_counter);
 		threads[i].data = &data;
 	}
 	for (u64 i = 0; i < num_threads; i++) {
-    	os_thread_start(&threads[i]);
+    	OsThreadStart(&threads[i]);
 	}
 	for (u64 i = 0; i < num_threads; i++) {
-    	os_thread_join(&threads[i]);
+    	OsThreadJoin(&threads[i]);
 	}
 
     assert(data.counter == num_threads * MUTEX_TEST_TASK_COUNT, "Failed: Counter does not match expected value after threading tasks");
@@ -1597,9 +1597,9 @@ typedef struct {
 void increment_thread_proc(Thread *t) {
     Test_Args *test_args = (Test_Args *)t->data;
     for (int i = 0; i < test_args->increments; i++) {
-        os_binary_semaphore_wait(test_args->sem);
+        OsBinarySemaphoreWait(test_args->sem);
         InterlockedIncrement(test_args->counter);
-        os_binary_semaphore_signal(test_args->sem);
+        OsBinarySemaphoreSignal(test_args->sem);
     }
 }
 void test_os_binary_semaphore() {
@@ -1609,51 +1609,51 @@ void test_os_binary_semaphore() {
         const int increments_per_thread = 10000;
 
         Binary_Semaphore sem;
-        os_binary_semaphore_init(&sem, true);
+        OsBinarySemaphoreInit(&sem, true);
 
         LONG counter = 0;
         Thread threads[num_threads];
         Test_Args args = { &sem, &counter, increments_per_thread };
 
         for (int i = 0; i < num_threads; i++) {
-            os_thread_init(&threads[i], increment_thread_proc);
+            OsThreadInit(&threads[i], increment_thread_proc);
             threads[i].data = &args;
-            os_thread_start(&threads[i]);
+            OsThreadStart(&threads[i]);
         }
 
         for (int i = 0; i < num_threads; i++) {
-            os_thread_join(&threads[i]);
-            os_thread_destroy(&threads[i]);
+            OsThreadJoin(&threads[i]);
+            OsThreadDestroy(&threads[i]);
         }
 
         assert(counter == num_threads * increments_per_thread, "Failed: Multithreaded increment test");
 
-        os_binary_semaphore_destroy(&sem);
+        OsBinarySemaphoreDestroy(&sem);
     }
 
     {
         // Signal before wait test
         Binary_Semaphore sem;
-        os_binary_semaphore_init(&sem, false);
+        OsBinarySemaphoreInit(&sem, false);
 
         LONG counter = 0;
 
         Thread thread;
         Test_Args args = { &sem, &counter, 1 };
-        os_thread_init(&thread, increment_thread_proc);
+        OsThreadInit(&thread, increment_thread_proc);
         thread.data = &args;
-        os_thread_start(&thread);
+        OsThreadStart(&thread);
 
         // Signal the semaphore after a delay
         Sleep(100);
-        os_binary_semaphore_signal(&sem);
+        OsBinarySemaphoreSignal(&sem);
 
-        os_thread_join(&thread);
-        os_thread_destroy(&thread);
+        OsThreadJoin(&thread);
+        OsThreadDestroy(&thread);
 
         assert(counter == 1, "Failed: Signal before wait test");
 
-        os_binary_semaphore_destroy(&sem);
+        OsBinarySemaphoreDestroy(&sem);
     }
 
     {
@@ -1662,32 +1662,32 @@ void test_os_binary_semaphore() {
         const int increments_per_thread = 1000;
 
         Binary_Semaphore sem;
-        os_binary_semaphore_init(&sem, true);
+        OsBinarySemaphoreInit(&sem, true);
 
         LONG counter = 0;
         Thread threads[num_threads];
         Test_Args args = { &sem, &counter, increments_per_thread };
 
         for (int i = 0; i < num_threads; i++) {
-            os_thread_init(&threads[i], increment_thread_proc);
+            OsThreadInit(&threads[i], increment_thread_proc);
             threads[i].data = &args;
-            os_thread_start(&threads[i]);
+            OsThreadStart(&threads[i]);
         }
 
         for (int i = 0; i < num_threads; i++) {
-            os_thread_join(&threads[i]);
-            os_thread_destroy(&threads[i]);
+            OsThreadJoin(&threads[i]);
+            OsThreadDestroy(&threads[i]);
         }
 
         assert(counter == num_threads * increments_per_thread, "Failed: High contention test");
 
-        os_binary_semaphore_destroy(&sem);
+        OsBinarySemaphoreDestroy(&sem);
     }
 
     {
         // Double signal test
         Binary_Semaphore sem;
-        os_binary_semaphore_init(&sem, false);
+        OsBinarySemaphoreInit(&sem, false);
 
         LONG counter = 0;
 
@@ -1695,25 +1695,25 @@ void test_os_binary_semaphore() {
         Test_Args args1 = { &sem, &counter, 1 };
         Test_Args args2 = { &sem, &counter, 1 };
 
-        os_thread_init(&thread1, increment_thread_proc);
-        os_thread_init(&thread2, increment_thread_proc);
+        OsThreadInit(&thread1, increment_thread_proc);
+        OsThreadInit(&thread2, increment_thread_proc);
         thread1.data = &args1;
         thread2.data = &args2;
-        os_thread_start(&thread1);
-        os_thread_start(&thread2);
+        OsThreadStart(&thread1);
+        OsThreadStart(&thread2);
 
         // Signal twice
-        os_binary_semaphore_signal(&sem);
-        os_binary_semaphore_signal(&sem);
+        OsBinarySemaphoreSignal(&sem);
+        OsBinarySemaphoreSignal(&sem);
 
-        os_thread_join(&thread1);
-        os_thread_join(&thread2);
+        OsThreadJoin(&thread1);
+        OsThreadJoin(&thread2);
 
         assert(counter == 2, "Failed: Double signal test");
 
-        os_thread_destroy(&thread1);
-        os_thread_destroy(&thread2);
-        os_binary_semaphore_destroy(&sem);
+        OsThreadDestroy(&thread1);
+        OsThreadDestroy(&thread2);
+        OsBinarySemaphoreDestroy(&sem);
     }
 
 }

@@ -31,7 +31,7 @@ typedef struct {
 
 // Threading implementation
 
-void os_thread_init(Thread *t, Thread_Proc proc) {
+void OsThreadInit(Thread *t, Thread_Proc proc) {
     if (!t || !proc) return;
 
     memset(t, 0, sizeof(Thread));
@@ -41,9 +41,9 @@ void os_thread_init(Thread *t, Thread_Proc proc) {
     t->temporary_storage_size = KB(10);
 }
 
-void os_thread_destroy(Thread *t) {
+void OsThreadDestroy(Thread *t) {
     if (!t) return;
-    os_thread_join(t);
+    OsThreadJoin(t);
     memset(t, 0, sizeof(Thread));
 }
 
@@ -55,7 +55,7 @@ static void* thread_wrapper(void* arg) {
     return NULL;
 }
 
-void os_thread_start(Thread *t) {
+void OsThreadStart(Thread *t) {
     if (!t) return;
 
     pthread_t thread;
@@ -66,7 +66,7 @@ void os_thread_start(Thread *t) {
     }
 }
 
-void os_thread_join(Thread *t) {
+void OsThreadJoin(Thread *t) {
     if (!t || !t->os_handle) return;
 
     pthread_join((pthread_t)t->os_handle, NULL);
@@ -89,7 +89,7 @@ Mutex_Handle OsMakeMutex(void) {
     return (Mutex_Handle)mutex;
 }
 
-void os_destroy_mutex(Mutex_Handle m) {
+void OsDestroyMutex(Mutex_Handle m) {
     if (!m) return;
     
     pthread_mutex_t* mutex = (pthread_mutex_t*)m;
@@ -113,7 +113,7 @@ void OsUnlockMutex(Mutex_Handle m) {
 
 // Binary semaphore implementation
 
-void os_binary_semaphore_init(Binary_Semaphore *sem, bool initial_state) {
+void OsBinarySemaphoreInit(Binary_Semaphore *sem, bool initial_state) {
     if (!sem) return;
     Linux_Binary_Semaphore *data = malloc(sizeof(*data));
     pthread_mutex_init(&data->mutex, NULL);
@@ -122,7 +122,7 @@ void os_binary_semaphore_init(Binary_Semaphore *sem, bool initial_state) {
     sem->os_event = data;
 }
 
-void os_binary_semaphore_destroy(Binary_Semaphore *sem) {
+void OsBinarySemaphoreDestroy(Binary_Semaphore *sem) {
     if (!sem) return;
     Linux_Binary_Semaphore *data = sem->os_event;
     if (data) {
@@ -133,7 +133,7 @@ void os_binary_semaphore_destroy(Binary_Semaphore *sem) {
     sem->os_event = NULL;
 }
 
-void os_binary_semaphore_wait(Binary_Semaphore *sem) {
+void OsBinarySemaphoreWait(Binary_Semaphore *sem) {
     if (!sem) return;
     Linux_Binary_Semaphore *data = sem->os_event;
     pthread_mutex_lock(&data->mutex);
@@ -144,7 +144,7 @@ void os_binary_semaphore_wait(Binary_Semaphore *sem) {
     pthread_mutex_unlock(&data->mutex);
 }
 
-void os_binary_semaphore_signal(Binary_Semaphore *sem) {
+void OsBinarySemaphoreSignal(Binary_Semaphore *sem) {
     if (!sem) return;
     Linux_Binary_Semaphore *data = sem->os_event;
     pthread_mutex_lock(&data->mutex);
@@ -154,18 +154,18 @@ void os_binary_semaphore_signal(Binary_Semaphore *sem) {
 }
 
 // Sleep and timing
-void os_sleep(uint32_t ms) {
+void OsSleep(uint32_t ms) {
     struct timespec ts;
     ts.tv_sec = ms / 1000;
     ts.tv_nsec = (ms % 1000) * 1000000;
     nanosleep(&ts, NULL);
 }
 
-void os_yield_thread(void) {
+void OsYieldThread(void) {
     sched_yield();
 }
 
-void os_high_precision_sleep(double ms) {
+void OsHighPrecisionSleep(double ms) {
     struct timespec ts;
     long long ns = (long long)(ms * 1000000.0);
     ts.tv_sec = ns / 1000000000;
@@ -174,13 +174,13 @@ void os_high_precision_sleep(double ms) {
 }
 
 // File I/O
-void os_write_string_to_stdout(string s) {
+void OsWriteStringToStdout(string s) {
     if (s.data && s.count > 0) {
         write(STDOUT_FILENO, s.data, s.count);
     }
 }
 
-bool os_write_entire_file_s(string path, string data) {
+bool OsWriteEntireFileS(string path, string data) {
     char* null_terminated_path = TempConvertToNullTerminatedString(path);
     if (!null_terminated_path) return false;
     
@@ -195,7 +195,7 @@ bool os_write_entire_file_s(string path, string data) {
     return (bytes_written == (ssize_t)data.count);
 }
 
-bool os_read_entire_file_s(string path, string *result, Allocator allocator) {
+bool OsReadEntireFileS(string path, string *result, Allocator allocator) {
     if (!result) return false;
     
     char* null_terminated_path = TempConvertToNullTerminatedString(path);
