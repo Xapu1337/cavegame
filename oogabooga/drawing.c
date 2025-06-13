@@ -123,16 +123,16 @@
 		
 			Draw_Quad *draw_quad_projected_in_frame(Draw_Quad quad, Matrix4 world_to_clip, Draw_Frame *frame);
 			Draw_Quad *DrawQuadInFrame(Draw_Quad quad, Draw_Frame *frame);
-			Draw_Quad *draw_quad_xform_in_frame(Draw_Quad quad, Matrix4 xform, Draw_Frame *frame);
+                        Draw_Quad *DrawQuadXformInFrame(Draw_Quad quad, Matrix4 xform, Draw_Frame *frame);
 			
 			Draw_Quad *DrawRectInFrame(Vector2 position, Vector2 size, Vector4 color, Draw_Frame *frame);
-			Draw_Quad *draw_rect_xform_in_frame(Matrix4 xform, Vector2 size, Vector4 color, Draw_Frame *frame);
+                        Draw_Quad *DrawRectXformInFrame(Matrix4 xform, Vector2 size, Vector4 color, Draw_Frame *frame);
 			
 			Draw_Quad *DrawCircleInFrame(Vector2 position, Vector2 size, Vector4 color, Draw_Frame *frame);
 			Draw_Quad *draw_circle_xform_in_frame(Matrix4 xform, Vector2 size, Vector4 color, Draw_Frame *frame);
 			
-			Draw_Quad *draw_image_in_frame(Gfx_Image *image, Vector2 position, Vector2 size, Vector4 color, Draw_Frame *frame);
-			Draw_Quad *draw_image_xform_in_frame(Gfx_Image *image, Matrix4 xform, Vector2 size, Vector4 color, Draw_Frame *frame);
+                        Draw_Quad *DrawImageInFrame(Gfx_Image *image, Vector2 position, Vector2 size, Vector4 color, Draw_Frame *frame);
+                        Draw_Quad *DrawImageXformInFrame(Gfx_Image *image, Matrix4 xform, Vector2 size, Vector4 color, Draw_Frame *frame);
 				
 			void draw_line_in_frame(Vector2 p0, Vector2 p1, float line_width, Vector4 color, Draw_Frame *frame);
 			
@@ -324,7 +324,7 @@ Draw_Quad *DrawQuadInFrame(Draw_Quad quad, Draw_Frame *frame) {
 	return draw_quad_projected_in_frame(quad, m4_mul(frame->projection, m4_inverse(frame->cameraXform)), frame);
 }
 
-Draw_Quad *draw_quad_xform_in_frame(Draw_Quad quad, Matrix4 xform, Draw_Frame *frame) {
+Draw_Quad *DrawQuadXformInFrame(Draw_Quad quad, Matrix4 xform, Draw_Frame *frame) {
 	Matrix4 world_to_clip = M4Scalar(1.0);
 	world_to_clip         = m4_mul(world_to_clip, frame->projection);
 	world_to_clip         = m4_mul(world_to_clip, m4_inverse(frame->cameraXform));
@@ -350,7 +350,7 @@ Draw_Quad *DrawRectInFrame(Vector2 position, Vector2 size, Vector4 color, Draw_F
 	
 	return DrawQuadInFrame(q, frame);
 }
-Draw_Quad *draw_rect_xform_in_frame(Matrix4 xform, Vector2 size, Vector4 color, Draw_Frame *frame) {
+Draw_Quad *DrawRectXformInFrame(Matrix4 xform, Vector2 size, Vector4 color, Draw_Frame *frame) {
 	// #Copypaste #Volatile	
 	Draw_Quad q = ZERO(Draw_Quad);
 	q.bottom_left  = v2(0,  0);
@@ -361,7 +361,7 @@ Draw_Quad *draw_rect_xform_in_frame(Matrix4 xform, Vector2 size, Vector4 color, 
 	q.image = 0;
 	q.type = QUAD_TYPE_REGULAR;
 	
-	return draw_quad_xform_in_frame(q, xform, frame);
+    return DrawQuadXformInFrame(q, xform, frame);
 }
 Draw_Quad *DrawCircleInFrame(Vector2 position, Vector2 size, Vector4 color, Draw_Frame *frame) {
 	// #Copypaste #Volatile	
@@ -392,18 +392,18 @@ Draw_Quad *draw_circle_xform_in_frame(Matrix4 xform, Vector2 size, Vector4 color
 	q.image = 0;
 	q.type = QUAD_TYPE_CIRCLE;
 	
-	return draw_quad_xform_in_frame(q, xform, frame);
+    return DrawQuadXformInFrame(q, xform, frame);
 }
-Draw_Quad *draw_image_in_frame(Gfx_Image *image, Vector2 position, Vector2 size, Vector4 color, Draw_Frame *frame) {
-	Draw_Quad *q = DrawRectInFrame(position, size, color, frame);
+Draw_Quad *DrawImageInFrame(Gfx_Image *image, Vector2 position, Vector2 size, Vector4 color, Draw_Frame *frame) {
+    Draw_Quad *q = DrawRectInFrame(position, size, color, frame);
 	
 	q->image = image;
 	q->uv = v4(0, 0, 1, 1);
 	
 	return q;
 }
-Draw_Quad *draw_image_xform_in_frame(Gfx_Image *image, Matrix4 xform, Vector2 size, Vector4 color, Draw_Frame *frame) {
-	Draw_Quad *q = draw_rect_xform_in_frame(xform, size, color, frame);
+Draw_Quad *DrawImageXformInFrame(Gfx_Image *image, Matrix4 xform, Vector2 size, Vector4 color, Draw_Frame *frame) {
+    Draw_Quad *q = DrawRectXformInFrame(xform, size, color, frame);
 	
 	q->image = image;
 	q->uv = v4(0, 0, 1, 1);
@@ -430,7 +430,7 @@ bool draw_text_callback(Gfx_Glyph glyph, Gfx_Font_Atlas *atlas, float glyph_x, f
 	
 	Matrix4 glyph_xform = M4Translate(params->xform, v3(glyph_x, glyph_y, 0));
 	
-	Draw_Quad *q = draw_image_xform_in_frame(atlas->image, glyph_xform, size, params->color, params->frame);
+    Draw_Quad *q = DrawImageXformInFrame(atlas->image, glyph_xform, size, params->color, params->frame);
 	q->uv = glyph.uv;
 	q->type = QUAD_TYPE_TEXT;
 	q->image_min_filter = GFX_FILTER_MODE_LINEAR;
@@ -454,7 +454,7 @@ void draw_line_in_frame(Vector2 p0, Vector2 p1, float line_width, Vector4 color,
 	line_xform = M4Translate(line_xform, v3(p0.x, p0.y, 0));
 	line_xform = M4RotateZ(line_xform, r);
 	line_xform = M4Translate(line_xform, v3(0, -line_width/2, 0));
-	draw_rect_xform_in_frame(line_xform, v2(length, line_width), color, frame);
+        DrawRectXformInFrame(line_xform, v2(length, line_width), color, frame);
 }
 
 void push_z_layer_in_frame(s32 z, Draw_Frame *frame) {
@@ -495,7 +495,7 @@ Draw_Quad *draw_quad(Draw_Quad quad) {
 
 inline
 Draw_Quad *draw_quad_xform(Draw_Quad quad, Matrix4 xform) {
-	return draw_quad_xform_in_frame(quad, xform, &drawFrame);
+    return DrawQuadXformInFrame(quad, xform, &drawFrame);
 }
 
 inline
@@ -504,7 +504,7 @@ Draw_Quad *draw_rect(Vector2 position, Vector2 size, Vector4 color) {
 }
 inline
 Draw_Quad *DrawRectXform(Matrix4 xform, Vector2 size, Vector4 color) {
-	return draw_rect_xform_in_frame(xform, size, color, &drawFrame);
+        return DrawRectXformInFrame(xform, size, color, &drawFrame);
 }
 inline
 Draw_Quad *draw_circle(Vector2 position, Vector2 size, Vector4 color) {
@@ -516,11 +516,11 @@ Draw_Quad *draw_circle_xform(Matrix4 xform, Vector2 size, Vector4 color) {
 }
 inline
 Draw_Quad *draw_image(Gfx_Image *image, Vector2 position, Vector2 size, Vector4 color) {
-	return draw_image_in_frame(image, position, size, color, &drawFrame);
+    return DrawImageInFrame(image, position, size, color, &drawFrame);
 }
 inline
 Draw_Quad *draw_image_xform(Gfx_Image *image, Matrix4 xform, Vector2 size, Vector4 color) {
-	return draw_image_xform_in_frame(image, xform, size, color, &drawFrame);
+    return DrawImageXformInFrame(image, xform, size, color, &drawFrame);
 }
 
 inline
