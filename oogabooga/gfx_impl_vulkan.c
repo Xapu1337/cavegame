@@ -7,11 +7,16 @@
 
 // Vulkan implementation is behind Linux platform guard
 #if PLATFORM_LINUX && RENDERER_VULKAN
+#include "gfx_impl_vulkan.h"
 
 // Check if Vulkan headers are available
-#if 0
+#if 1
 #define VULKAN_AVAILABLE 1
 #define VK_USE_PLATFORM_XLIB_KHR
+// Avoid conflicts with engine macros before including system headers
+#ifdef noreturn
+#undef noreturn
+#endif
 #include <vulkan/vulkan.h>
 #include <vulkan/vulkan_xlib.h>
 #include <X11/Xlib.h>
@@ -425,6 +430,31 @@ void vulkan_end_frame(void) {
 
 void vulkan_present(bool vsync) {
     log_warning("vulkan_present not fully implemented");
+}
+
+// High level graphics API wrappers
+void gfx_init(void) {
+    if (!vulkan_init()) {
+        log_error("Vulkan initialization failed");
+    }
+    draw_frame_init(&drawFrame);
+    DrawFrameReset(&drawFrame);
+}
+
+void GfxUpdate(void) {
+    if (!vulkan_begin_frame()) return;
+    // Normally rendering commands would go here
+    vulkan_end_frame();
+    vulkan_present(window.enable_vsync);
+}
+
+void gfx_init_image(Gfx_Image *image, void *data, bool render_target) {
+    (void)image; (void)data; (void)render_target;
+    // Stub: real image upload not implemented yet
+}
+
+void gfx_deinit_image(Gfx_Image *image) {
+    (void)image;
 }
 
 #endif // VULKAN_AVAILABLE
