@@ -387,17 +387,8 @@ typedef f64 float64;
 #endif
 
 // Renderer selection based on platform
-#if PLATFORM_WINDOWS
-	#define RENDERER_D3D11 1
-	#define RENDERER_VULKAN 0
-#elif PLATFORM_LINUX
-	#define RENDERER_D3D11 0
-	#define RENDERER_VULKAN 1
-#elif PLATFORM_MACOS
-	#define RENDERER_D3D11 0
-	#define RENDERER_VULKAN 0
-	#define RENDERER_METAL 1
-#endif
+// Renderer backend flags are now specified by the build tool
+// No hard-coded renderer selection here
 
 #if OOGABOOGA_LINK_EXTERNAL_INSTANCE
     #define ogb_instance SHARED_IMPORT extern
@@ -414,24 +405,8 @@ typedef f64 float64;
 
 #include "simd.h"
 
-// #Incomplete
-// We might want to make this configurable ?
-#define GFX_RENDERER_D3D11   0
-#define GFX_RENDERER_VULKAN  1
-#define GFX_RENDERER_OPENGL  2
-#define GFX_RENDERER_METAL   3
-#define GFX_RENDERER_SOFTWARE 4
-#ifndef GFX_RENDERER
-// #Portability
-        #if TARGET_OS == WINDOWS
-                #define GFX_RENDERER GFX_RENDERER_D3D11
-        #elif TARGET_OS == LINUX
-                #define GFX_RENDERER GFX_RENDERER_VULKAN
-        #elif TARGET_OS == MACOS
-                #define GFX_RENDERER GFX_RENDERER_METAL
-        #endif
-#endif
-
+// Graphics Abstraction Layer (GAL) - replaces old gfx system
+#include "gal.h"
 
 #include "string.h"
 #include "unicode.h"
@@ -466,18 +441,12 @@ typedef f64 float64;
 #include "utility.h"
 
 #ifndef OOGABOOGA_HEADLESS
-
-    #include "gfx_interface.h"
-
     #include "font.h"
-
     #include "drawing.h"
-
     #include "audio.h"
 #endif
 
 #if OOGABOOGA_ENABLE_EXTENSIONS
-
     #include "extensions.h"
 #endif
 
@@ -494,20 +463,8 @@ typedef f64 float64;
     #endif
 
     #ifndef OOGABOOGA_HEADLESS
-        // #Portability
-        #if GFX_RENDERER == GFX_RENDERER_D3D11
-            #include "gfx_impl_d3d11.h"
-        #elif GFX_RENDERER == GFX_RENDERER_VULKAN
-            // Vulkan headers included later
-        #elif GFX_RENDERER == GFX_RENDERER_OPENGL
-            // OpenGL headers would go here
-        #elif GFX_RENDERER == GFX_RENDERER_SOFTWARE
-            // Software renderer uses no external headers
-        #elif GFX_RENDERER == GFX_RENDERER_METAL
-            // #error "D3D11 renderer disabled for Linux build"
-        #else
-            #error "Unknown renderer GFX_RENDERER defined"
-        #endif
+        // GAL backend implementations are linked directly based on build flags
+        // No need to include specific renderer headers here
     #endif
     
 #endif // NOT OOGABOOGA_LINK_EXTERNAL_INSTANCE
@@ -538,23 +495,25 @@ typedef f64 float64;
 #include "os_impl_linux.c"
 #endif
 #ifndef OOGABOOGA_HEADLESS
-#include "gfx_interface.c"
+#include "gal.c"
 #include "drawing.c"
 // #include "font.c" // disabled to avoid missing glyph APIs
 // #include "audio.c" // disabled to avoid audio compile errors
-#if GFX_RENDERER == GFX_RENDERER_D3D11
-#include "gfx_impl_d3d11.c"
-#elif GFX_RENDERER == GFX_RENDERER_VULKAN
-#include "gfx_impl_vulkan.c"
-#elif GFX_RENDERER == GFX_RENDERER_OPENGL
-#error "OpenGL renderer not implemented"
-#elif GFX_RENDERER == GFX_RENDERER_SOFTWARE
-#include "gfx_impl_software.c"
-#elif GFX_RENDERER == GFX_RENDERER_METAL
-#error "Metal renderer not implemented"
+
+// Include GAL backend implementation based on compile flags
+#if defined(RENDERER_OPENGL) && RENDERER_OPENGL
+#include "gal_opengl.c"
+#elif defined(RENDERER_VULKAN) && RENDERER_VULKAN
+#include "gal_vulkan.c"
+#elif defined(RENDERER_D3D11) && RENDERER_D3D11
+#include "gal_d3d11.c"
+#elif defined(RENDERER_SOFTWARE) && RENDERER_SOFTWARE
+#include "gal_software.c"
 #else
-#error "Unknown renderer GFX_RENDERER defined"
+// Default to software renderer
+#include "gal_software.c"
 #endif
+
 #endif
 #if OOGABOOGA_ENABLE_EXTENSIONS
 #include "ext_particles.c"
@@ -599,7 +558,14 @@ bool oogabooga_init(u64 program_memory_size) {
 	temporary_storage_init(TEMPORARY_STORAGE_SIZE);
 	log_info("Ooga booga version is %d.%02d.%03d", OGB_VERSION_MAJOR, OGB_VERSION_MINOR, OGB_VERSION_PATCH);
 #ifndef OOGABOOGA_HEADLESS
-	gfx_init();
+    // Initialize the Graphics Abstraction Layer using build-specified backend
+    gal_init();
+    
+    // Initialize the draw frame
+    draw_frame_init(&drawFrame);
+    DrawFrameReset(&drawFrame);
+    
+    log_info("Graphics system initialized");
 #else
     log_info("Headless mode on");
 #endif

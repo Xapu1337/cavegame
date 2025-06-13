@@ -173,7 +173,7 @@ int Entry(int argc, char **argv) {
         }
 
         OsUpdate();
-        GfxUpdate();
+        gal_update();
     }
     return 0;
 }

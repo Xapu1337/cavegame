@@ -48,9 +48,9 @@
 		
 		- Drawing text:
 			
-			void draw_text_xform(Gfx_Font *font, string text, u32 raster_height, Matrix4 xform, Vector2 scale, Vector4 color);
-			void draw_text(Gfx_Font *font, string text, u32 raster_height, Vector2 position, Vector2 scale, Vector4 color);
-			Gfx_Text_Metrics draw_text_and_measure(Gfx_Font *font, string text, u32 raster_height, Vector2 position, Vector2 scale, Vector4 color);	
+			void draw_text_xform(Gal_Font *font, string text, u32 raster_height, Matrix4 xform, Vector2 scale, Vector4 color);
+			void draw_text(Gal_Font *font, string text, u32 raster_height, Vector2 position, Vector2 scale, Vector4 color);
+			Gfx_Text_Metrics draw_text_and_measure(Gal_Font *font, string text, u32 raster_height, Vector2 position, Vector2 scale, Vector4 color);	
 	
 			- For loading and dealing with fonts see font.c, or for a practical example see examples/text_rendering.c
 			
@@ -136,9 +136,9 @@
 				
 			void draw_line_in_frame(Vector2 p0, Vector2 p1, float line_width, Vector4 color, Draw_Frame *frame);
 			
-			void draw_text_xform_in_frame(Gfx_Font *font, string text, u32 raster_height, Matrix4 xform, Vector2 scale, Vector4 color, Draw_Frame *frame);
-			void draw_text_in_frame(Gfx_Font *font, string text, u32 raster_height, Vector2 position, Vector2 scale, Vector4 color, Draw_Frame *frame);
-			Gfx_Text_Metrics draw_text_and_measure_in_frame(Gfx_Font *font, string text, u32 raster_height, Vector2 position, Vector2 scale, Vector4 color, Draw_Frame *frame);
+			void draw_text_xform_in_frame(Gal_Font *font, string text, u32 raster_height, Matrix4 xform, Vector2 scale, Vector4 color, Draw_Frame *frame);
+			void draw_text_in_frame(Gal_Font *font, string text, u32 raster_height, Vector2 position, Vector2 scale, Vector4 color, Draw_Frame *frame);
+			Gfx_Text_Metrics draw_text_and_measure_in_frame(Gal_Font *font, string text, u32 raster_height, Vector2 position, Vector2 scale, Vector4 color, Draw_Frame *frame);
 			
 			void push_z_layer_in_frame(s32 z, Draw_Frame *frame);
 			void pop_z_layer_in_frame(Draw_Frame *frame);
@@ -169,10 +169,10 @@
 #define MAX_BOUND_IMAGES 16
 
 // Stub font types to allow building without font.c
-typedef struct Gfx_Font Gfx_Font;
+typedef struct Gal_Font Gal_Font;
 typedef struct Gfx_Glyph Gfx_Glyph;
 typedef struct Gfx_Font_Atlas {
-        Gfx_Image *image;
+        Gal_Image *image;
         u32 first_codepoint;
         Gfx_Glyph *glyphs;
 } Gfx_Font_Atlas;
@@ -191,25 +191,6 @@ typedef struct Gfx_Text_Metrics {
         Vector2 visual_pos_max;
         Vector2 visual_size;
 } Gfx_Text_Metrics;
-
-typedef struct Draw_Quad {
-	// BEWARE !! These are in ndc
-	Vector2 bottom_left, top_left, top_right, bottom_right;
-	// r, g, b, a
-	Vector4 color;
-	Gfx_Image *image;
-	Gfx_Filter_Mode image_min_filter;
-	Gfx_Filter_Mode image_mag_filter;
-	s32 z;
-	uint8_t type;
-	bool has_scissor;
-	// x1, y1, x2, y2
-	Vector4 uv;
-	Vector4 scissor;
-	
-	Vector4 userdata[VERTEX_USER_DATA_COUNT]; // #Volatile do NOT change this to a pointer
-	
-} Draw_Quad;
 
 void draw_frame_init(Draw_Frame *frame) {
 	*frame = ZERO(Draw_Frame);
@@ -244,7 +225,7 @@ void DrawFrameReset(Draw_Frame *frame) {
 	frame->highest_bound_slot_index = -1;
 }
 
-void draw_frame_bind_image_to_shader(Draw_Frame *frame, Gfx_Image *image, int slot_index) {
+void draw_frame_bind_image_to_shader(Draw_Frame *frame, Gal_Image *image, int slot_index) {
 	if (slot_index >= MAX_BOUND_IMAGES) {
 		log_error("The highest bind image slot is %i, you tried to bind to %i", MAX_BOUND_IMAGES-1, slot_index);
 		return;
@@ -394,7 +375,7 @@ Draw_Quad *draw_circle_xform_in_frame(Matrix4 xform, Vector2 size, Vector4 color
 	
     return DrawQuadXformInFrame(q, xform, frame);
 }
-Draw_Quad *DrawImageInFrame(Gfx_Image *image, Vector2 position, Vector2 size, Vector4 color, Draw_Frame *frame) {
+Draw_Quad *DrawImageInFrame(Gal_Image *image, Vector2 position, Vector2 size, Vector4 color, Draw_Frame *frame) {
     Draw_Quad *q = DrawRectInFrame(position, size, color, frame);
 	
 	q->image = image;
@@ -402,7 +383,7 @@ Draw_Quad *DrawImageInFrame(Gfx_Image *image, Vector2 position, Vector2 size, Ve
 	
 	return q;
 }
-Draw_Quad *DrawImageXformInFrame(Gfx_Image *image, Matrix4 xform, Vector2 size, Vector4 color, Draw_Frame *frame) {
+Draw_Quad *DrawImageXformInFrame(Gal_Image *image, Matrix4 xform, Vector2 size, Vector4 color, Draw_Frame *frame) {
     Draw_Quad *q = DrawRectXformInFrame(xform, size, color, frame);
 	
 	q->image = image;
@@ -412,7 +393,7 @@ Draw_Quad *DrawImageXformInFrame(Gfx_Image *image, Matrix4 xform, Vector2 size, 
 }
 
 typedef struct {
-	Gfx_Font *font;
+	Gal_Font *font;
 	string text;
 	u32 raster_height;
 	Matrix4 xform;
@@ -440,9 +421,9 @@ bool draw_text_callback(Gfx_Glyph glyph, Gfx_Font_Atlas *atlas, float glyph_x, f
 }
 
 // Font rendering temporarily disabled
-void draw_text_xform_in_frame(Gfx_Font *font, string text, u32 raster_height, Matrix4 xform, Vector2 scale, Vector4 color, Draw_Frame *frame) {}
-void draw_text_in_frame(Gfx_Font *font, string text, u32 raster_height, Vector2 position, Vector2 scale, Vector4 color, Draw_Frame *frame) {}
-Gfx_Text_Metrics draw_text_and_measure_in_frame(Gfx_Font *font, string text, u32 raster_height, Vector2 position, Vector2 scale, Vector4 color, Draw_Frame *frame) {
+void draw_text_xform_in_frame(Gal_Font *font, string text, u32 raster_height, Matrix4 xform, Vector2 scale, Vector4 color, Draw_Frame *frame) {}
+void draw_text_in_frame(Gal_Font *font, string text, u32 raster_height, Vector2 position, Vector2 scale, Vector4 color, Draw_Frame *frame) {}
+Gfx_Text_Metrics draw_text_and_measure_in_frame(Gal_Font *font, string text, u32 raster_height, Vector2 position, Vector2 scale, Vector4 color, Draw_Frame *frame) {
         return (Gfx_Text_Metrics){0};
 }
 
@@ -515,23 +496,23 @@ Draw_Quad *draw_circle_xform(Matrix4 xform, Vector2 size, Vector4 color) {
 	return draw_circle_xform_in_frame(xform, size, color, &drawFrame);
 }
 inline
-Draw_Quad *draw_image(Gfx_Image *image, Vector2 position, Vector2 size, Vector4 color) {
+Draw_Quad *draw_image(Gal_Image *image, Vector2 position, Vector2 size, Vector4 color) {
     return DrawImageInFrame(image, position, size, color, &drawFrame);
 }
 inline
-Draw_Quad *draw_image_xform(Gfx_Image *image, Matrix4 xform, Vector2 size, Vector4 color) {
+Draw_Quad *draw_image_xform(Gal_Image *image, Matrix4 xform, Vector2 size, Vector4 color) {
     return DrawImageXformInFrame(image, xform, size, color, &drawFrame);
 }
 
 inline
-void draw_text_xform(Gfx_Font *font, string text, u32 raster_height, Matrix4 xform, Vector2 scale, Vector4 color) {
+void draw_text_xform(Gal_Font *font, string text, u32 raster_height, Matrix4 xform, Vector2 scale, Vector4 color) {
 	draw_text_xform_in_frame(font, text, raster_height, xform, scale, color, &drawFrame);
 }
 inline
-void draw_text(Gfx_Font *font, string text, u32 raster_height, Vector2 position, Vector2 scale, Vector4 color) {
+void draw_text(Gal_Font *font, string text, u32 raster_height, Vector2 position, Vector2 scale, Vector4 color) {
 	draw_text_in_frame(font, text, raster_height, position, scale, color, &drawFrame);
 }
-Gfx_Text_Metrics draw_text_and_measure(Gfx_Font *font, string text, u32 raster_height, Vector2 position, Vector2 scale, Vector4 color) {
+Gfx_Text_Metrics draw_text_and_measure(Gal_Font *font, string text, u32 raster_height, Vector2 position, Vector2 scale, Vector4 color) {
 	return draw_text_and_measure_in_frame(font, text, raster_height, position, scale, color, &drawFrame);
 }
 

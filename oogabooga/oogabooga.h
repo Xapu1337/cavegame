@@ -84,22 +84,8 @@
 // GRAPHICS RENDERER SELECTION
 //=============================================================================
 
-#if PLATFORM_WINDOWS
-    #define RENDERER_D3D11 1
-    #define RENDERER_VULKAN 0
-    #define RENDERER_METAL 0
-    #define RENDERER_NAME "Direct3D 11"
-#elif PLATFORM_LINUX
-    #define RENDERER_D3D11 0
-    #define RENDERER_VULKAN 1
-    #define RENDERER_METAL 0
-    #define RENDERER_NAME "Vulkan"
-#elif PLATFORM_MACOS
-    #define RENDERER_D3D11 0
-    #define RENDERER_VULKAN 0
-    #define RENDERER_METAL 1
-    #define RENDERER_NAME "Metal"
-#endif
+// Renderer backend flags are specified by the build tool
+// No hard-coded renderer selection here
 
 //=============================================================================
 // MEMORY SAFETY CONFIGURATION
@@ -242,7 +228,7 @@ void oogabooga_assert_fail(const char* expr, const char* file, int line, const c
 #include "hash_table.h"
 
 // Graphics and rendering
-#include "gfx_interface.h"
+#include "gal.h"
 #include "drawing.h"
 #include "font.h"
 
