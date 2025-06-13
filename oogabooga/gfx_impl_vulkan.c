@@ -21,54 +21,7 @@
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #else
-#define VULKAN_AVAILABLE 0
-#warning "Vulkan renderer stubbed out"
-
-// Stub implementations when Vulkan is not available
-bool vulkan_init(void) {
-    log_error("Vulkan renderer not available - headers not found");
-    return false;
-}
-
-void vulkan_cleanup(void) {
-    // No-op
-}
-
-void vulkan_set_viewport(int x, int y, int width, int height) {
-    (void)x; (void)y; (void)width; (void)height;
-    log_error("Vulkan renderer not available");
-}
-
-bool vulkan_begin_frame(void) {
-    log_error("Vulkan renderer not available");
-    return false;
-}
-
-void vulkan_end_frame(void) {
-    log_error("Vulkan renderer not available");
-}
-
-void vulkan_present(bool vsync) {
-    (void)vsync;
-    log_error("Vulkan renderer not available");
-}
-
-void gfx_init(void) {
-    log_warning("gfx_init stub - Vulkan renderer not available");
-    draw_frame_init(&drawFrame);
-}
-
-void GfxUpdate(void) {
-    // Nothing to do in stub
-}
-
-void gfx_init_image(Gfx_Image *image, void *data, bool render_target) {
-    (void)image; (void)data; (void)render_target;
-}
-
-void gfx_deinit_image(Gfx_Image *image) {
-    (void)image;
-}
+#error "Vulkan headers not found. Please install the Vulkan SDK."
 #endif
 
 #if VULKAN_AVAILABLE

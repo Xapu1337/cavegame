@@ -118,7 +118,11 @@ int main(int argc, char **argv) {
         const char *files = "oogabooga/oogabooga.c app/cube_flip.c";
 
         int have_vulkan_headers = access("/usr/include/vulkan/vulkan.h", F_OK) == 0;
-        const char *vulkan_flags = have_vulkan_headers ? "-DVULKAN_AVAILABLE=1 -lvulkan" : "-DVULKAN_AVAILABLE=0";
+        if (!have_vulkan_headers) {
+            printf("Error: Vulkan headers not found. Please install the Vulkan SDK (libvulkan-dev).\n");
+            return 1;
+        }
+        const char *vulkan_flags = "-DVULKAN_AVAILABLE=1 -lvulkan";
 
         cmd = "gcc -I. "
               "-DENTRY_PROC=Entry "
@@ -177,11 +181,7 @@ int main(int argc, char **argv) {
             }
         #elif IS_LINUX
             printf("  Compiler: GCC\n");
-            if (have_vulkan_headers) {
-                printf("  Renderer: Vulkan\n");
-            } else {
-                printf("  Renderer: Vulkan (stubbed - headers missing)\n");
-            }
+            printf("  Renderer: Vulkan\n");
         #endif
         
     } else {
