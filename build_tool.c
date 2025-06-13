@@ -72,7 +72,7 @@ int main(int argc, char **argv) {
 
             // MinGW build command with GCC
             cmd = "gcc -g -I. -DENTRY_PROC=Entry "
-                  "-DINITIAL_PROGRAM_MEMORY_SIZE=64*1024*1024 "
+                 "-DINITIAL_PROGRAM_MEMORY_SIZE=512*1024*1024 "
                   "-DTEMPORARY_STORAGE_SIZE=2*1024*1024 "
                   "-o build/game.exe "
                   "%s "
@@ -91,7 +91,7 @@ int main(int argc, char **argv) {
             // MSVC build command using clang-cl (or cl.exe)
             cmd = "clang-cl /Fe:build/game.exe %s /std:c11 /Zi /Od "
                   "/DENTRY_PROC=Entry "
-                  "/DINITIAL_PROGRAM_MEMORY_SIZE=64*1024*1024 "
+                 "/DINITIAL_PROGRAM_MEMORY_SIZE=512*1024*1024 "
                   "/DTEMPORARY_STORAGE_SIZE=2*1024*1024 "
                   "/D_CRT_SECURE_NO_WARNINGS "
                   "kernel32.lib gdi32.lib user32.lib runtimeobject.lib winmm.lib "
@@ -121,7 +121,7 @@ int main(int argc, char **argv) {
         cmd = "gcc -I. "
               "-DENTRY_PROC=Entry "
               "-D_POSIX_C_SOURCE=200809L -D_GNU_SOURCE "
-              "-DINITIAL_PROGRAM_MEMORY_SIZE=64*1024*1024 "
+              "-DINITIAL_PROGRAM_MEMORY_SIZE=512*1024*1024 "
               "-DTEMPORARY_STORAGE_SIZE=2*1024*1024 "
               "%s "
               "%s "

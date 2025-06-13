@@ -332,10 +332,18 @@ bool os_grow_program_memory(u64 new_size) {
     if (program_memory_capacity >= new_size) return true;
     u64 aligned = align_next(new_size, os.page_size);
     size_t offset = (uint8_t*)program_memory_next - (uint8_t*)program_memory;
-    void *new_mem = mremap(program_memory, program_memory_capacity,
-                           aligned, MREMAP_MAYMOVE);
-    if (new_mem == MAP_FAILED) return false;
-    program_memory = new_mem;
+    void *res = mremap(program_memory, program_memory_capacity,
+                       aligned, 0); /* try to grow in place */
+    if (res == MAP_FAILED) {
+        void *addr = (uint8_t*)program_memory + program_memory_capacity;
+        size_t extra = aligned - program_memory_capacity;
+        void *extra_map = mmap(addr, extra, PROT_READ | PROT_WRITE,
+                              MAP_PRIVATE | MAP_ANONYMOUS | MAP_FIXED_NOREPLACE,
+                              -1, 0);
+        if (extra_map == MAP_FAILED) return false;
+    } else {
+        program_memory = res;
+    }
     program_memory_capacity = aligned;
     program_memory_next = (uint8_t*)program_memory + offset;
     return true;
