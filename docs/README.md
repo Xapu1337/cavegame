@@ -108,16 +108,13 @@ int entry(int argc, char **argv) {
 6. Run: `build/game.exe`
 
 ### Linux
-1. Install dependencies:
-```bash
-sudo apt install build-essential libx11-dev libvulkan-dev vulkan-tools
-```
+1. Install required packages by running `./install_deps.sh`
 
-2. Clone repo and create your game file (same as Windows)
+2. Clone the repository and create your game file (same as Windows)
 
-3. Build: `./build_tool`
+3. Build with `./build_tool --verbose`
 
-4. Run: `./build/game`
+4. Run the game using `./build/game`
 
 ## Platform Support
 
