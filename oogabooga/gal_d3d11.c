@@ -242,17 +242,11 @@ GAL_Renderer* d3d11_create_renderer(void) {
 }
 
 #else
-// D3D11 not enabled, provide stub
-GAL_Renderer* d3d11_create_renderer(void) {
-    return NULL;
-}
+#error "Direct3D 11 renderer not enabled"
 #endif // RENDERER_D3D11
 
 #else
-// Not Windows, provide stub
-GAL_Renderer* d3d11_create_renderer(void) {
-    return NULL;
-}
+#error "Direct3D 11 renderer requires Windows"
 #endif // _WIN32
 
 #endif // OOGABOOGA_GAL_D3D11_C
