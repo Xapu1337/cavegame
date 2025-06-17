@@ -1718,6 +1718,43 @@ void test_os_binary_semaphore() {
 
 }
 
+#if defined(RENDERER_OPENGL) && RENDERER_OPENGL
+static void test_opengl_backend() {
+    if (!getenv("DISPLAY")) {
+        print("Skipping OpenGL test (no DISPLAY)\n");
+        return;
+    }
+
+    print("Initializing OpenGL backend... ");
+    GAL_Result result = gal_initialize(GAL_BACKEND_OPENGL);
+    assert(result == GAL_RESULT_SUCCESS, "Failed to initialize OpenGL backend");
+
+    GAL_Renderer *renderer = gal_get_renderer();
+    assert(renderer && renderer->create_window, "OpenGL renderer invalid");
+
+    GAL_Window_Desc desc = {
+        .title = "Test Window",
+        .width = 64,
+        .height = 64,
+        .fullscreen = false,
+        .resizable = false,
+        .vsync = false,
+        .existing_window = NULL
+    };
+
+    result = renderer->create_window(&desc);
+    assert(result == GAL_RESULT_SUCCESS, "Failed to create OpenGL window");
+
+    if (renderer->begin_frame && renderer->end_frame) {
+        renderer->begin_frame();
+        renderer->end_frame();
+    }
+
+    gal_shutdown();
+    print("OK!\n");
+}
+#endif
+
 void oogabooga_run_tests() {
 	
 	print("Testing growing array... ");
@@ -1764,13 +1801,18 @@ void oogabooga_run_tests() {
 	test_mutex();
 	print("OK!\n");
 	
-	print("Testing binary semaphore... ");
-	test_os_binary_semaphore();
-	print("OK!\n");
+        print("Testing binary semaphore... ");
+        test_os_binary_semaphore();
+        print("OK!\n");
+
+#if defined(RENDERER_OPENGL) && RENDERER_OPENGL
+        print("Testing OpenGL backend... ");
+        test_opengl_backend();
+#endif
 
 #ifndef OOGABOOGA_HEADLESS
-	print("Testing radix sort... ");
-	test_sort();
+        print("Testing radix sort... ");
+        test_sort();
 	print("OK!\n");
 #endif
 

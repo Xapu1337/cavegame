@@ -324,21 +324,22 @@ int main(int argc, char **argv) {
 
         // Build the command - SDL2 is always required for GAL
         const char* sdl_flags = "`pkg-config --cflags --libs sdl2`";
-        
+
         cmd = "gcc -I. "
               "%s "  // Optimization flags
               "-DENTRY_PROC=Entry "
               "-D_POSIX_C_SOURCE=200809L -D_GNU_SOURCE "
               "-DINITIAL_PROGRAM_MEMORY_SIZE=512*1024*1024 "
               "-DTEMPORARY_STORAGE_SIZE=2*1024*1024 "
-              "%s "  // Backend flags
               "%s "  // Source files
               "-std=c11 -Wall -Wextra -Wno-unused-parameter "
-              "-lm -lpthread -ldl -lX11 %s "  // SDL flags
+              "-lm -lpthread -ldl -lX11 "
+              "%s "  // Backend flags
+              "%s "  // SDL flags
               "-o build/game";
 
         static char cmd_buffer[2048];
-        snprintf(cmd_buffer, sizeof(cmd_buffer), cmd, optimization, backend_flags, full_files, sdl_flags);
+        snprintf(cmd_buffer, sizeof(cmd_buffer), cmd, optimization, full_files, backend_flags, sdl_flags);
         cmd = cmd_buffer;
         
         // Create build directory
