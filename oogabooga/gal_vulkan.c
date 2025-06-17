@@ -96,7 +96,6 @@ static GAL_Result vulkan_initialize(void) {
     }
     
     // Vulkan initialization would go here
-    // For now, just stub implementation
     
     vulkan_data.initialized = true;
     return GAL_RESULT_SUCCESS;
@@ -111,7 +110,6 @@ static void vulkan_shutdown(void) {
     }
     
     // Vulkan cleanup would go here
-    // For now, just stub implementation
     
     vulkan_data.initialized = false;
 }
@@ -128,7 +126,6 @@ static GAL_Result vulkan_create_window(GAL_Window_Desc* desc) {
     }
     
     // X11 / Vulkan window creation would go here
-    // For now, just stub implementation
     
     vulkan_data.screen_width = desc->width;
     vulkan_data.screen_height = desc->height;
@@ -146,7 +143,6 @@ static void vulkan_destroy_window(void) {
     }
     
     // X11 / Vulkan window destruction would go here
-    // For now, just stub implementation
 }
 
 static void vulkan_update(void) {
@@ -158,7 +154,6 @@ static void vulkan_update(void) {
     vulkan_log_verbose("Updating");
     
     // Process events would go here
-    // For now, just stub implementation
 }
 
 static void vulkan_present(void) {
@@ -170,7 +165,6 @@ static void vulkan_present(void) {
     vulkan_log_verbose("Presenting frame");
     
     // Vulkan presentation would go here
-    // For now, just stub implementation
 }
 
 // ================ RESOURCE MANAGEMENT ================
@@ -189,7 +183,7 @@ static GAL_Texture_Handle vulkan_create_texture(GAL_Texture_Desc* desc, Allocato
     vulkan_log_verbose("Creating texture: %dx%d, %d channels, render target: %s",
                       desc->width, desc->height, desc->channels, desc->is_render_target ? "yes" : "no");
     
-    // For now, just allocate memory for software fallback
+    // Allocate memory for software fallback
     // In a real implementation, we'd create Vulkan images and framebuffers
     size_t size = (size_t)desc->width * desc->height * desc->channels;
     void* buffer = Alloc(allocator, size);
@@ -246,7 +240,6 @@ static void vulkan_begin_frame(void) {
     vulkan_log_verbose("Beginning frame");
     
     // Vulkan begin frame would go here
-    // For now, just stub implementation
 }
 
 static void vulkan_end_frame(void) {
@@ -258,7 +251,6 @@ static void vulkan_end_frame(void) {
     vulkan_log_verbose("Ending frame");
     
     // Vulkan end frame would go here
-    // For now, just stub implementation
 }
 
 static void vulkan_render_draw_frame(Draw_Frame* frame, GAL_Texture_Handle target) {
@@ -282,7 +274,6 @@ static void vulkan_render_draw_frame_to_window(Draw_Frame* frame) {
     vulkan_log_verbose("Rendering draw frame to window");
     
     // Vulkan rendering would go here
-    // For now, just stub implementation
 }
 
 static void vulkan_clear_render_target(GAL_RenderTarget_Handle target, float r, float g, float b, float a) {
@@ -294,7 +285,6 @@ static void vulkan_clear_render_target(GAL_RenderTarget_Handle target, float r, 
     vulkan_log_verbose("Clearing render target");
     
     // Vulkan clear would go here
-    // For now, just stub implementation
 }
 
 // ================ ADVANCED FUNCTIONS ================
@@ -383,17 +373,5 @@ GAL_Renderer vulkan_create_renderer(void) {
 }
 
 #else
-// Create a stub implementation for when Vulkan is not available
-
-// Create and return a stub Vulkan renderer implementation
-GAL_Renderer vulkan_create_renderer(void) {
-    GAL_Renderer renderer = {0};
-    
-    renderer.backend = GAL_BACKEND_UNKNOWN;
-    renderer.name = "Vulkan (unavailable)";
-    renderer.api_version = 0;
-    
-    return renderer;
-}
-
+#error "Vulkan renderer not available on this platform"
 #endif
